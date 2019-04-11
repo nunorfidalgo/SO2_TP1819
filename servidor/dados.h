@@ -55,7 +55,7 @@ typedef struct {
 typedef struct {
 	TCHAR nome[TEXTO];
 	unsigned int pontos;
-} TOP_TEN;
+} TOPTEN;
 
 typedef struct {
 	unsigned int nivel;
