@@ -18,5 +18,16 @@
     <ClCompile Include="bridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="funcoes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bridge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dados.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,10 +6,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-// tamanho padrão da linha de comandos do windows
-#define COLUNAS 80
-#define LINHAS 25
-
 // Mensagens
 #define TEXTO 20
 #define NUM_BOLAS 3
@@ -51,11 +47,16 @@ typedef struct {
 	BARREIRA barreira;
 } JOGADOR;
 
-// Pontuações Top10
+// Pontuação
 typedef struct {
 	TCHAR nome[TEXTO];
 	unsigned int pontos;
-} TOP_TEN;
+} PONTUACAO;
+
+// Pontuações Top10
+typedef struct {
+	PONTUACAO pontuacoes[TOP_TEN];
+} TOPTEN;
 
 typedef struct {
 	unsigned int nivel;
