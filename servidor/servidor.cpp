@@ -21,5 +21,7 @@ int _tmain(int argc, LPTSTR argv[])
 
 	_tprintf(TEXT("%s teste de ção...\n"), SERVIDOR);
 
+	_gettchar();
+
 	return 0;
 }
