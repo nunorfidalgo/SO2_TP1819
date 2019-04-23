@@ -4,11 +4,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <time.h>
+#include <conio.h>
 
 #include "../bridge/bridge.h"
 
 // tamanho padrão da linha de comandos do windows
-#define COLUNAS 80 // x
+#define COLUNAS 81 // x
 #define LINHAS 26 // y
 
 #define SERVIDOR TEXT("Cliente:")
@@ -64,12 +65,12 @@ int _tmain(int argc, LPTSTR argv[])
 	_tprintf(TEXT("*"));
 
 	// barreira do jogador, posição inicial da barreira
-	int xp = (COLUNAS / 2) - 4, yp = LINHAS, xpa;
+	int xp = 1, yp = LINHAS, xpa = 0;
 	gotoxy(xp, yp);
-	_tprintf(TEXT("____"));
+	_tprintf(TEXT("_____"));
 
 	// teclas
-	int key_input;
+	char key_input;
 
 	while (1) {
 		// apaga a posição anterior
@@ -86,44 +87,52 @@ int _tmain(int argc, LPTSTR argv[])
 		gotoxy(x, y);
 		_tprintf(TEXT("*"));
 
-		key_input = _gettch();
-		key_input = toupper(key_input);
-		_flushall();
-
-		switch (key_input) {
-		case 77: //direta
-			if (xp < COLUNAS - 4) {
-				xpa = xp;
-				xp++;
-				gotoxy(xpa, yp);
-				_tprintf(TEXT("    "));
-				gotoxy(xp, yp);
-				_tprintf(TEXT("____"));
-				gotoxy(COLUNAS + 3, 1);
-				_tprintf(TEXT("Tecla -> DIR: xp: %d, xpa: %d"), xp, xpa);
+		if (_kbhit()) {
+			key_input = _gettch();
+			key_input = toupper(key_input);
+			_flushall();
+			//fflush(stdin);
+			switch (key_input) {
+			case 77: //direta
+				if (xp < COLUNAS - 5) {
+					xpa = xp;
+					xp += 5;
+					gotoxy(xpa, yp);
+					_tprintf(TEXT("     "));
+					gotoxy(xp, yp);
+					_tprintf(TEXT("_____"));
+				}
+				break;
+			case 75: // esquerda
+				if (xp > 1) {
+					xpa = xp;
+					xp -= 5;
+					gotoxy(xpa, yp);
+					_tprintf(TEXT("     "));
+					gotoxy(xp, yp);
+					_tprintf(TEXT("_____"));
+				}
+				break;
+			case 27: // ESC = sair
+				gotoxy(0, LINHAS + 2);
+				exit(1);
+				break;
 			}
-			break;
-		case 75: // esquerda
-			if (xp > 1) {
-				xpa = xp;
-				xp--;
-				gotoxy(xpa, yp);
-				_tprintf(TEXT("    "));
-				gotoxy(xp, yp);
-				_tprintf(TEXT("____"));
-				gotoxy(COLUNAS + 3, 1);
-				_tprintf(TEXT("Tecla -> ESQ: xp: %d, xpa: %d"), xp, xpa);
-			}
-			break;
-		case 27: // ESC = sair
-			gotoxy(0, LINHAS + 2);
-			exit(1);
-		default:
-			break;
 		}
+		gotoxy(COLUNAS + 3, 1);
+		_tprintf(TEXT("                         "));
+		gotoxy(COLUNAS + 3, 1);
+		_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
+		gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("                         "));
+		gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
+		gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("               "));
+		gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
 		Sleep(50);
 	}
 	gotoxy(0, LINHAS + 1);
-	//_gettchar();
 	return 0;
 }
