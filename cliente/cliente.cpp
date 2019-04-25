@@ -9,8 +9,8 @@
 #include "../bridge/bridge.h"
 
 // tamanho padrão da linha de comandos do windows
-#define COLUNAS 81 // x
-#define LINHAS 26 // y
+#define COLUNAS 41 // x
+#define LINHAS 24 // y
 
 #define SERVIDOR TEXT("Cliente:")
 
@@ -55,7 +55,10 @@ int _tmain(int argc, LPTSTR argv[])
 			_tprintf(TEXT("&"));
 		}
 
+
 	gotoxy(COLUNAS + 3, 0);
+	_tprintf(TEXT("Arkanoid consola"));
+	gotoxy(COLUNAS + 3, 10);
 	_tprintf(TEXT("ESC - sair"));
 
 	// posição inicial da bola
@@ -70,9 +73,9 @@ int _tmain(int argc, LPTSTR argv[])
 	_tprintf(TEXT("_____"));
 
 	// teclas
-	char key_input;
+	TCHAR key_input = ' ';
 
-	while (1) {
+	while (1) { //_kbhit()
 		// apaga a posição anterior
 		gotoxy(x, y);
 		_tprintf(TEXT(" "));
@@ -87,50 +90,50 @@ int _tmain(int argc, LPTSTR argv[])
 		gotoxy(x, y);
 		_tprintf(TEXT("*"));
 
-		if (_kbhit()) {
-			key_input = _gettch();
-			key_input = toupper(key_input);
-			_flushall();
-			//fflush(stdin);
-			switch (key_input) {
-			case 77: //direta
-				if (xp < COLUNAS - 5) {
-					xpa = xp;
-					xp += 5;
-					gotoxy(xpa, yp);
-					_tprintf(TEXT("     "));
-					gotoxy(xp, yp);
-					_tprintf(TEXT("_____"));
-				}
-				break;
-			case 75: // esquerda
-				if (xp > 1) {
-					xpa = xp;
-					xp -= 5;
-					gotoxy(xpa, yp);
-					_tprintf(TEXT("     "));
-					gotoxy(xp, yp);
-					_tprintf(TEXT("_____"));
-				}
-				break;
-			case 27: // ESC = sair
-				gotoxy(0, LINHAS + 2);
-				exit(1);
-				break;
+		key_input = _gettch_nolock();
+		key_input = toupper(key_input);
+		_flushall();
+
+		fflush(stdin);
+		switch (key_input) {
+		case 77: //direta
+			if (xp < COLUNAS - 5) {
+				xpa = xp;
+				xp += 5;
+				gotoxy(xpa, yp);
+				_tprintf(TEXT("     "));
+				gotoxy(xp, yp);
+				_tprintf(TEXT("_____"));
 			}
+			break;
+		case 75: // esquerda
+			if (xp > 1) {
+				xpa = xp;
+				xp -= 5;
+				gotoxy(xpa, yp);
+				_tprintf(TEXT("     "));
+				gotoxy(xp, yp);
+				_tprintf(TEXT("_____"));
+			}
+			break;
+		case 27: // ESC = sair
+			gotoxy(0, LINHAS + 2);
+			exit(1);
+			break;
 		}
-		gotoxy(COLUNAS + 3, 1);
-		_tprintf(TEXT("                         "));
-		gotoxy(COLUNAS + 3, 1);
+
+		/*gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("                         "));*/
+		gotoxy(COLUNAS + 3, 2);
 		_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
-		gotoxy(COLUNAS + 3, 2);
-		_tprintf(TEXT("                         "));
-		gotoxy(COLUNAS + 3, 2);
+		/*gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("                         "));*/
+		gotoxy(COLUNAS + 3, 3);
 		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
-		gotoxy(COLUNAS + 3, 3);
-		_tprintf(TEXT("               "));
-		gotoxy(COLUNAS + 3, 3);
-		_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
+		/*gotoxy(COLUNAS + 3, 4);
+		_tprintf(TEXT("                                   "));*/
+		gotoxy(COLUNAS + 3, 4);
+		_tprintf(TEXT("Barreira = xp: %.3d, xpa: %.3d"), xp, xpa);
 		Sleep(50);
 	}
 	gotoxy(0, LINHAS + 1);
