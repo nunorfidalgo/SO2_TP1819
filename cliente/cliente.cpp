@@ -9,7 +9,7 @@
 #include "../bridge/bridge.h"
 HANDLE h;
 // tamanho padrão da linha de comandos do windows
-#define COLUNAS 51 // x
+#define COLUNAS 41 // x
 #define LINHAS 26 // y
 
 #define SERVIDOR TEXT("Cliente:")
@@ -22,6 +22,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 #ifdef UNICODE
 	_setmode(_fileno(stdin), _O_WTEXT);
 	_setmode(_fileno(stdout), _O_WTEXT);
+	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
 
 	HANDLE hTBola, hTeclas;
@@ -69,6 +70,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
 	hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
+
 	if (hTBola != NULL && hTeclas != NULL) {
 		gotoxy(COLUNAS + 3, 2);
 		_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
@@ -76,7 +78,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 	else
 		_tprintf(TEXT("Erro ao criar Threads bola e teclas\n"));
 
-
+	//if (WaitForSingleObject(hTBola, INFINITE) || (WaitForSingleObject(hTeclas, INFINITE)) == NULL)
+		
 	WaitForSingleObject(hTBola, INFINITE);
 	WaitForSingleObject(hTeclas, INFINITE);
 		
@@ -109,14 +112,14 @@ DWORD WINAPI threadBola(LPVOID param) {
 		}
 		gotoxy(x, y);
 		_tprintf(TEXT("*"));
-	/*	gotoxy(COLUNAS + 3, 2);
+		gotoxy(COLUNAS + 3, 4);
 		_tprintf(TEXT("                         "));
-		gotoxy(COLUNAS + 3, 2);
+		gotoxy(COLUNAS + 3, 4);
 		_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
-		gotoxy(COLUNAS + 3, 3);
+		gotoxy(COLUNAS + 3, 5);
 		_tprintf(TEXT("                         "));
-		gotoxy(COLUNAS + 3, 3);
-		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);*/
+		gotoxy(COLUNAS + 3, 5);
+		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
 		ReleaseMutex(h);
 		Sleep(50);
 
@@ -153,19 +156,27 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
+				gotoxy(COLUNAS + 3, 7);
+				_tprintf(TEXT("                         "));
+				gotoxy(COLUNAS + 3, 7);
+				_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
 				ReleaseMutex(h);
 			}
 			break;
 		case 75: // esquerda
 			//WaitForSingleObject(h, INFINITE);
 			if (xp > 1) {
-				WaitForSingleObject(h, INFINITE);
+				WaitForSingleObject(h,INFINITE);
 				xpa = xp;
 				xp -= 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
+				gotoxy(COLUNAS + 3, 7);
+				_tprintf(TEXT("                         "));
+				gotoxy(COLUNAS + 3, 7);
+				_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
 				ReleaseMutex(h);
 			}
 			break;
@@ -176,11 +187,11 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 		}
 				//default:
 			//WaitForSingleObject(h, INFINITE);
-			/*gotoxy(COLUNAS + 3, 5);
+			/*gotoxy(COLUNAS + 3, 7);
 			_tprintf(TEXT("                         "));
-			gotoxy(COLUNAS + 3, 5);
+			gotoxy(COLUNAS + 3, 7);
 			_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-			break;*/
+			*/
 			//ReleaseMutex(h);
 		//}
 	}
