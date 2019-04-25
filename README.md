@@ -8,7 +8,8 @@
 - Implementação de um jogo estilo Arknoid / Breakout
 - Jogo divido por servidor e cliente com uma DLL(bridge) com todas as implementações da comunição entre o servidor e cliente;
 - No servidor temos toda a mecânica de jogo;
-- Cliente tem apenas a cofiguração de teclas, envio de nome do jogador e tem de detetar se está em modo local(memoria partilhada) ou em modo remoto(named pipes)
+- Cliente tem apenas a configuração de teclas, envio de nome do jogador e tem de detetar se está em modo local(memoria partilhada) 
+ou em modo remoto(named pipes)
 
 
 ## Tecnologias
@@ -20,7 +21,7 @@
 
 # Entregas
 - [ ] Entrega meta1, com código retirado do github(desta forma o projecto fica o mais limpo possível e sem o "lixo" dos projetos compilados);
-- [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer realesa no github com os binários);
+- [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
 
 # Para Fazer
 
@@ -28,7 +29,6 @@
 - [ ] Criação inicial da solução em Visual Studio 2017 Community Edition;
 - [ ] Criação do project servidor(GUI)
 - [ ] Criação do project cliente(GUI)
-- [ ] Criação do projecto gateway(DMD)
 - [ ] Criação do project bridge(DLL)
 - [ ] Criação inicial do projecto para o GitHub;
 - [ ] Adicionei colaborador;

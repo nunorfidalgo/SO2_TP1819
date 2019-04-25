@@ -16,7 +16,7 @@
 extern "C" {
 	// Mémoria partilhada: Jogo
 	BRIDGE_API void CriaMemoriaPartilhadaJogo();
-	BRIDGE_API void AcedeMemoriaPartilhadaJogo();
+	BRIDGE_API int AcedeMemoriaPartilhadaJogo();
 
 	BRIDGE_API void gotoxy(int x, int y);
 }

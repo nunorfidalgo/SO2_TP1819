@@ -32,7 +32,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	int x, y;
 
 	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
-	AcedeMemoriaPartilhadaJogo();
+
 
 	_tprintf(TEXT("%s teste de ção...\n"), SERVIDOR);
 
@@ -44,6 +44,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		gotoxy(x, LINHAS + 1);
 		_tprintf(TEXT("-"));
 	}
+	
 	for (y = 0; y <= LINHAS + 1; y++) {
 		gotoxy(0, y);
 		_tprintf(TEXT("|"));
@@ -64,28 +65,26 @@ int _tmain(int argc, LPTSTR argv[]) {
 		}
 
 	gotoxy(COLUNAS + 3, 0);
-	_tprintf(TEXT("ARKNOID / BREAKOUT\n"));
-	gotoxy(COLUNAS + 3, 3);
+	_tprintf(TEXT("-------------- ARKNOID / BREAKOUT------------\n"));
+	gotoxy(COLUNAS + 3, 2);
+	AcedeMemoriaPartilhadaJogo();
+	gotoxy(COLUNAS + 3, 26);
 	_tprintf(TEXT("ESC - sair"));
 
 	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
 	hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
 
 	if (hTBola != NULL && hTeclas != NULL) {
-		gotoxy(COLUNAS + 3, 2);
+		gotoxy(COLUNAS + 3, 3);
 		_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
 	}
 	else
 		_tprintf(TEXT("Erro ao criar Threads bola e teclas\n"));
 
-	//if (WaitForSingleObject(hTBola, INFINITE) || (WaitForSingleObject(hTeclas, INFINITE)) == NULL)
-		
-	WaitForSingleObject(hTBola, INFINITE);
-	WaitForSingleObject(hTeclas, INFINITE);
-		
+	if (WaitForSingleObject(hTBola, INFINITE) || (WaitForSingleObject(hTeclas, INFINITE)) == NULL)
+		return -1;
 	return 0;
 }
-
 
 DWORD WINAPI threadBola(LPVOID param) {
 
@@ -112,13 +111,13 @@ DWORD WINAPI threadBola(LPVOID param) {
 		}
 		gotoxy(x, y);
 		_tprintf(TEXT("*"));
-		gotoxy(COLUNAS + 3, 4);
+		gotoxy(COLUNAS + 3, 22);
 		_tprintf(TEXT("                         "));
-		gotoxy(COLUNAS + 3, 4);
+		gotoxy(COLUNAS + 3, 22);
 		_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
-		gotoxy(COLUNAS + 3, 5);
+		gotoxy(COLUNAS + 3, 23);
 		_tprintf(TEXT("                         "));
-		gotoxy(COLUNAS + 3, 5);
+		gotoxy(COLUNAS + 3, 23);
 		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
 		ReleaseMutex(h);
 		Sleep(50);
@@ -129,55 +128,48 @@ DWORD WINAPI threadBola(LPVOID param) {
 DWORD WINAPI threadTeclas(LPVOID param) {
 	// barreira do jogador, posição inicial da barreira
 	//int xp = COLUNAS / 2, yp = LINHAS, xpa = xp;
-	int xp = 1 , yp = LINHAS, xpa = xp;
+	int xp = 1, yp = LINHAS, xpa = xp;
 	gotoxy(xp, yp);
 	_tprintf(TEXT("_____"));
 	// teclas
 	TCHAR key_input;
 	while (1) {
-		/*gotoxy(xpa, yp);
-		_tprintf(TEXT("     "));
-		gotoxy(xp, yp);
-		_tprintf(TEXT("____"));*/
-		//while (_kbhit) {
 		key_input = _gettch();
 		key_input = toupper(key_input);
 		_flushall();
 		//fflush(stdin);
-		
+
 		switch (key_input) {
 		case 77: //direta
-			//WaitForSingleObject(h, INFINITE);
 			if (xp < COLUNAS - 5) {
-				WaitForSingleObject(h, INFINITE);
+				WaitForSingleObject(h, INFINITE);//péssima solução usada com I/O
 				xpa = xp;
 				xp += 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
-				gotoxy(COLUNAS + 3, 7);
+				gotoxy(COLUNAS + 3, 24);
 				_tprintf(TEXT("                         "));
-				gotoxy(COLUNAS + 3, 7);
+				gotoxy(COLUNAS + 3, 24);
 				_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-				ReleaseMutex(h);
+				ReleaseMutex(h);//péssima solução usada com I/O
 			}
 			break;
 		case 75: // esquerda
-			//WaitForSingleObject(h, INFINITE);
 			if (xp > 1) {
-				WaitForSingleObject(h,INFINITE);
+				WaitForSingleObject(h, INFINITE); //péssima solução usada com I/O
 				xpa = xp;
 				xp -= 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
-				gotoxy(COLUNAS + 3, 7);
+				gotoxy(COLUNAS + 3, 24);
 				_tprintf(TEXT("                         "));
-				gotoxy(COLUNAS + 3, 7);
+				gotoxy(COLUNAS + 3, 24);
 				_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-				ReleaseMutex(h);
+				ReleaseMutex(h);//péssima solução usada com I/O
 			}
 			break;
 		case 27: // ESC = sair
@@ -185,14 +177,5 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 			exit(1);
 			break;
 		}
-				//default:
-			//WaitForSingleObject(h, INFINITE);
-			/*gotoxy(COLUNAS + 3, 7);
-			_tprintf(TEXT("                         "));
-			gotoxy(COLUNAS + 3, 7);
-			_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-			*/
-			//ReleaseMutex(h);
-		//}
 	}
 }
