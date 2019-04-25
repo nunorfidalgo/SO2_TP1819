@@ -9,7 +9,7 @@
 #include "../bridge/bridge.h"
 HANDLE h;
 // tamanho padrão da linha de comandos do windows
-#define COLUNAS 81 // x
+#define COLUNAS 51 // x
 #define LINHAS 26 // y
 
 #define SERVIDOR TEXT("Cliente:")
@@ -24,7 +24,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	_setmode(_fileno(stdout), _O_WTEXT);
 #endif
 
-	HANDLE hTBola,hTeclas;
+	HANDLE hTBola, hTeclas;
 
 	h = CreateMutex(NULL, FALSE, NULL);
 
@@ -63,37 +63,23 @@ int _tmain(int argc, LPTSTR argv[]) {
 		}
 
 	gotoxy(COLUNAS + 3, 0);
+	_tprintf(TEXT("ARKNOID / BREAKOUT\n"));
+	gotoxy(COLUNAS + 3, 3);
 	_tprintf(TEXT("ESC - sair"));
 
-
-
-
-
 	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
-	if (hTBola != NULL)
-		_tprintf(TEXT("Lancei a thread da bola"));
-
+	hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
+	if (hTBola != NULL && hTeclas != NULL) {
+		gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
+	}
 	else
-		_tprintf(TEXT("Erro ao criar Thread bola\n"));
+		_tprintf(TEXT("Erro ao criar Threads bola e teclas\n"));
 
-	hTeclas= CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
-	if (hTeclas != NULL)
-		_tprintf(TEXT("Lancei a thread da bola"));
 
-	else
-		_tprintf(TEXT("Erro ao criar Thread bola\n"));
 	WaitForSingleObject(hTBola, INFINITE);
 	WaitForSingleObject(hTeclas, INFINITE);
-
-
-	//gotoxy(COLUNAS + 3, 3);
-//	_tprintf(TEXT("               "));
-//	gotoxy(COLUNAS + 3, 3);
-//	_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-
-//gotoxy(0, LINHAS + 1);
-//_gettchar();
-	//Sleep(50);
+		
 	return 0;
 }
 
@@ -123,19 +109,15 @@ DWORD WINAPI threadBola(LPVOID param) {
 		}
 		gotoxy(x, y);
 		_tprintf(TEXT("*"));
-		
-		
-	
-		
-			gotoxy(COLUNAS + 3, 1);
-			_tprintf(TEXT("                         "));
-			gotoxy(COLUNAS + 3, 1);
-			_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
-			gotoxy(COLUNAS + 3, 2);
-			_tprintf(TEXT("                         "));
-			gotoxy(COLUNAS + 3, 2);
-			_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
-			ReleaseMutex(h);
+	/*	gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("                         "));
+		gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
+		gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("                         "));
+		gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);*/
+		ReleaseMutex(h);
 		Sleep(50);
 
 	}
@@ -143,37 +125,48 @@ DWORD WINAPI threadBola(LPVOID param) {
 
 DWORD WINAPI threadTeclas(LPVOID param) {
 	// barreira do jogador, posição inicial da barreira
-	int xp = 1, yp = LINHAS, xpa = 0;
+	//int xp = COLUNAS / 2, yp = LINHAS, xpa = xp;
+	int xp = 1 , yp = LINHAS, xpa = xp;
 	gotoxy(xp, yp);
 	_tprintf(TEXT("_____"));
-
 	// teclas
 	TCHAR key_input;
-	//while (!_kbhit()) {
-		WaitForSingleObject(h, INFINITE);
-		key_input = _gettch_nolock();
+	while (1) {
+		/*gotoxy(xpa, yp);
+		_tprintf(TEXT("     "));
+		gotoxy(xp, yp);
+		_tprintf(TEXT("____"));*/
+		//while (_kbhit) {
+		key_input = _gettch();
 		key_input = toupper(key_input);
 		_flushall();
 		//fflush(stdin);
+		
 		switch (key_input) {
 		case 77: //direta
+			//WaitForSingleObject(h, INFINITE);
 			if (xp < COLUNAS - 5) {
+				WaitForSingleObject(h, INFINITE);
 				xpa = xp;
 				xp += 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
+				ReleaseMutex(h);
 			}
 			break;
 		case 75: // esquerda
+			//WaitForSingleObject(h, INFINITE);
 			if (xp > 1) {
+				WaitForSingleObject(h, INFINITE);
 				xpa = xp;
 				xp -= 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
+				ReleaseMutex(h);
 			}
 			break;
 		case 27: // ESC = sair
@@ -181,6 +174,14 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 			exit(1);
 			break;
 		}
-		ReleaseMutex(h);
-	//}
+				//default:
+			//WaitForSingleObject(h, INFINITE);
+			/*gotoxy(COLUNAS + 3, 5);
+			_tprintf(TEXT("                         "));
+			gotoxy(COLUNAS + 3, 5);
+			_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
+			break;*/
+			//ReleaseMutex(h);
+		//}
+	}
 }
