@@ -75,12 +75,13 @@ int _tmain(int argc, LPTSTR argv[]) {
 	hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
 
 	if (hTBola != NULL && hTeclas != NULL) {
-		gotoxy(COLUNAS + 3, 3);
-		_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
+		WaitForSingleObject(h,INFINITE);
+			gotoxy(COLUNAS + 3, 3);
+			_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
+		ReleaseMutex(h);
 	}
 	else
 		_tprintf(TEXT("Erro ao criar Threads bola e teclas\n"));
-
 	if (WaitForSingleObject(hTBola, INFINITE) || (WaitForSingleObject(hTeclas, INFINITE)) == NULL)
 		return -1;
 	return 0;
@@ -92,8 +93,10 @@ DWORD WINAPI threadBola(LPVOID param) {
 	// posição inicial da bola
 	x = COLUNAS / 2, y = LINHAS;
 	int xd = 1, yd = 1;
+	WaitForSingleObject(h, INFINITE);
 	gotoxy(x, y);
 	_tprintf(TEXT("*"));
+	ReleaseMutex(h);
 
 	while (1) {
 		WaitForSingleObject(h, INFINITE);
@@ -129,8 +132,10 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 	// barreira do jogador, posição inicial da barreira
 	//int xp = COLUNAS / 2, yp = LINHAS, xpa = xp;
 	int xp = 1, yp = LINHAS, xpa = xp;
+	WaitForSingleObject(h, INFINITE);
 	gotoxy(xp, yp);
 	_tprintf(TEXT("_____"));
+	ReleaseMutex(h);
 	// teclas
 	TCHAR key_input;
 	while (1) {
