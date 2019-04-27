@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/README-LAPTOP-4G7T232U.md
+/cliente/cliente-LAPTOP-4G7T232U.cpp

@@ -1,5 +1,5 @@
 #include "bridge.h"
-#include "../servidor/dados.h"
+#include "dados.h"
 
 extern "C" {
 
@@ -9,19 +9,18 @@ extern "C" {
 	}
 
 	int AcedeMemoriaPartilhadaJogo() {
-		JOGADOR* shm;
+		LOGIN* shm_login;
 		HANDLE hMemoria;
 
-		TCHAR NomeMemoria[] = TEXT("Nome da Memória Partilhada");
-
+		
 		_tprintf(TEXT("Bridge - Função: AcedeMemoriaPartilhadaJogo!\n"));
-		hMemoria = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(JOGADOR), NomeMemoria);
+		hMemoria = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(LOGIN), MEM_PART);
 		if (hMemoria == NULL /*|| PodeLer == NULL || hMemoria == NULL*/) {
 			_tprintf(TEXT("[Erro]Criação de objectos do Windows(%d)\n"), GetLastError());
 			return -1;
 		}
-		shm = (JOGADOR*)MapViewOfFile(hMemoria, FILE_MAP_WRITE, 0, 0, sizeof(JOGADOR));
-		if (shm == NULL) {
+		shm_login = (LOGIN *)MapViewOfFile(hMemoria, FILE_MAP_WRITE, 0, 0, sizeof(LOGIN));
+		if (shm_login == NULL) {
 			_tprintf(TEXT("[Erro]Mapeamento da memória partilhada(%d)\n"), GetLastError());
 			return -1;
 		}
