@@ -29,6 +29,17 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 # Para Fazer
 
 ## Meta 1
+* Aplicação servidor com o lançamento de threads e utilização de memória partilhada. Esta meta envolve essencialmente:
+- [ ] Lançamento de threads para controlo da bola (ainda não há outras bolas nem brindes).
+- [ ] Uso de memória partilhada e solução de eventuais problemas de sincronização que surjam.
+- [ ] Definição clara das estruturas de suporte ao jogo em memória partilhada.
+- [ ] DLL – funcionalidade a ser usada pelo cliente local (memória partilhada).
+- [ ] Armazenamento e recuperação do top10 no registry (pode usar valores fictícios apenas para começar e testar)
+- [ ] Um cliente muito simples em consola que invoca cada funcionalidade da DLL através de uma
+sequência pré-definida (exemplo: cliente consola pede o username ao utilizador; envia ao
+servidor; recebe confirmação/rejeição; e entra em ciclo a receber novas posições da bola até
+uma tecla ser premida pelo utilizador).
+* Extras
 - [x] Criação inicial da solução em Visual Studio 2017 Community Edition;
 - [x] Criação do project servidor(GUI)
 - [x] Criação do project cliente(GUI)
@@ -37,6 +48,12 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Adicionei colaborador;
 - [x] Definir tarefas iniciais;
 - [ ] Colocar as opções Debug / Release, x86 / x64 a funcionar;
+* Material a entregar:
+- [ ]  Relatório: muito breve a explicar os pontos essenciais da implementação da memória partilhada,
+as estruturas de dados definidas e a sua utilidade, os aspectos de sincronização que existam e
+como foram resolvidos.
+- [ ]  O projeto do servidor e cliente em modo consola.
+
 
 ## Versão final
 - [ ] Correção dos projectos para C e devidas correções;
