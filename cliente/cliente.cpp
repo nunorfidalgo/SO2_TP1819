@@ -5,38 +5,39 @@
 #include <stdio.h>
 #include <time.h>
 #include <conio.h>
-
 #include "../bridge/bridge.h"
-HANDLE h;
+
 // tamanho padrão da linha de comandos do windows
 #define COLUNAS 41 // x
 #define LINHAS 26 // y
 
 #define SERVIDOR TEXT("Cliente:")
 
+HANDLE hMutex;
+
 DWORD WINAPI threadBola(LPVOID param);
 DWORD WINAPI threadTeclas(LPVOID param);
 
-
 int _tmain(int argc, LPTSTR argv[]) {
+
 #ifdef UNICODE
 	_setmode(_fileno(stdin), _O_WTEXT);
 	_setmode(_fileno(stdout), _O_WTEXT);
 	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
-
+	int x, y;
 	HANDLE hTBola, hTeclas;
 
-	h = CreateMutex(NULL, FALSE, NULL);
-
-	int x, y;
+	hMutex = CreateMutex(NULL, FALSE, NULL);
+	if (hMutex == NULL) {
+		_tprintf(TEXT("Erro ao criar mutex: %d\n"), GetLastError());
+		return 1;
+	}
 
 	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
 
-
-	_tprintf(TEXT("%s teste de ção...\n"), SERVIDOR);
-
 	system("cls");
+
 	// Limites do jogo
 	for (x = 0; x < COLUNAS; x++) {
 		gotoxy(x, 0);
@@ -44,7 +45,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		gotoxy(x, LINHAS + 1);
 		_tprintf(TEXT("-"));
 	}
-	
+
 	for (y = 0; y <= LINHAS + 1; y++) {
 		gotoxy(0, y);
 		_tprintf(TEXT("|"));
@@ -58,6 +59,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 			gotoxy(x, y);
 			_tprintf(TEXT("#"));
 		}
+
 	for (y = 8; y < 11; y++)
 		for (x = 6; x < COLUNAS - 6; x++) {
 			gotoxy(x, y);
@@ -75,13 +77,13 @@ int _tmain(int argc, LPTSTR argv[]) {
 	hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
 
 	if (hTBola != NULL && hTeclas != NULL) {
-		WaitForSingleObject(h,INFINITE); //péssima solução usada com I / O
-			gotoxy(COLUNAS + 3, 3);
-			_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
-		ReleaseMutex(h);//péssima solução usada com I / O
+		WaitForSingleObject(hMutex, INFINITE); //péssima solução usada com I / O
+		gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
+		ReleaseMutex(hMutex);//péssima solução usada com I / O
 	}
 	else
-		_tprintf(TEXT("Erro ao criar Threads bolO e teclas\n"));
+		_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
 	if (WaitForSingleObject(hTBola, INFINITE) || (WaitForSingleObject(hTeclas, INFINITE)) == NULL)
 		return -1;
 	return 0;
@@ -93,15 +95,15 @@ DWORD WINAPI threadBola(LPVOID param) {
 	// posição inicial da bola
 	x = COLUNAS / 2, y = LINHAS;
 	int xd = 1, yd = 1;
-	WaitForSingleObject(h, INFINITE);//péssima solução usada com I / O
+	WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I / O
 	gotoxy(x, y);
 	_tprintf(TEXT("*"));
-	ReleaseMutex(h);//péssima solução usada com I / O
+	ReleaseMutex(hMutex);//péssima solução usada com I / O
 
 	while (1) {
-		WaitForSingleObject(h, INFINITE);//péssima solução usada com I / O
-		// apaga a posição anterior
+		WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I / O
 
+		// apaga a posição anterior
 		gotoxy(x, y);
 		_tprintf(TEXT(" "));
 		x -= xd;
@@ -114,6 +116,7 @@ DWORD WINAPI threadBola(LPVOID param) {
 		}
 		gotoxy(x, y);
 		_tprintf(TEXT("*"));
+
 		gotoxy(COLUNAS + 3, 22);
 		_tprintf(TEXT("                         "));
 		gotoxy(COLUNAS + 3, 22);
@@ -122,59 +125,56 @@ DWORD WINAPI threadBola(LPVOID param) {
 		_tprintf(TEXT("                         "));
 		gotoxy(COLUNAS + 3, 23);
 		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
-		ReleaseMutex(h);//péssima solução usada com I / O
+		ReleaseMutex(hMutex);//péssima solução usada com I / O
 		Sleep(50);
-
 	}
 }
 
 DWORD WINAPI threadTeclas(LPVOID param) {
 	// barreira do jogador, posição inicial da barreira
-	//int xp = COLUNAS / 2, yp = LINHAS, xpa = xp;
 	int xp = 1, yp = LINHAS, xpa = xp;
-	WaitForSingleObject(h, INFINITE);//péssima solução usada com I / O
+	WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I / O
 	gotoxy(xp, yp);
 	_tprintf(TEXT("_____"));
-	ReleaseMutex(h);//péssima solução usada com I / O
+	ReleaseMutex(hMutex);//péssima solução usada com I / O
 	// teclas
 	TCHAR key_input;
 	while (1) {
 		key_input = _gettch();
 		key_input = toupper(key_input);
-		_flushall();
-		//fflush(stdin);
-
+		//_flushall();
+		fflush(stdin);
 		switch (key_input) {
 		case 77: //direta
 			if (xp < COLUNAS - 5) {
-				WaitForSingleObject(h, INFINITE);//péssima solução usada com I/O
+				WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I/O
 				xpa = xp;
 				xp += 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
+				//gotoxy(COLUNAS + 3, 24);
+				//_tprintf(TEXT("                         "));
 				gotoxy(COLUNAS + 3, 24);
-				_tprintf(TEXT("                         "));
-				gotoxy(COLUNAS + 3, 24);
-				_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-				ReleaseMutex(h);//péssima solução usada com I/O
+				_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
+				ReleaseMutex(hMutex);//péssima solução usada com I/O
 			}
 			break;
 		case 75: // esquerda
 			if (xp > 1) {
-				WaitForSingleObject(h, INFINITE); //péssima solução usada com I/O
+				WaitForSingleObject(hMutex, INFINITE); //péssima solução usada com I/O
 				xpa = xp;
 				xp -= 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
+				//gotoxy(COLUNAS + 3, 24);
+				//_tprintf(TEXT("                         "));
 				gotoxy(COLUNAS + 3, 24);
-				_tprintf(TEXT("                         "));
-				gotoxy(COLUNAS + 3, 24);
-				_tprintf(TEXT("Barreira = xp: %d, xpa: %d"), xp, xpa);
-				ReleaseMutex(h);//péssima solução usada com I/O
+				_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
+				ReleaseMutex(hMutex);//péssima solução usada com I/O
 			}
 			break;
 		case 27: // ESC = sair
