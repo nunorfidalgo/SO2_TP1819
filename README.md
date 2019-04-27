@@ -23,13 +23,13 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 * Windows GUI;
 
 # Entregas
-- [ ] Entrega meta1, com código retirado do github(desta forma o projecto fica o mais limpo possível e sem o "lixo" dos projetos compilados);
-- [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
+- [ ] Entrega meta1, com código retirado do github (desta forma o projecto fica o mais limpo possível e sem o "lixo" dos projetos compilados);
+- [ ] Entrega final em modo release x86 e x64 com código retirado do github (fazer release no github com os binários);
 
 # Para Fazer
 
 ## Meta 1
-* Aplicação servidor com o lançamento de threads e utilização de memória partilhada. Esta meta envolveessencialmente:
+### Aplicação servidor com o lançamento de threads e utilização de memória partilhada. Esta meta envolveessencialmente:
 - [ ] Lançamento de threads para controlo da bola (ainda não há outras bolas nem brindes).
 - [ ] Uso de memória partilhada e solução de eventuais problemas de sincronização que surjam.
 - [ ] Definição clara das estruturas de suporte ao jogo em memória partilhada.
@@ -39,7 +39,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 sequência pré-definida (exemplo: cliente consola pede o username ao utilizador; envia ao
 servidor; recebe confirmação/rejeição; e entra em ciclo a receber novas posições da bola até
 uma tecla ser premida pelo utilizador).
-* Extras
+### Extras
 - [x] Criação inicial da solução em Visual Studio 2017 Community Edition;
 - [x] Criação do project servidor(GUI)
 - [x] Criação do project cliente(GUI)
@@ -48,7 +48,7 @@ uma tecla ser premida pelo utilizador).
 - [x] Adicionei colaborador;
 - [x] Definir tarefas iniciais;
 - [ ] Colocar as opções Debug / Release, x86 / x64 a funcionar;
-* Material a entregar:
+### Material a entregar:
 - [ ]  Relatório: muito breve a explicar os pontos essenciais da implementação da memória partilhada,
 as estruturas de dados definidas e a sua utilidade, os aspectos de sincronização que existam e
 como foram resolvidos.
