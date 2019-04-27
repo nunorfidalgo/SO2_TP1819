@@ -5,16 +5,17 @@
 #include <stdio.h>
 #include <time.h>
 #include <conio.h>
+
 #include "../bridge/bridge.h"
 
-// tamanho padr„o da linha de comandos do windows
+// tamanho padr√£o da linha de comandos do windows
 #define COLUNAS 41 // x
 #define LINHAS 26 // y
 
 #define SERVIDOR TEXT("Cliente:")
 
 HANDLE hMutex;
-// posiÁ„o inicial da bola
+// posi√ß√£o inicial da bola
 int x = COLUNAS / 2, y = LINHAS - 1;
 int xd = 1, yd = 1;
 int xp = 1, yp = LINHAS, xpa = xp;
@@ -70,6 +71,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 			_tprintf(TEXT("&"));
 		}*/
 
+
 	gotoxy(COLUNAS + 3, 0);
 	_tprintf(TEXT("-------------- ARKNOID / BREAKOUT------------\n"));
 	gotoxy(COLUNAS + 3, 2);
@@ -81,10 +83,10 @@ int _tmain(int argc, LPTSTR argv[]) {
 	hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
 
 	if (hTBola != NULL && hTeclas != NULL) {
-		WaitForSingleObject(hMutex, INFINITE); //pÈssima soluÁ„o usada com I / O
+		WaitForSingleObject(hMutex, INFINITE); //p√©ssima solu√ß√£o usada com I / O
 		gotoxy(COLUNAS + 3, 3);
 		_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
-		ReleaseMutex(hMutex);//pÈssima soluÁ„o usada com I / O
+		ReleaseMutex(hMutex);//p√©ssima solu√ß√£o usada com I / O
 	}
 	else
 		_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
@@ -94,20 +96,19 @@ int _tmain(int argc, LPTSTR argv[]) {
 }
 
 DWORD WINAPI threadBola(LPVOID param) {
-
 	//int x, y;
-	//// posiÁ„o inicial da bola
+	//// posi√ß√£o inicial da bola
 	//x = COLUNAS / 2, y = LINHAS - 1;
 	//int xd = 1, yd = 1;
-	WaitForSingleObject(hMutex, INFINITE);//pÈssima soluÁ„o usada com I / O
+	WaitForSingleObject(hMutex, INFINITE);//p√©ssima solu√ß√£o usada com I / O
 	gotoxy(x, y);
 	_tprintf(TEXT("*"));
-	ReleaseMutex(hMutex);//pÈssima soluÁ„o usada com I / O
+	ReleaseMutex(hMutex);//p√©ssima solu√ß√£o usada com I / O
 
 	while (1) {
-		WaitForSingleObject(hMutex, INFINITE);//pÈssima soluÁ„o usada com I / O
-
-		// apaga a posiÁ„o anterior
+		WaitForSingleObject(hMutex, INFINITE);//p√©ssima solu√ß√£o usada com I / O
+    
+		// apaga a posi√ß√£o anterior
 		gotoxy(x, y);
 		_tprintf(TEXT(" "));
 		x -= xd;
@@ -145,18 +146,18 @@ DWORD WINAPI threadBola(LPVOID param) {
 		_tprintf(TEXT("                         "));
 		gotoxy(COLUNAS + 3, 23);
 		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
-		ReleaseMutex(hMutex);//pÈssima soluÁ„o usada com I / O
+		ReleaseMutex(hMutex);//p√©ssima solu√ß√£o usada com I / O
 		Sleep(50);
 	}
 }
 
 DWORD WINAPI threadTeclas(LPVOID param) {
-	// barreira do jogador, posiÁ„o inicial da barreira
+	// barreira do jogador, posi√ß√£o inicial da barreira
 	/*int xp = 1, yp = LINHAS, xpa = xp;*/
-	WaitForSingleObject(hMutex, INFINITE);//pÈssima soluÁ„o usada com I / O
+	WaitForSingleObject(hMutex, INFINITE);//p√©ssima solu√ß√£o usada com I / O
 	gotoxy(xp, yp);
 	_tprintf(TEXT("_____"));
-	ReleaseMutex(hMutex);//pÈssima soluÁ„o usada com I / O
+	ReleaseMutex(hMutex);//p√©ssima solu√ß√£o usada com I / O
 	// teclas
 	TCHAR key_input;
 	while (1) {
@@ -167,24 +168,23 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 		switch (key_input) {
 		case 77: //direta
 			if (xp < COLUNAS - 5) {
-				WaitForSingleObject(hMutex, INFINITE);//pÈssima soluÁ„o usada com I/O
+				WaitForSingleObject(hMutex, INFINITE);//p√©ssima solu√ß√£o usada com I/O
 				xpa = xp;
 				xp += 5;
 				gotoxy(xpa, yp);
 				_tprintf(TEXT("     "));
 				gotoxy(xp, yp);
 				_tprintf(TEXT("_____"));
-
 				//gotoxy(COLUNAS + 3, 24);
 				//_tprintf(TEXT("                         "));
 				gotoxy(COLUNAS + 3, 24);
 				_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
-				ReleaseMutex(hMutex);//pÈssima soluÁ„o usada com I/O
+				ReleaseMutex(hMutex);//p√©ssima solu√ß√£o usada com I/O
 			}
 			break;
 		case 75: // esquerda
 			if (xp > 1) {
-				WaitForSingleObject(hMutex, INFINITE); //pÈssima soluÁ„o usada com I/O
+				WaitForSingleObject(hMutex, INFINITE); //p√©ssima solu√ß√£o usada com I/O
 				xpa = xp;
 				xp -= 5;
 				gotoxy(xpa, yp);
@@ -195,7 +195,7 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 				//_tprintf(TEXT("                         "));
 				gotoxy(COLUNAS + 3, 24);
 				_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
-				ReleaseMutex(hMutex);//pÈssima soluÁ„o usada com I/O
+				ReleaseMutex(hMutex);//p√©ssima solu√ß√£o usada com I/O
 			}
 			break;
 		case 27: // ESC = sair
