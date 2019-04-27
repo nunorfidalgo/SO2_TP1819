@@ -29,7 +29,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 # Para Fazer
 
 ## Meta 1
-* Aplicação servidor com o lançamento de threads e utilização de memória partilhada. Esta meta envolve essencialmente:
+* Aplicação servidor com o lançamento de threads e utilização de memória partilhada. Esta meta envolveessencialmente:
 - [ ] Lançamento de threads para controlo da bola (ainda não há outras bolas nem brindes).
 - [ ] Uso de memória partilhada e solução de eventuais problemas de sincronização que surjam.
 - [ ] Definição clara das estruturas de suporte ao jogo em memória partilhada.
