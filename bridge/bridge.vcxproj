@@ -118,11 +118,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bridge.cpp" />
-    <ClCompile Include="funcoes.cpp" />
+    <ClCompile Include="shmem.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bridge.h" />
-    <ClInclude Include="dados.h" />
+    <ClInclude Include="com.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

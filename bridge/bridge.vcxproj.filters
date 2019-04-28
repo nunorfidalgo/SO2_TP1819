@@ -18,7 +18,10 @@
     <ClCompile Include="bridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="funcoes.cpp">
+    <ClCompile Include="utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shmem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,7 +29,7 @@
     <ClInclude Include="bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dados.h">
+    <ClInclude Include="com.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
