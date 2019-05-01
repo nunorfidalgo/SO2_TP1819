@@ -14,6 +14,14 @@ HANDLE hEvMensagens;
 HANDLE hMemMensagens;
 MENSAGEM *mensagem;
 
+
+
+// posição inicial da bola
+int x = COLUNAS / 2, y = LINHAS - 1;
+int xd = 1, yd = 1,xa=xd, ya=yd;
+int xp = 1, yp = LINHAS, xpa = xp;
+
+
 #define SHM_JOGO TEXT("SHM_Jogo")
 #define MUTEX_JOGO TEXT("MutexJogo")
 #define EVENTO_JOGO TEXT("EventoJogo")
@@ -22,12 +30,13 @@ HANDLE hEvJogo;
 HANDLE hMemJogo;
 JOGO *jogo;
 
-HANDLE hTMensagens, hTJogo;
+HANDLE hTMensagens, hTJogo, hTBola;
 
 TCHAR nome[NOME];
 
 DWORD WINAPI recebeMensagens(LPVOID param);
 DWORD WINAPI enviaJogo(LPVOID param);
+DWORD WINAPI threadBola(LPVOID param);
 
 int _tmain(int argc, LPTSTR argv[])
 {
@@ -72,12 +81,26 @@ int _tmain(int argc, LPTSTR argv[])
 
 	hTMensagens = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)recebeMensagens, NULL, 0, NULL);
 	hTJogo = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)enviaJogo, NULL, 0, NULL);
+	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
 
 	if (hTMensagens == NULL && hTJogo == NULL)
 		_tprintf(TEXT("Erro ao criar as threads da de recebeMensagens e enviaJogo\n"));
 
 	if (WaitForSingleObject(hTMensagens, INFINITE) || (WaitForSingleObject(hTJogo, INFINITE)) == NULL)
 		return -1;
+
+	
+
+	if (hTBola == NULL) {
+		_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
+	}
+	if (WaitForSingleObject(hTBola, INFINITE) == NULL)
+		return -1;
+
+	//CloseHandle(hMutex);
+	CloseHandle(hTBola);
+	
+
 
 	UnmapViewOfFile(mensagem);
 	UnmapViewOfFile(jogo);
@@ -94,36 +117,106 @@ int _tmain(int argc, LPTSTR argv[])
 DWORD WINAPI recebeMensagens(LPVOID param) {
 	while (1)
 	{
-		_tprintf(TEXT("Aguardo mensagem...\n"));
+		//_tprintf(TEXT("Aguardo mensagem...\n"));
 
 		WaitForSingleObject(hEvMensagens, INFINITE);
 		WaitForSingleObject(hMuMensagens, INFINITE);
 
-		_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), mensagem->nome, mensagem->jogadorx, mensagem->jogadory, mensagem->bolax, mensagem->bolay);
+		xp = mensagem->jogadorx;
+		yp = mensagem->jogadory;
 
+		//_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), mensagem->nome, mensagem->jogadorx, mensagem->jogadory, mensagem->bolax, mensagem->bolay);
+		
 		ReleaseMutex(hMuMensagens);
 	}
 }
 
 DWORD WINAPI enviaJogo(LPVOID param) {
-	int i = 1;
+	//int i = 1;
 	while (1)
 	{
 		WaitForSingleObject(hMuJogo, INFINITE);
 
-		_stprintf_s(nome, sizeof(nome), TEXT("Teste do jogo %d"), i);
-		_tcscpy_s(jogo->nome, sizeof(nome), nome);
-		mensagem->bolax = i;
-		mensagem->bolay = i;
-		mensagem->jogadorx = i;
-		mensagem->jogadory = i;
-		i++;
-		_tprintf(TEXT("Envio Jogo: '%s'\n"), jogo->nome);
+	//	_stprintf_s(nome, sizeof(nome), TEXT("Teste do jogo %d"), i);
+		//_tcscpy_s(jogo->nome, sizeof(nome), nome);
+		jogo->bola.coordAnt.x = xa;
+		jogo->bola.coordAnt.y = ya;
+
+		jogo->bola.coord.x = x;
+		jogo->bola.coord.y = y;
+
+		jogo->jogador.barreira.coordAnt.x = xpa;
+		jogo->jogador.barreira.coordAnt.y = yp;
+
+		jogo->jogador.barreira.coord.x = xp;
+		jogo->jogador.barreira.coord.y = yp;
+		//i++;
+		_tprintf(TEXT("Bola = %d , %d\n"), jogo->bola.coord.x, jogo->bola.coord.y);
+		_tprintf(TEXT("Jogador = %d , %d\n"), jogo->jogador.barreira.coord.x, jogo->jogador.barreira.coord.y);
+		//_tprintf(TEXT("Envio Jogo: '%s'\n"), jogo->nome);
 
 		SetEvent(hEvJogo);
 		ReleaseMutex(hMuJogo);
 		ResetEvent(hEvJogo);
 
-		Sleep(2000);
+		//Sleep(500);
+	}
+}
+
+
+DWORD WINAPI threadBola(LPVOID param) {
+	//int x, y;
+	//// posição inicial da bola
+	//x = COLUNAS / 2, y = LINHAS - 1;
+	//int xd = 1, yd = 1;
+
+	//_tprintf(TEXT("While\n"));
+	while (1) {
+
+		WaitForSingleObject(hMuJogo , INFINITE);//péssima solução usada com I / O
+
+		// apaga a posição anterior
+		//gotoxy(x, y);
+		//_tprintf(TEXT(" "));
+		xa = x;
+		ya = y;
+		x -= xd;
+		y -= yd;
+		//_tprintf(TEXT("Bola = %d , %d\n"), x,y);
+		if (x > COLUNAS - 2 || x < 2) { // limites direita e esquerda
+			xd *= -1;
+		}
+		if (y >= LINHAS || y < 2) { // limites inferior e superior
+		//if (y < 2) { // limites superior
+			yd *= -1;
+		}
+		//gotoxy(x, y);
+		//_tprintf(TEXT("*"));
+
+		/*if (y > LINHAS) {
+			gotoxy(0, LINHAS + 2);
+			_tprintf(TEXT("Perdeu o jogo..."));
+			exit(1);
+		}*/
+
+		//if (y >= LINHAS) // limites inferior
+		//	if (x >= xp && x <= xp + 5)
+		//		yd *= -1;
+		//	else {
+		//		gotoxy(0, LINHAS + 2);
+		//		_tprintf(TEXT("Perdeu o jogo...\n"));
+		//		exit(1);
+		//	}
+
+		//gotoxy(COLUNAS + 3, 22);
+		//_tprintf(TEXT("                         "));
+		//gotoxy(COLUNAS + 3, 22);
+		//_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
+		//gotoxy(COLUNAS + 3, 23);
+		//_tprintf(TEXT("                         "));
+		//gotoxy(COLUNAS + 3, 23);
+		//_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
+		ReleaseMutex(hMuJogo);//péssima solução usada com I / O
+		Sleep(100);
 	}
 }
