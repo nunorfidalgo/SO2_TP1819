@@ -1,10 +1,4 @@
 #pragma once
-#include <windows.h>
-#include <locale.h>
-#include <tchar.h>
-#include <io.h>
-#include <fcntl.h>
-#include <stdio.h>
 
 // Mensagens
 #define TEXTO 20
@@ -59,6 +53,7 @@ typedef struct {
 } TOPTEN;
 
 typedef struct {
+	TCHAR nome[NOME]; // para testar...
 	unsigned int nivel;
 	BOLA bolas[NUM_BOLAS];
 	BARREIRA barreiras[NUM_BARREIRAS];

@@ -3,7 +3,7 @@
 
 extern "C" {
 
-	Pacote *CriaMemPartCom(HANDLE &hMapMem) {
+	/*Pacote *CriaMemPartCom(HANDLE &hMapMem) {
 		hMapMem = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(Pacote), MAP_MEM);
 		if (hMapMem == NULL) {
 			_tprintf(TEXT("Erro ao criar memoria partilhada de forma a iniciar novo jogo. (código=%d)\n"), GetLastError());
@@ -20,6 +20,6 @@ extern "C" {
 			exit(1);
 		}
 		return (Pacote *)MapViewOfFile(hMapMem, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Pacote));
-	}
+	}*/
 
 }

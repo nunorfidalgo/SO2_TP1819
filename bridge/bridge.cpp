@@ -1,5 +1,4 @@
 #include "bridge.h"
-#include "com.h"
 
 BRIDGE_API BOOL APIENTRY WINAPI DllMain(HANDLE hInstance, DWORD fdwReason, LPVOID lpvReserved) {
 
