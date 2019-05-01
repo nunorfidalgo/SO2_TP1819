@@ -58,47 +58,47 @@ int _tmain(int argc, LPTSTR argv[]) {
 	system("cls");
 	_tprintf(TEXT("%s iniciou...\n"), CLIENTE);
 
-	//hMuMensagens = CreateMutex(NULL, FALSE, MUTEX_MENSAGENS);
-	//hEvMensagens = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGENS);
+	hMuMensagens = CreateMutex(NULL, FALSE, MUTEX_MENSAGENS);
+	hEvMensagens = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGENS);
 
-	///*hMemoria = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(Pacote), NomeMemoria);*/
-	//hMemMensagens = OpenFileMapping(FILE_MAP_WRITE, TRUE, SHM_MENSAGENS);
-	//if (hMuMensagens == NULL || hEvMensagens == NULL || hMemMensagens == NULL) {
-	//	_tprintf(TEXT("[Erro] Criação de objectos do Windows(%d)\n"), GetLastError());
-	//	return -1;
-	//}
+	
+	hMemMensagens = OpenFileMapping(FILE_MAP_ALL_ACCESS, TRUE, SHM_MENSAGENS);
+	if (hMuMensagens == NULL || hEvMensagens == NULL || hMemMensagens == NULL) {
+		_tprintf(TEXT("[Erro] Criação de objectos do Windows(%d)\n"), GetLastError());
+		return -1;
+	}
 
-	//mensagem = (MENSAGEM*)MapViewOfFile(hMemMensagens, FILE_MAP_WRITE, 0, 0, sizeof(MENSAGEM));
-	//if (mensagem == NULL) {
-	//	_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), SHM_MENSAGENS, GetLastError());
-	//	return -1;
-	//}
+	mensagem = (MENSAGEM*)MapViewOfFile(hMemMensagens, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(MENSAGEM));
+	if (mensagem == NULL) {
+		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada1 (%d)\n"), SHM_MENSAGENS, GetLastError());
+		return -1;
+	}
 
 
 	hMuJogo = CreateMutex(NULL, FALSE, MUTEX_JOGO);
 	hEvJogo = CreateEvent(NULL, TRUE, FALSE, EVENTO_JOGO);
 
-	hMemJogo = OpenFileMapping(FILE_MAP_READ, TRUE, SHM_JOGO);
+	hMemJogo = OpenFileMapping(FILE_MAP_ALL_ACCESS, TRUE, SHM_JOGO);
 	if (hMuJogo == NULL || hEvJogo == NULL || hMemJogo == NULL) {
 		_tprintf(TEXT("[Erro] Criação de objectos do Windows(%d)\n"), GetLastError());
 		return -1;
 	}
 
-	jogo = (JOGO*)MapViewOfFile(hMemJogo, FILE_MAP_READ, 0, 0, sizeof(JOGO));
+	jogo = (JOGO*)MapViewOfFile(hMemJogo, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(JOGO));
 	if (jogo == NULL) {
-		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), SHM_JOGO, GetLastError());
+		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada 2(%d)\n"), SHM_JOGO, GetLastError());
 		return -1;
 	}
 
-	//hTMensagens = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)envioMensagem, NULL, 0, NULL);
+	hTMensagens = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)envioMensagem, NULL, 0, NULL);
 	hTJogo = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)recebeJogo, NULL, 0, NULL);
 
-	if (/*hTMensagens == NULL && */hTJogo == NULL) {
+	if (hTMensagens == NULL || hTJogo == NULL) {
 		_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
 		return -1;
 	}
 
-	if (/*WaitForSingleObject(hTMensagens, INFINITE) || */(WaitForSingleObject(hTJogo, INFINITE)) == NULL)
+	if (WaitForSingleObject(hTMensagens, INFINITE) || (WaitForSingleObject(hTJogo, INFINITE)) == NULL)
 		return -1;
 
 	UnmapViewOfFile(mensagem);
@@ -290,8 +290,8 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 	{
 		WaitForSingleObject(hMuMensagens, INFINITE);
 
-		_stprintf_s(nome, sizeof(nome), TEXT("Jogador %d"), i);
-		_tcscpy_s(mensagem->nome, sizeof(nome), nome);
+		_stprintf_s(nome, NOME, TEXT("Jogador %d"), i);
+		_tcscpy_s(mensagem->nome,  nome);
 		mensagem->bolax = i;
 		mensagem->bolay = i;
 		mensagem->jogadorx = i;
