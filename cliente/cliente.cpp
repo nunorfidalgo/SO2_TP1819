@@ -13,6 +13,7 @@
 DWORD WINAPI threadBola(LPVOID param);
 DWORD WINAPI threadTeclas(LPVOID param);
 
+void inicioJogo();
 void imprimeTabuleiro();
 // barreira do jogador, posição inicial da barreira
 int xp = 1, yp = LINHAS; //xpa = xp;
@@ -52,7 +53,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	system("cls");
 	//_tprintf(TEXT("%s iniciou...\n"), CLIENTE);
-	imprimeTabuleiro();
+	
+	
 	hMuMensagens = CreateMutex(NULL, FALSE, MUTEX_MENSAGENS);
 	hEvMensagens = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGENS);
 
@@ -84,6 +86,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada 2(%d)\n"), SHM_JOGO, GetLastError());
 		return -1;
 	}
+	inicioJogo();
+	system("cls");
+	imprimeTabuleiro();
 
 	hTMensagens = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)envioMensagem, NULL, 0, NULL);
 	hTJogo = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)recebeJogo, NULL, 0, NULL);
@@ -96,7 +101,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	if (WaitForSingleObject(hTMensagens, INFINITE) || (WaitForSingleObject(hTJogo, INFINITE)) == NULL)
 		return -1;
-
+	
 	if (hTeclas != NULL) {
 		WaitForSingleObject(hMuMensagens, INFINITE); //péssima solução usada com I / O
 		//gotoxy(COLUNAS + 3, 3);
@@ -108,7 +113,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	if ((WaitForSingleObject(hTeclas, INFINITE)) == NULL)
 		return -1;
 
-
+	
 
 	UnmapViewOfFile(mensagem);
 	UnmapViewOfFile(jogo);
@@ -155,6 +160,20 @@ int _tmain(int argc, LPTSTR argv[]) {
 	
 
 	return 0;
+}
+
+void inicioJogo() {
+	TCHAR nome[TEXTO];
+	_tprintf(TEXT("Introduza o nome\n"));
+	_getts_s(nome);
+
+	//_tscanf_s(jogador.nome,&nome)
+	_tprintf_s(TEXT("Jogador: %s"), nome);
+
+	_tcscpy_s(mensagem->nome,sizeof(nome),nome);
+	mensagem->inicioJogo = 1;
+	//_gettchar();
+	//exit(1);
 }
 
 void imprimeTabuleiro() {
@@ -245,8 +264,9 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 		//mensagem->jogadorx = i;
 		//mensagem->jogadory = i;
 
-		_stprintf_s(nome, NOME, TEXT(""));
-		_tcscpy_s(mensagem->nome, nome);
+		/*_stprintf_s(nome, nome, text(""));
+		_tcscpy_s(mensagem->nome, nome);*/
+		
 		mensagem->bolax = -1;
 		mensagem->bolay = -1;
 		mensagem->jogadorx = xp;
@@ -265,6 +285,7 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 }
 
 DWORD WINAPI recebeJogo(LPVOID param) {
+	
 	while (1)
 	{
 		//_tprintf(TEXT("Aguardo jogo...\n"));
@@ -272,7 +293,8 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		WaitForSingleObject(hEvJogo, INFINITE);
 		WaitForSingleObject(hMuJogo, INFINITE);
 
-
+		/*gotoxy(COLUNAS + 3, 24);
+		_tprintf(TEXT("Jogador: %s"), jogo->jogador.nome);*/
 		//_tprintf(TEXT("Recebi Jogo: '%s'\n"), jogo->nome);
 		//WaitForSingleObject(hMuMensagens, INFINITE);//péssima solução usada com I / O
 		gotoxy(jogo->bola.coordAnt.x, jogo->bola.coordAnt.y);
@@ -280,14 +302,18 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		gotoxy(jogo->bola.coord.x, jogo->bola.coord.y);
 		_tprintf(TEXT("*"));
 
-		//gotoxy(jogo->jogador.barreira.coordAnt.x, jogo->jogador.barreira.coordAnt.y);
-		for (int x = 1; x < COLUNAS; x++) {
+		gotoxy(jogo->jogador.barreira.coordAnt.x, jogo->jogador.barreira.coordAnt.y);
+	/*	for (int x = 1; x < COLUNAS; x++) {
 			gotoxy(x, LINHAS);
 			_tprintf(TEXT(" "));
-		}
-		//_tprintf(TEXT("     "));
+		}*/
+		_tprintf(TEXT("                                        "));
 		gotoxy(jogo->jogador.barreira.coord.x, jogo->jogador.barreira.coord.y);
 		_tprintf(TEXT("_____"));
+
+
+		gotoxy(COLUNAS + 3, 24);
+		_tprintf(TEXT("Jogador: %s"), jogo->jogador.nome);
 
 		//_tprintf(TEXT("Bola = %d , %d\n"), jogo->bolas->coord.x, jogo->bolas->coord.y);
 		//_tprintf(TEXT("Jogador = %d , %d\n"), jogo->jogador.barreira.coord.x, jogo->jogador.barreira.coord.y);

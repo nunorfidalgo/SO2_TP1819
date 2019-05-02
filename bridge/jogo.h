@@ -61,7 +61,7 @@ typedef struct {
 } TOPTEN;
 
 typedef struct {
-	TCHAR nome[NOME]; // para testar...
+	//TCHAR nome[NOME]; // para testar...
 	//unsigned int nivel;
 	BOLA bola;
 	//BARREIRA barreiras[NUM_BARREIRAS];

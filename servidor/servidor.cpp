@@ -14,7 +14,7 @@ HANDLE hEvMensagens;
 HANDLE hMemMensagens;
 MENSAGEM *mensagem;
 
-
+int inicio_jogo = 0;
 
 // posição inicial da bola
 int x = COLUNAS / 2, y = LINHAS - 1;
@@ -81,7 +81,8 @@ int _tmain(int argc, LPTSTR argv[])
 
 	hTMensagens = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)recebeMensagens, NULL, 0, NULL);
 	hTJogo = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)enviaJogo, NULL, 0, NULL);
-	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
+
+	//hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
 
 	if (hTMensagens == NULL && hTJogo == NULL)
 		_tprintf(TEXT("Erro ao criar as threads da de recebeMensagens e enviaJogo\n"));
@@ -90,12 +91,12 @@ int _tmain(int argc, LPTSTR argv[])
 		return -1;
 
 	
-
-	if (hTBola == NULL) {
-		_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
-	}
+	
+	//if (hTBola == NULL) {
+	//	_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
+	//}
 	if (WaitForSingleObject(hTBola, INFINITE) == NULL)
-		return -1;
+	return -1;
 
 	//CloseHandle(hMutex);
 	CloseHandle(hTBola);
@@ -126,9 +127,29 @@ DWORD WINAPI recebeMensagens(LPVOID param) {
 		yp = mensagem->jogadory;
 
 		//_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), mensagem->nome, mensagem->jogadorx, mensagem->jogadory, mensagem->bolax, mensagem->bolay);
-		
-		ReleaseMutex(hMuMensagens);
-	}
+		_tprintf(TEXT("Jogador '%s' vai iniciar o jogo\n"), mensagem->nome);
+		/*if (!_tcscmp (mensagem->nome, TEXT("")))
+			inicio_jogo = 1;*/
+		if (mensagem->inicioJogo == 1) {
+			hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
+			if (hTBola == NULL) {
+				_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
+			}
+			else {
+				mensagem->inicioJogo = 0;
+				//_tcscpy_s(mensagem->nome, TEXT(""));
+				//mensagem->nome = NULL;
+				_tprintf(TEXT("Lancei Thread vai iniciar o jogo\n"));
+				_tcscpy_s(jogo->jogador.nome, mensagem->nome);
+				_tprintf(TEXT("Nome do jogador: %s\n"),jogo->jogador.nome);
+				//_tcscpy_s(jogo->jogador.nome, mensagem->nome);
+				//_stprintf_s(mensagem->nome, TEXTO, TEXT("Jogador confirmado."));
+			}
+
+		}
+		ReleaseMutex(hMuMensagens); 
+		//Sleep(500);
+	}		
 }
 
 DWORD WINAPI enviaJogo(LPVOID param) {
@@ -151,8 +172,8 @@ DWORD WINAPI enviaJogo(LPVOID param) {
 		jogo->jogador.barreira.coord.x = xp;
 		jogo->jogador.barreira.coord.y = yp;
 		//i++;
-		_tprintf(TEXT("Bola = %d , %d\n"), jogo->bola.coord.x, jogo->bola.coord.y);
-		_tprintf(TEXT("Jogador = %d , %d\n"), jogo->jogador.barreira.coord.x, jogo->jogador.barreira.coord.y);
+		//_tprintf(TEXT("Bola = %d , %d\n"), jogo->bola.coord.x, jogo->bola.coord.y);
+		//_tprintf(TEXT("Jogador = %d , %d\n"), jogo->jogador.barreira.coord.x, jogo->jogador.barreira.coord.y);
 		//_tprintf(TEXT("Envio Jogo: '%s'\n"), jogo->nome);
 
 		SetEvent(hEvJogo);
