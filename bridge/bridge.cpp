@@ -5,6 +5,7 @@ BRIDGE_API BOOL APIENTRY WINAPI DllMain(HANDLE hInstance, DWORD fdwReason, LPVOI
 #ifdef UNICODE
 	_setmode(_fileno(stdin), _O_WTEXT);
 	_setmode(_fileno(stdout), _O_WTEXT);
+	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
 
 	switch (fdwReason) {
