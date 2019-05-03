@@ -19,6 +19,6 @@ typedef struct {
 	HANDLE hEventoJogo;
 	MENSAGEM *mensagem;
 	JOGO *jogo;
-	int termina_mensagem;
-	int termina_jogo;
+	/*int termina_mensagem;
+	int termina_jogo;*/
 } SincControl;

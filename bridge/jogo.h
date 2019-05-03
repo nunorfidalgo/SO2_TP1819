@@ -17,7 +17,6 @@ typedef struct {
 
 typedef struct {
 	COORDENADAS	coord;
-	unsigned int cor;
 } BARREIRA;
 
 typedef struct {
@@ -28,6 +27,7 @@ typedef struct {
 
 typedef struct {
 	TCHAR nome[TEXTO];
+	unsigned int cor;
 	unsigned int pontos;
 	BARREIRA barreira;
 } JOGADOR;
@@ -42,10 +42,12 @@ typedef struct {
 } TOPTEN;
 
 typedef struct {
-	TCHAR nome[TEXTO]; // para testar...
-	/*unsigned int nivel;
-	BOLA bolas[NUM_BOLAS];
-	BARREIRA barreiras[NUM_BARREIRAS];
-	TIJOLO tijolos[NUM_TIJOLOS];
-	JOGADOR jogadores[NUM_MAX_JOGADORES];*/
+	//TCHAR nome[TEXTO]; // para testar...
+	//unsigned int nivel;
+	//BOLA bolas[NUM_BOLAS];
+	//BARREIRA barreiras[NUM_BARREIRAS];
+	//TIJOLO tijolos[NUM_TIJOLOS];
+	//JOGADOR jogadores[NUM_MAX_JOGADORES];
+	BOLA bola;
+	JOGADOR jogador;
 } JOGO;

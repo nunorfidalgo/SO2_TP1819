@@ -29,10 +29,10 @@
 TCHAR nome[TEXTO];
 SincControl sincControl;
 
-HANDLE hTMensagens; // , hTJogo;
+HANDLE hTMensagens, hTJogo;
 
 DWORD WINAPI envioMensagem(LPVOID param);
-//DWORD WINAPI recebeJogo(LPVOID param);
+DWORD WINAPI recebeJogo(LPVOID param);
 
 int _tmain(int argc, LPTSTR argv[]) {
 
@@ -51,39 +51,37 @@ int _tmain(int argc, LPTSTR argv[]) {
 	sincControl.hEventoMensagem = OpenEvent(FILE_MAP_WRITE, FALSE, EVENTO_MENSAGEM);
 	sincControl.hMemMensagem = OpenFileMapping(FILE_MAP_WRITE, TRUE, SHM_MENSAGEM);
 	if (sincControl.hMutexMensagem == NULL || sincControl.hEventoMensagem == NULL || sincControl.hMemMensagem == NULL) {
-		_tprintf(TEXT("[Erro: %s] Criação de objectos (%d)\n"), TEXT("Mensagem"), GetLastError());
+		_tprintf(TEXT("[Erro: %s] Criação de objectos (%d)\n"), MENSAGEM_TXT, GetLastError());
 		return -1;
 	}
 	sincControl.mensagem = (MENSAGEM*)MapViewOfFile(sincControl.hMemMensagem, FILE_MAP_WRITE, 0, 0, sizeof(MENSAGEM));
 	if (sincControl.mensagem == NULL) {
-		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), TEXT("Mensagem"), GetLastError());
+		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), MENSAGEM_TXT, GetLastError());
 		return -1;
 	}
 
-
-	/*hMemJogo = OpenFileMapping(FILE_MAP_READ, TRUE, SHM_JOGO);
-	jogo->hMutexJogo = CreateMutex(NULL, FALSE, MUTEX_JOGO);
-	jogo->hEventoJogo = CreateEvent(NULL, TRUE, FALSE, EVENTO_JOGO);
-	if (jogo->hMutexJogo == NULL || jogo->hEventoJogo == NULL || hMemJogo == NULL) {
-		_tprintf(TEXT("[Erro: %s] Criação de objectos (%d)\n"), "JOGO", GetLastError());
+	sincControl.hMutexJogo = OpenMutex(SYNCHRONIZE, FALSE, MUTEX_JOGO);
+	sincControl.hEventoJogo = OpenEvent(FILE_MAP_WRITE, FALSE, EVENTO_JOGO);
+	sincControl.hMemJogo = OpenFileMapping(FILE_MAP_READ, TRUE, SHM_JOGO);
+	if (sincControl.hMutexJogo == NULL || sincControl.hEventoJogo == NULL || sincControl.hMemJogo == NULL) {
+		_tprintf(TEXT("[Erro: %s] Criação de objectos (%d)\n"), JOGO_TXT, GetLastError());
 		return -1;
 	}
-	jogo = (JOGO*)MapViewOfFile(hMemJogo, FILE_MAP_READ, 0, 0, sizeof(JOGO));
-	if (jogo == NULL) {
-		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), SHM_JOGO, GetLastError());
+	sincControl.jogo = (JOGO*)MapViewOfFile(sincControl.hMemJogo, FILE_MAP_READ, 0, 0, sizeof(JOGO));
+	if (sincControl.jogo == NULL) {
+		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), JOGO_TXT, GetLastError());
 		return -1;
-	}*/
+	}
 
-	_tprintf(TEXT("%s Cria threat mensagem\n"), CLIENTE);
 	hTMensagens = CreateThread(NULL, 0, envioMensagem, NULL, 0, NULL);
-	//hTJogo = CreateThread(NULL, 0, recebeJogo, NULL, 0, NULL);
+	hTJogo = CreateThread(NULL, 0, recebeJogo, NULL, 0, NULL);
 
-	if (hTMensagens == NULL/* || hTJogo == NULL*/) {
+	if (hTMensagens == NULL || hTJogo == NULL) {
 		_tprintf(TEXT("%s Erro ao criar as threads da de recebeMensagens e enviaJogo\n"), CLIENTE);
 		return -1;
 	}
 
-	if (WaitForSingleObject(hTMensagens, INFINITE) /*|| (WaitForSingleObject(hTJogo, INFINITE)) == NULL*/) {
+	if (WaitForSingleObject(hTMensagens, INFINITE) || (WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
 		_tprintf(TEXT("%s wait stop\n"), CLIENTE);
 		return -1;
 	}
@@ -97,7 +95,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	CloseHandle(sincControl.hMemMensagem);
 	CloseHandle(sincControl.hMemJogo);
 	CloseHandle(hTMensagens);
-	//CloseHandle(hTJogo);
+	CloseHandle(hTJogo);
 
 	return 0;
 }
@@ -108,7 +106,6 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 	MENSAGEM msg;
 	while (1)
 	{
-		/*_tprintf(TEXT("%s ciclo envio mensagem\n"), CLIENTE);*/
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
 		_stprintf_s(nome, TEXTO, TEXT("Jogador %d"), i);
@@ -120,19 +117,16 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 		i++;
 		//_tprintf(TEXT("Envio Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), msg.nome, msg.jogadorx, msg.jogadory, msg.bolax, msg.bolay);
 
-		//CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
-		//_tprintf(TEXT("copia\n"));
+		CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
 		//_tcscpy_s(sincControl.mensagem->nome, msg.nome);
-		_tcscpy_s(sincControl.mensagem->nome, sizeof(msg.nome), msg.nome);
-		sincControl.mensagem->bolax = msg.bolax;
-		sincControl.mensagem->bolay = msg.bolay;
-		sincControl.mensagem->jogadorx = msg.jogadorx;
-		sincControl.mensagem->jogadory = msg.jogadory;
+		////_tcscpy_s(sincControl.mensagem->nome, sizeof(msg.nome), msg.nome);
+		//sincControl.mensagem->bolax = msg.bolax;
+		//sincControl.mensagem->bolay = msg.bolay;
+		//sincControl.mensagem->jogadorx = msg.jogadorx;
+		//sincControl.mensagem->jogadory = msg.jogadory;
 
-		_tprintf(TEXT("Envio Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory, sincControl.mensagem->bolax, sincControl.mensagem->bolay);
-		//_tprintf(TEXT("copia1\n"));
+		_tprintf(TEXT("Envio Mensagem: '%s' = (%d,%d) | Bola = (%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory, sincControl.mensagem->bolax, sincControl.mensagem->bolay);
 		//_tprintf(TEXT("Envio Mensagem: '%s'\n"), sincControl.mensagem->nome);
-		//_tprintf(TEXT("copia1\n"));
 
 		SetEvent(sincControl.hEventoMensagem);
 		ReleaseMutex(sincControl.hMutexMensagem);
@@ -143,20 +137,29 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 	return 0;
 }
 
-//DWORD WINAPI recebeJogo(LPVOID param) {
-//	_tprintf(TEXT("%s recebeJogo\n"), CLIENTE);
-//	while (1)
-//	{
-//		_tprintf(TEXT("Aguardo jogo...\n"));
-//
-//		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
-//		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
-//
-//		_tprintf(TEXT("Recebi Jogo: '%s'\n"), sincControl.jogo->nome);
-//		ReleaseMutex(sincControl.hMutexJogo);
-//	}
-//	return 0;
-//}
+DWORD WINAPI recebeJogo(LPVOID param) {
+	//_tprintf(TEXT("%s recebeJogo\n"), CLIENTE);
+	while (1)
+	{
+		_tprintf(TEXT("Aguardo Jogo: "));
+
+		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
+		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
+
+		_tprintf(TEXT("Recebi Jogo: '%s' = (%d, %d) | Bola = (%d, %d)\n"), sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
+
+		ReleaseMutex(sincControl.hMutexJogo);
+		Sleep(1000);
+	}
+	return 0;
+}
+
+
+
+
+
+
+
 
 //hMutex = CreateMutex(NULL, FALSE, NULL);
 //if (hMutex == NULL) {

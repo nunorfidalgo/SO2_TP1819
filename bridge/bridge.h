@@ -16,10 +16,12 @@
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
 #define SHM_MENSAGEM TEXT("MemPartMensagem")
+#define MENSAGEM_TXT TEXT("Mensagem")
 
 #define MUTEX_JOGO TEXT("MutexJogo")
 #define EVENTO_JOGO TEXT("EventoJogo")
 #define SHM_JOGO TEXT("MemPartJogo")
+#define JOGO_TXT TEXT("Jogo")
 
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)
