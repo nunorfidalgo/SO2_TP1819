@@ -7,8 +7,9 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-#include "com.h"
+#include "mensagem.h"
 #include "jogo.h"
+#include "sinc.h"
 
 #define SERVIDOR TEXT("Servidor:")
 #define CLIENTE TEXT("Cliente:")
@@ -30,12 +31,15 @@
 #endif
 
 extern "C" {
-	// Mémoria partilhada: Jogo
-	/*BRIDGE_API void CriaMemoriaPartilhadaJogo();
-	BRIDGE_API int AcedeMemoriaPartilhadaJogo();*/
-	/*BRIDGE_API Pacote *CriaMemPartCom(HANDLE &hMapMem);
-	BRIDGE_API Pacote *AcedeMemPartCom(HANDLE &hMapMem);*/
+	// Mémoria partilhada: Mensagens
+	BRIDGE_API bool AcessoMensagensServidor(SincControl &sincControl);
+	BRIDGE_API bool AcessoMensagensCliente(SincControl &sincControl);
+
+	// Mémoria partilhada: Mensagen
+	BRIDGE_API bool AcessoJogoServidor(SincControl &sincControl);
+	BRIDGE_API bool AcessoJogoCliente(SincControl &sincControl);
 
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
+	BRIDGE_API void closeSincControl(SincControl &sincControl);
 }

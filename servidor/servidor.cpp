@@ -6,7 +6,6 @@
 
 #include "../bridge/bridge.h"
 
-TCHAR nome[TEXTO];
 SincControl sincControl;
 
 HANDLE hTMensagens, hTJogo;
@@ -26,32 +25,13 @@ int _tmain(int argc, LPTSTR argv[])
 	system("cls");
 	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
 
-	sincControl.hMutexMensagem = CreateMutex(NULL, FALSE, MUTEX_MENSAGEM);
-	sincControl.hEventoMensagem = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGEM);
-	sincControl.hMemMensagem = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(MENSAGEM), SHM_MENSAGEM);
-	sincControl.mensagem = (MENSAGEM*)MapViewOfFile(sincControl.hMemMensagem, FILE_MAP_READ, 0, 0, sizeof(MENSAGEM));
-	if (sincControl.mensagem == NULL) {
-		_tprintf(TEXT("[Erro: %s] Mapeamento da memória partilhada (%d)\n"), MENSAGEM_TXT, GetLastError());
-		return -1;
-	}
-	if (sincControl.hMemMensagem == NULL || sincControl.hMutexMensagem == NULL || sincControl.hEventoMensagem == NULL) {
-		_tprintf(TEXT("[Erro: %s] Criação de objectos (%d)\n"), MENSAGEM_TXT, GetLastError());
+	if (!AcessoMensagensServidor(sincControl)) {
 		return -1;
 	}
 
-	sincControl.hMutexJogo = CreateMutex(NULL, FALSE, MUTEX_JOGO);
-	sincControl.hEventoJogo = CreateEvent(NULL, TRUE, FALSE, EVENTO_JOGO);
-	sincControl.hMemJogo = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(JOGO), SHM_JOGO);
-	if (sincControl.hMutexJogo == NULL || sincControl.hEventoJogo == NULL || sincControl.hMemJogo == NULL) {
-		_tprintf(TEXT("[Erro: %s] Criação de objectos (%d)\n"), JOGO_TXT, GetLastError());
+	if (!AcessoJogoServidor(sincControl)) {
 		return -1;
 	}
-	sincControl.jogo = (JOGO*)MapViewOfFile(sincControl.hMemJogo, FILE_MAP_WRITE, 0, 0, sizeof(JOGO));
-	if (sincControl.jogo == NULL) {
-		_tprintf(TEXT("[Erro %s] Mapeamento da memória partilhada (%d)\n"), JOGO_TXT, GetLastError());
-		return -1;
-	}
-
 
 	hTMensagens = CreateThread(NULL, 0, recebeMensagens, NULL, 0, NULL);
 	hTJogo = CreateThread(NULL, 0, enviaJogo, NULL, 0, NULL);
@@ -66,14 +46,7 @@ int _tmain(int argc, LPTSTR argv[])
 		return -1;
 	}
 
-	CloseHandle(sincControl.hMutexMensagem);
-	CloseHandle(sincControl.hEventoMensagem);
-	CloseHandle(sincControl.hMutexJogo);
-	CloseHandle(sincControl.hEventoJogo);
-	UnmapViewOfFile(sincControl.mensagem);
-	UnmapViewOfFile(sincControl.jogo);
-	CloseHandle(sincControl.hMemMensagem);
-	CloseHandle(sincControl.hMemJogo);
+	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
 	CloseHandle(hTJogo);
 	return 0;

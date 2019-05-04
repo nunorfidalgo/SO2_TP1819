@@ -21,7 +21,10 @@
     <ClCompile Include="utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shmem.cpp">
+    <ClCompile Include="mensagens.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jogo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +32,13 @@
     <ClInclude Include="bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="com.h">
+    <ClInclude Include="jogo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jogo.h">
+    <ClInclude Include="sinc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mensagem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
