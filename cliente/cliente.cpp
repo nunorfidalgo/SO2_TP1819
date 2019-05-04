@@ -213,7 +213,7 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 		switch (key_input) {
 		case 77: //direta
 			if (xp < COLUNAS - 5) {
-				WaitForSingleObject(hMuMensagens, INFINITE);//péssima solução usada com I/O
+			//	WaitForSingleObject(hMuMensagens, INFINITE);//péssima solução usada com I/O
 				//xpa = xp;
 				xp += 5;
 			/*	gotoxy(xpa, yp);
@@ -224,12 +224,12 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 				//_tprintf(TEXT("                         "));
 				//gotoxy(COLUNAS + 3, 24);
 				//_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
-				ReleaseMutex(hMuMensagens);//péssima solução usada com I/O
+				//ReleaseMutex(hMuMensagens);//péssima solução usada com I/O
 			}
 			break;
 		case 75: // esquerda
 			if (xp > 1) {
-				WaitForSingleObject(hMuMensagens, INFINITE); //péssima solução usada com I/O
+			//	WaitForSingleObject(hMuMensagens, INFINITE); //péssima solução usada com I/O
 				//xpa = xp;
 				xp -= 5;
 			/*	gotoxy(xpa, yp);
@@ -240,13 +240,13 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 				//_tprintf(TEXT("                         "));
 				//gotoxy(COLUNAS + 3, 24);
 				//_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
-				ReleaseMutex(hMuMensagens);//péssima solução usada com I/O
+			//	ReleaseMutex(hMuMensagens);//péssima solução usada com I/O
 			}
 			break;
-		//case 27: // ESC = sair
-		//	gotoxy(0, LINHAS + 2);
-		//	exit(1);
-		//	break;
+		case 27: // ESC = sair
+			//gotoxy(0, LINHAS + 2);
+			exit(1);
+			break;
 		}
 	}
 }
