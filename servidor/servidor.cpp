@@ -7,8 +7,10 @@
 #include "../bridge/bridge.h"
 
 // posição inicial da bola
-int x = COLUNAS / 2, y = LINHAS - 1;
-int xd = 1, yd = 1;
+//int x = COLUNAS / 2, y = LINHAS - 1;
+//int xa = x, ya = y;
+//int xd = 1, yd = 1; // direcção
+BOLA bola;
 
 SincControl sincControl;
 
@@ -75,15 +77,20 @@ DWORD WINAPI recebeMensagens(LPVOID param) {
 	while (1)
 	{
 		//_tprintf(TEXT("Aguardo mensagem: "));
+
 		if (sincControl.mensagem->termina == 1) exit(1);
+
 		WaitForSingleObject(sincControl.hEventoMensagem, INFINITE);
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
 		//CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
-		_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory);
+		//_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory);
+		_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->coord.x, sincControl.mensagem->coord.y);
 		_tcscpy_s(sincControl.jogo->jogador.nome, sincControl.mensagem->nome);
-		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogadorx;
-		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogadory;
+		/*sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogadorx;
+		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogadory;*/
+		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->coord.x;
+		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->coord.y;
 		//_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), sincControl.->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory, sincControl.mensagem->bolax, sincControl.mensagem->bolay);
 
 		ReleaseMutex(sincControl.hMutexMensagem);
@@ -95,12 +102,23 @@ DWORD WINAPI recebeMensagens(LPVOID param) {
 DWORD WINAPI enviaJogo(LPVOID param) {
 	_tprintf(TEXT("termina jogo: %d\n"), sincControl.jogo->termina);
 	int i = 1;
-	_tprintf(TEXT("espero 5s...\n"));
-	Sleep(5000);
-	while (1)
-	{
+
+	_tprintf(TEXT("espero 8s...\n"));
+	Sleep(8000);
+
+	while (1) {
 		if (sincControl.jogo->termina == 1) exit(1);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
+
+		//sincControl.jogo->bola.coordAnt.x = xa;
+		//sincControl.jogo->bola.coordAnt.y = ya;
+		//sincControl.jogo->bola.coord.x = x;
+		//sincControl.jogo->bola.coord.y = y;
+
+		sincControl.jogo->bola.coordAnt.x = bola.coordAnt.x;
+		sincControl.jogo->bola.coordAnt.y = bola.coordAnt.y;
+		sincControl.jogo->bola.coord.x = bola.coord.x;
+		sincControl.jogo->bola.coord.y = bola.coord.y;
 
 		//CopyMemory(sincControl.jogo, &jogo, sizeof(JOGO));
 		_tprintf(TEXT("[%d] Envio Jogo: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d)\n"), i, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
@@ -116,21 +134,36 @@ DWORD WINAPI enviaJogo(LPVOID param) {
 }
 
 DWORD WINAPI threadBola(LPVOID param) {
+	// posição inicial da bola
+	//int x = COLUNAS / 2, y = LINHAS - 1;
+	//int xa = x, ya = y;
+	//int xd = 1, yd = 1; // direcção
+	bola.coord.x = COLUNAS / 2;
+	bola.coord.y = LINHAS - 1;
+	bola.coordAnt.x = bola.coord.x;
+	bola.coordAnt.y = bola.coord.y;
+	bola.direcao.x = 1;
+	bola.direcao.y = 1;
+
 	while (1) {
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
-		sincControl.jogo->bola.coordAnt.x = x;
-		sincControl.jogo->bola.coordAnt.y = y;
+		/*xa = x;
+		ya = y;
 		x -= xd;
-		y -= yd;
-		sincControl.jogo->bola.coord.x = x;
-		sincControl.jogo->bola.coord.y = y;
+		y -= yd;*/
+		bola.coordAnt.x = bola.coord.x;
+		bola.coordAnt.y = bola.coord.y;
+		bola.coord.x -= bola.direcao.x;
+		bola.coord.y = bola.direcao.y;
 
-		if (x > COLUNAS - 2 || x < 2) { // limites direita e esquerda
-			xd *= -1;
+		if (bola.coord.x > COLUNAS - 2 || bola.coord.x < 2) { // limites direita e esquerda
+			//xd *= -1;
+			bola.direcao.x *= -1;
 		}
-		if (y > LINHAS || y < 2) { // limites inferior e superior
+		if (bola.coord.y > LINHAS || bola.coord.y < 2) { // limites inferior e superior
 		//if (y < 2) { // limites superior
-			yd *= -1;
+			//yd *= -1;
+			bola.direcao.y *= -1;
 		}
 
 		/*if (y > LINHAS) {

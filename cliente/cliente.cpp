@@ -41,8 +41,6 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
-	/*sincControl.mensagem->termina = 1;
-	sincControl.jogo->termina = 1;*/
 	entrar();
 
 	if (!AcessoJogoCliente(sincControl)) {
@@ -82,18 +80,21 @@ int _tmain(int argc, LPTSTR argv[]) {
 }
 
 DWORD WINAPI envioMensagem(LPVOID param) {
-	while (!sincControl.mensagem->termina)
+	while (1)
 	{
 		if (sincControl.mensagem->termina == 1) exit(1);
+
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
 		//_tprintf(TEXT("Envio Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), msg.nome, msg.jogadorx, msg.jogadory, msg.bolax, msg.bolay);
 		//CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
 
-		/*sincControl.mensagem->bolax = -1;
-		sincControl.mensagem->bolay = -1;*/
 		/*gotoxy(COLUNAS + 3, 8);
 		_tprintf(TEXT("%s: Envio Mensagem: '%s'=(%d,%d)\n"), CLIENTE, sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory);*/
+
+		//sincControl.mensagem->jogadorx = xp;
+		sincControl.mensagem->coord.x = xp;
+		sincControl.mensagem->coord.y = LINHAS;
 
 		SetEvent(sincControl.hEventoMensagem);
 		ReleaseMutex(sincControl.hMutexMensagem);
@@ -105,9 +106,10 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 }
 
 DWORD WINAPI recebeJogo(LPVOID param) {
-	while (!sincControl.jogo->termina)
+	while (1)
 	{
 		if (sincControl.jogo->termina == 1) exit(1);
+
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
@@ -116,9 +118,9 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		gotoxy(sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
 		_tprintf(TEXT("*"));
 
-		gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, yp);
+		gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, LINHAS);
 		_tprintf(TEXT("       "));
-		gotoxy(sincControl.jogo->jogador.barreira.coord.x, yp);
+		gotoxy(sincControl.jogo->jogador.barreira.coord.x, LINHAS);
 		_tprintf(TEXT("_____"));
 
 		gotoxy(COLUNAS + 3, 2);
@@ -171,7 +173,6 @@ void imprimeJogo() {
 			_tprintf(TEXT("&"));
 		}
 
-
 	gotoxy(COLUNAS + 3, 0);
 	_tprintf(TEXT("-------------- ARKNOID / BREAKOUT------------\n"));
 	gotoxy(COLUNAS + 3, 10);
@@ -193,13 +194,13 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 		case 77: //direta
 			if (xp < COLUNAS - 5) {
 				xp += 5;
-				sincControl.mensagem->jogadorx = xp;
+				/*sincControl.mensagem->jogadorx = xp;*/
 			}
 			break;
 		case 75: // esquerda
 			if (xp > 1) {
 				xp -= 5;
-				sincControl.mensagem->jogadorx = xp;
+				//sincControl.mensagem->jogadorx = xp;
 			}
 			break;
 		case 27: // ESC = sair

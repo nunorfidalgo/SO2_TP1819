@@ -14,18 +14,19 @@ typedef struct {
 typedef struct {
 	COORDENADAS	coord;
 	COORDENADAS	coordAnt;
+	COORDENADAS direcao;
 } BOLA;
-
-typedef struct {
-	COORDENADAS	coord;
-	COORDENADAS	coordAnt;
-} BARREIRA;
 
 typedef struct {
 	unsigned int tipo;
 	unsigned int cor;
 	COORDENADAS	coord;
 } TIJOLO;
+
+typedef struct {
+	COORDENADAS	coord;
+	COORDENADAS	coordAnt;
+} BARREIRA;
 
 typedef struct {
 	TCHAR nome[TEXTO];
