@@ -28,4 +28,5 @@ extern "C" {
 
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
+	
 }

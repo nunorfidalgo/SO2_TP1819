@@ -7,4 +7,5 @@ typedef struct {
 	TCHAR nome[NOME];
 	int bolax, bolay;
 	int jogadorx, jogadory;
+	int inicioJogo;
 } MENSAGEM;

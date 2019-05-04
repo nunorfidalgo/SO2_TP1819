@@ -8,6 +8,12 @@
 #define NUM_MAX_JOGADORES 4
 #define TOP_TEN 10
 
+// tamanho padrão da linha de comandos do windows
+#define COLUNAS 41 // x
+#define LINHAS 26 // y
+//
+//int xp = 1, yp = LINHAS, xpa = xp;
+
 // Estrutura de dados
 // Coordenadas no mapa
 typedef struct {
@@ -19,12 +25,14 @@ typedef struct {
 // Bola
 typedef struct {
 	COORDENADAS	coord;
+	COORDENADAS coordAnt;
 } BOLA;
 
 // Barreira
 typedef struct {
 	COORDENADAS	coord;
 	unsigned int cor;
+	COORDENADAS coordAnt;
 } BARREIRA;
 
 // TIJOLO
@@ -53,10 +61,10 @@ typedef struct {
 } TOPTEN;
 
 typedef struct {
-	TCHAR nome[NOME]; // para testar...
-	unsigned int nivel;
-	BOLA bolas[NUM_BOLAS];
-	BARREIRA barreiras[NUM_BARREIRAS];
-	TIJOLO tijolos[NUM_TIJOLOS];
-	JOGADOR jogadores[NUM_MAX_JOGADORES];
+	//TCHAR nome[NOME]; // para testar...
+	//unsigned int nivel;
+	BOLA bola;
+	//BARREIRA barreiras[NUM_BARREIRAS];
+	//TIJOLO tijolos[NUM_TIJOLOS];
+	JOGADOR jogador;
 } JOGO;
