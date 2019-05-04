@@ -9,13 +9,14 @@
 #define SHM_MENSAGENS TEXT("SHM_Mensagens")
 #define MUTEX_MENSAGENS TEXT("MutexMensagens")
 #define EVENTO_MENSAGENS TEXT("EventoMensagens")
+#define TAM 200
 HANDLE hMuMensagens;
 HANDLE hEvMensagens;
 HANDLE hMemMensagens;
 MENSAGEM *mensagem;
 
 int inicio_jogo = 0;
-
+int registo();
 // posição inicial da bola
 int x = COLUNAS / 2, y = LINHAS - 1;
 int xd = 1, yd = 1,xa=xd, ya=yd;
@@ -38,6 +39,7 @@ DWORD WINAPI recebeMensagens(LPVOID param);
 DWORD WINAPI enviaJogo(LPVOID param);
 DWORD WINAPI threadBola(LPVOID param);
 
+
 int _tmain(int argc, LPTSTR argv[])
 {
 #ifdef UNICODE
@@ -46,8 +48,18 @@ int _tmain(int argc, LPTSTR argv[])
 #endif
 	system("cls");
 	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
-
-
+	//if (registry == NULL) 
+	
+	//exit(1);
+	if (registo() == -1) {
+		_tprintf(TEXT("[Erro] A escrever no registo\n"), GetLastError());
+		return -1;
+	}
+	else {
+		_tprintf(TEXT("[SERVIDOR] A escrever/ler registo\n"), GetLastError());
+		//_gettchar();
+	}
+	
 	hMuMensagens = CreateMutex(NULL, FALSE, MUTEX_MENSAGENS);
 	hEvMensagens = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGENS);
 	hMemMensagens = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(MENSAGEM), SHM_MENSAGENS);
@@ -240,4 +252,61 @@ DWORD WINAPI threadBola(LPVOID param) {
 		ReleaseMutex(hMuJogo);//péssima solução usada com I / O
 		Sleep(100);
 	}
+}
+
+int registo() {
+
+	TCHAR frase[TAM];
+	HKEY chave;
+	DWORD queAconteceu, versao, tamanho;
+	TCHAR str[TAM], autores[TAM], top_ten[TAM], meta[TAM], pontuacoes[TAM];
+
+	//Criar/abrir uma chave em HKEY_CURRENT_USER\Software\TP_SO2_2018_2019
+	if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\TP_SO2_2018_2019"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &chave, &queAconteceu) != ERROR_SUCCESS) {
+		_tprintf(TEXT("Erro ao criar/abrir chave (%d)\n"), GetLastError());
+		//_gettchar();
+		return -1;
+	}
+	else {
+		//Se a chave foi criada, inicializar os valores
+		if (queAconteceu == REG_CREATED_NEW_KEY) {
+			_tprintf(TEXT("Chave: HKEY_CURRENT_USER\\Software\\TP_SO2_2018_2019 criada\n"));
+			//Criar valor "Autor" = "Nuno Fidalgo e Cláudio Melo"
+			RegSetValueEx(chave, TEXT("Autores"), 0, REG_SZ, (LPBYTE)TEXT("Nuno Fidalgo e Cláudio Melo"), _tcslen(TEXT("Nuno Fidalgo e Cláudio Melo")) * sizeof(TCHAR));
+			//Criar valor "Versao" = 1
+			//versao = 1;
+			RegSetValueEx(chave, TEXT("Meta"), 0, REG_SZ, (LPBYTE)TEXT("Meta 1"), _tcslen(TEXT("Meta 1")) * sizeof(TCHAR));
+
+			RegSetValueEx(chave, TEXT("Top Ten"), 0, REG_SZ, (LPBYTE)TEXT("Nuno,Cláudio,Cláudio,Nuno,Melo,Fidalgo,21170023,21140369"), _tcslen(TEXT("Nuno,Cláudio,Cláudio,Nuno,Melo,Fidalgo,21170023,21140369")) * sizeof(TCHAR));
+			RegSetValueEx(chave, TEXT("Pontuações"), 0, REG_SZ, (LPBYTE)TEXT("2931,292,198,156,145,133,132,15"), _tcslen(TEXT("2931,292,198,156,145,133,132,15")) * sizeof(TCHAR));
+		}
+		//Se a chave foi aberta, ler os valores lá guardados
+		else if (queAconteceu == REG_OPENED_EXISTING_KEY) {
+			/*	_tprintf(TEXT("Chave: HKEY_CURRENT_USER\\Software\\TP_SO2_2018_2019 aberta\n"));
+				tamanho = 200;
+				RegQueryValueEx(chave, TEXT("Autores"), NULL, NULL, (LPBYTE)autores, &tamanho);
+				autores[tamanho / sizeof(TCHAR)] = '\0';
+
+				RegQueryValueEx(chave, TEXT("Meta"), NULL, NULL, (LPBYTE)meta, &tamanho);
+				meta[tamanho / sizeof(TCHAR)] = '\0';*/
+
+			tamanho = 200;
+			RegQueryValueEx(chave, TEXT("Top Ten"), NULL, NULL, (LPBYTE)top_ten, &tamanho);
+			top_ten[tamanho / sizeof(TCHAR)] = '\0';
+			//_stprintf_s(str, TAM, TEXT("Top Ten:%s \n"),top_ten);
+			tamanho = 200;
+			RegQueryValueEx(chave, TEXT("Pontuações"), NULL, NULL, (LPBYTE)pontuacoes, &tamanho);
+			pontuacoes[tamanho / sizeof(TCHAR)] = '\0';
+
+			//_stprintf_s(str, TAM, TEXT("Autores:%s Meta:%s Top Ten:%s \n"), autores, meta, top_ten);
+			//tamanho = sizeof(pontuacoes);
+			//RegQueryValueEx(chave, TEXT("pontuacoes"), NULL, NULL, (LPBYTE)pontuacoes, &tamanho);
+			_stprintf_s(str, TAM, TEXT("Top Ten:%s\nPontuação:%s\n"), top_ten, pontuacoes);
+			_tprintf(TEXT("Lido do Registry:\n%s\n"), str);
+		}
+		RegCloseKey(chave);
+	}
+	//_gettchar();
+
+	return 0;
 }
