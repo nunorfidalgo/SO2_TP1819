@@ -138,7 +138,7 @@ void entrar() {
 	_tprintf(TEXT("Nome jogador: "));
 	_getts_s(nome);
 	_tcscpy_s(sincControl.mensagem->nome, nome);
-	_tprintf(TEXT("O jogo vai começar %s... carrege numa tecla para continuar..."), sincControl.mensagem->nome);
+	_tprintf(TEXT("O jogo vai começar '%s'... carregue numa tecla para continuar..."), sincControl.mensagem->nome);
 	_gettch();
 }
 
