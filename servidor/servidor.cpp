@@ -72,6 +72,7 @@ int _tmain(int argc, LPTSTR argv[])
 	CloseHandle(hTMensagens);
 	CloseHandle(hTJogo);
 	CloseHandle(hTBola);
+	CloseHandle(hServidor);
 	return 0;
 }
 
@@ -91,22 +92,15 @@ DWORD WINAPI recebeMensagens(LPVOID param) {
 	_tprintf(TEXT("termina msg: %d\n"), sincControl.mensagem->termina);
 	while (1)
 	{
-		//_tprintf(TEXT("Aguardo mensagem: "));
-
 		if (sincControl.mensagem->termina == 1) exit(1);
 
 		WaitForSingleObject(sincControl.hEventoMensagem, INFINITE);
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
-		//CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
-		//_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory);
-		_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->coord.x, sincControl.mensagem->coord.y);
+		_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y);
 		_tcscpy_s(sincControl.jogo->jogador.nome, sincControl.mensagem->nome);
-		/*sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogadorx;
-		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogadory;*/
-		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->coord.x;
-		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->coord.y;
-		//_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), sincControl.->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory, sincControl.mensagem->bolax, sincControl.mensagem->bolay);
+		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogador.barreira.coord.x;
+		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogador.barreira.coord.y;
 
 		ReleaseMutex(sincControl.hMutexMensagem);
 		Sleep(500);

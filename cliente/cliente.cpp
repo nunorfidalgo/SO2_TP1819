@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿//#define _CRT_SECURE_NO_WARNINGS
 //#define _CRT_NON_CONFORMING_SWPRINTFS
 //#define UNICODE
 //#define _UNICODE
@@ -13,9 +13,7 @@
 
 #include "../bridge/bridge.h"
 
-// barreira do jogador, posição inicial da barreira e posição anterior
-int xp = 1, yp = LINHAS;
-
+JOGADOR jogador;
 SincControl sincControl;
 
 HANDLE htTeclas, hTMensagens, hTJogo;
@@ -86,21 +84,15 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
-		//_tprintf(TEXT("Envio Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), msg.nome, msg.jogadorx, msg.jogadory, msg.bolax, msg.bolay);
-		//CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
-
-		/*gotoxy(COLUNAS + 3, 8);
-		_tprintf(TEXT("%s: Envio Mensagem: '%s'=(%d,%d)\n"), CLIENTE, sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory);*/
-
-		//sincControl.mensagem->jogadorx = xp;
-		sincControl.mensagem->coord.x = xp;
-		sincControl.mensagem->coord.y = LINHAS;
+		//sincControl.mensagem->coord.x = xp;
+		//sincControl.mensagem->coord.y = LINHAS;
+		sincControl.mensagem->jogador.barreira.coord.x = jogador.barreira.coord.x;
+		sincControl.mensagem->jogador.barreira.coord.y = jogador.barreira.coord.y;
 
 		SetEvent(sincControl.hEventoMensagem);
 		ReleaseMutex(sincControl.hMutexMensagem);
 		ResetEvent(sincControl.hEventoMensagem);
 
-		//Sleep(100);
 	}
 	return 0;
 }
@@ -175,15 +167,15 @@ void imprimeJogo() {
 
 	gotoxy(COLUNAS + 3, 0);
 	_tprintf(TEXT("-------------- ARKNOID / BREAKOUT------------\n"));
-	gotoxy(COLUNAS + 3, 10);
+	gotoxy(COLUNAS + 3, 24);
 	_tprintf(TEXT("ESC - sair"));
-
-	// posicção inicial da barreira do jogador
-	/*gotoxy(xp, yp);
-	_tprintf(TEXT("_____"));*/
 }
 
 DWORD WINAPI threadTeclas(LPVOID param) {
+	// barreira do jogador, posição inicial da barreira e posição anterior
+	//int xp = 1, yp = LINHAS;
+	jogador.barreira.coord.x = 1;
+	jogador.barreira.coord.y = LINHAS;
 	TCHAR key_input;
 	while (1) {
 		key_input = _gettch();
@@ -192,14 +184,16 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 		//fflush(stdin);
 		switch (key_input) {
 		case 77: //direta
-			if (xp < COLUNAS - 5) {
-				xp += 5;
+			if (jogador.barreira.coord.x < COLUNAS - 5) {
+				//xp += 5;
+				jogador.barreira.coord.x += 5;
 				/*sincControl.mensagem->jogadorx = xp;*/
 			}
 			break;
 		case 75: // esquerda
-			if (xp > 1) {
-				xp -= 5;
+			if (jogador.barreira.coord.x > 1) {
+				//xp -= 5;
+				jogador.barreira.coord.x -= 5;
 				//sincControl.mensagem->jogadorx = xp;
 			}
 			break;
