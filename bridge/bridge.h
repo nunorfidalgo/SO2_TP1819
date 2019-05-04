@@ -14,6 +14,10 @@
 #define SERVIDOR TEXT("Servidor:")
 #define CLIENTE TEXT("Cliente:")
 
+// tamanho padrão da linha de comandos do windows
+#define COLUNAS 41 // x
+#define LINHAS 26 // y
+
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
 #define SHM_MENSAGEM TEXT("MemPartMensagem")

@@ -11,15 +11,15 @@ BRIDGE_API BOOL APIENTRY WINAPI DllMain(HANDLE hInstance, DWORD fdwReason, LPVOI
 	switch (fdwReason) {
 	case DLL_PROCESS_ATTACH:
 		if (lpvReserved == NULL)
-			_tprintf(TEXT("Bridge: Ocorreu um erro ao iniciar a DLL!\n"));
+			_tprintf(TEXT("Bridge (DDL): Ocorreu um erro ao iniciar a DLL!\n"));
 		else
-			_tprintf(TEXT("Bridge: pronta...\n"));
+			_tprintf(TEXT("Bridge (DDL): pronta...\n"));
 		break;
 	case DLL_PROCESS_DETACH:
 		if (lpvReserved == NULL)
-			_tprintf(TEXT("Bridge: Ocorreu um erro a terminar a DLL!\n"));
+			_tprintf(TEXT("Bridge (DDL): Ocorreu um erro a terminar a DLL!\n"));
 		else
-			_tprintf(TEXT("Brige: terminou..."));
+			_tprintf(TEXT("Brige (DDL): terminou..."));
 		break;
 	}
 	return 1;

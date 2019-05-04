@@ -13,26 +13,18 @@
 
 #include "../bridge/bridge.h"
 
-// tamanho padrão da linha de comandos do windows
-#define COLUNAS 41 // x
-#define LINHAS 26 // y
+// barreira do jogador, posição inicial da barreira e posição anterior
+int xp = 1, yp = LINHAS;
 
-//HANDLE hMutex;
-// posição inicial da bola
-//int x = COLUNAS / 2, y = LINHAS - 1;
-//int xd = 1, yd = 1;
-//int xp = 1, yp = LINHAS, xpa = xp;
-//
-//DWORD WINAPI threadBola(LPVOID param);
-//DWORD WINAPI threadTeclas(LPVOID param);
-
-TCHAR nome[TEXTO];
 SincControl sincControl;
 
-HANDLE hTMensagens, hTJogo;
+HANDLE htTeclas, hTMensagens, hTJogo;
 
+void entrar();
+void imprimeJogo();
 DWORD WINAPI envioMensagem(LPVOID param);
 DWORD WINAPI recebeJogo(LPVOID param);
+DWORD WINAPI threadTeclas(LPVOID param);
 
 int _tmain(int argc, LPTSTR argv[]) {
 
@@ -49,9 +41,15 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
+	/*sincControl.mensagem->termina = 1;
+	sincControl.jogo->termina = 1;*/
+	entrar();
+
 	if (!AcessoJogoCliente(sincControl)) {
 		return -1;
 	}
+
+	imprimeJogo();
 
 	hTMensagens = CreateThread(NULL, 0, envioMensagem, NULL, 0, NULL);
 	hTJogo = CreateThread(NULL, 0, recebeJogo, NULL, 0, NULL);
@@ -61,6 +59,16 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
+	htTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
+
+	if (htTeclas == NULL) {
+		_tprintf(TEXT("Erro ao criar as threads teclas\n"));
+		return -1;
+	}
+
+	if ((WaitForSingleObject(htTeclas, INFINITE)) == NULL)
+		return -1;
+
 	if (WaitForSingleObject(hTMensagens, INFINITE) || (WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
 		_tprintf(TEXT("%s wait stop\n"), CLIENTE);
 		return -1;
@@ -69,242 +77,139 @@ int _tmain(int argc, LPTSTR argv[]) {
 	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
 	CloseHandle(hTJogo);
-
+	CloseHandle(htTeclas);
 	return 0;
 }
 
 DWORD WINAPI envioMensagem(LPVOID param) {
-	_tprintf(TEXT("%s envioMensagem\n"), CLIENTE);
-	int i = 1;
-	MENSAGEM msg;
-	while (1)
+	while (!sincControl.mensagem->termina)
 	{
+		if (sincControl.mensagem->termina == 1) exit(1);
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
-		_stprintf_s(nome, TEXTO, TEXT("Jogador %d"), i);
-		_tcscpy_s(msg.nome, nome);
-		msg.bolax = i;
-		msg.bolay = i;
-		msg.jogadorx = i;
-		msg.jogadory = i;
-		i++;
 		//_tprintf(TEXT("Envio Mensagem: '%s'=(%d,%d) | Bola=(%d,%d)\n"), msg.nome, msg.jogadorx, msg.jogadory, msg.bolax, msg.bolay);
+		//CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
 
-		CopyMemory(sincControl.mensagem, &msg, sizeof(MENSAGEM));
-		//_tcscpy_s(sincControl.mensagem->nome, msg.nome);
-		////_tcscpy_s(sincControl.mensagem->nome, sizeof(msg.nome), msg.nome);
-		//sincControl.mensagem->bolax = msg.bolax;
-		//sincControl.mensagem->bolay = msg.bolay;
-		//sincControl.mensagem->jogadorx = msg.jogadorx;
-		//sincControl.mensagem->jogadory = msg.jogadory;
-
-		_tprintf(TEXT("Envio Mensagem: '%s' = (%d,%d) | Bola = (%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory, sincControl.mensagem->bolax, sincControl.mensagem->bolay);
-		//_tprintf(TEXT("Envio Mensagem: '%s'\n"), sincControl.mensagem->nome);
+		/*sincControl.mensagem->bolax = -1;
+		sincControl.mensagem->bolay = -1;*/
+		/*gotoxy(COLUNAS + 3, 8);
+		_tprintf(TEXT("%s: Envio Mensagem: '%s'=(%d,%d)\n"), CLIENTE, sincControl.mensagem->nome, sincControl.mensagem->jogadorx, sincControl.mensagem->jogadory);*/
 
 		SetEvent(sincControl.hEventoMensagem);
 		ReleaseMutex(sincControl.hMutexMensagem);
 		ResetEvent(sincControl.hEventoMensagem);
 
-		Sleep(1000);
+		//Sleep(100);
 	}
 	return 0;
 }
 
 DWORD WINAPI recebeJogo(LPVOID param) {
-	//_tprintf(TEXT("%s recebeJogo\n"), CLIENTE);
-	while (1)
+	while (!sincControl.jogo->termina)
 	{
-		_tprintf(TEXT("Aguardo Jogo: "));
-
+		if (sincControl.jogo->termina == 1) exit(1);
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
-		_tprintf(TEXT("Recebi Jogo: '%s' = (%d, %d) | Bola = (%d, %d)\n"), sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
+		gotoxy(sincControl.jogo->bola.coordAnt.x, sincControl.jogo->bola.coordAnt.y);
+		_tprintf(TEXT(" "));
+		gotoxy(sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
+		_tprintf(TEXT("*"));
+
+		gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, yp);
+		_tprintf(TEXT("       "));
+		gotoxy(sincControl.jogo->jogador.barreira.coord.x, yp);
+		_tprintf(TEXT("_____"));
+
+		gotoxy(COLUNAS + 3, 2);
+		_tprintf(TEXT("Bola (x,y)=(%.2d, %.2d)"), sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
+		gotoxy(COLUNAS + 3, 3);
+		_tprintf(TEXT("Barreira (xp, yp)=(%.2d, %.2d)"), sincControl.jogo->jogador.barreira.coord.x, LINHAS);
 
 		ReleaseMutex(sincControl.hMutexJogo);
-		Sleep(1000);
 	}
 	return 0;
 }
 
+void entrar() {
+	TCHAR nome[TEXTO];
+	_tprintf(TEXT("Nome jogador: "));
+	_getts_s(nome);
+	_tcscpy_s(sincControl.mensagem->nome, nome);
+	_tprintf(TEXT("O jogo vai começar %s... carrege numa tecla para continuar..."), sincControl.mensagem->nome);
+	_gettch();
+}
+
+void imprimeJogo() {
+	system("cls");
+	int x, y;
+	// Limites do jogo
+	for (x = 0; x < COLUNAS; x++) {
+		gotoxy(x, 0);
+		_tprintf(TEXT("-"));
+		gotoxy(x, LINHAS + 1);
+		_tprintf(TEXT("-"));
+	}
+
+	for (y = 0; y <= LINHAS + 1; y++) {
+		gotoxy(0, y);
+		_tprintf(TEXT("|"));
+		gotoxy(COLUNAS, y);
+		_tprintf(TEXT("|"));
+	}
+
+	// Tijolos
+	for (y = 4; y < 7; y++)
+		for (x = 6; x < COLUNAS - 6; x++) {
+			gotoxy(x, y);
+			_tprintf(TEXT("#"));
+		}
+
+	for (y = 8; y < 11; y++)
+		for (x = 6; x < COLUNAS - 6; x++) {
+			gotoxy(x, y);
+			_tprintf(TEXT("&"));
+		}
 
 
+	gotoxy(COLUNAS + 3, 0);
+	_tprintf(TEXT("-------------- ARKNOID / BREAKOUT------------\n"));
+	gotoxy(COLUNAS + 3, 10);
+	_tprintf(TEXT("ESC - sair"));
 
+	// posicção inicial da barreira do jogador
+	/*gotoxy(xp, yp);
+	_tprintf(TEXT("_____"));*/
+}
 
+DWORD WINAPI threadTeclas(LPVOID param) {
+	TCHAR key_input;
+	while (1) {
+		key_input = _gettch();
+		key_input = toupper(key_input);
+		_flushall();
+		//fflush(stdin);
+		switch (key_input) {
+		case 77: //direta
+			if (xp < COLUNAS - 5) {
+				xp += 5;
+				sincControl.mensagem->jogadorx = xp;
+			}
+			break;
+		case 75: // esquerda
+			if (xp > 1) {
+				xp -= 5;
+				sincControl.mensagem->jogadorx = xp;
+			}
+			break;
+		case 27: // ESC = sair
+			sincControl.mensagem->termina = 1;
+			sincControl.jogo->termina = 1;
+			gotoxy(0, LINHAS + 2);
+			_tprintf(TEXT("Jogador cancelou do jogo..."));
+			exit(1);
+			break;
+		}
+	}
 
-
-
-//hMutex = CreateMutex(NULL, FALSE, NULL);
-//if (hMutex == NULL) {
-//	_tprintf(TEXT("Erro ao criar mutex: %d\n"), GetLastError());
-//	return 1;
-//}
-
-//// Limites do jogo
-//for (x = 0; x < COLUNAS; x++) {
-//	gotoxy(x, 0);
-//	_tprintf(TEXT("-"));
-//	gotoxy(x, LINHAS + 1);
-//	_tprintf(TEXT("-"));
-//}
-
-//for (y = 0; y <= LINHAS + 1; y++) {
-//	gotoxy(0, y);
-//	_tprintf(TEXT("|"));
-//	gotoxy(COLUNAS, y);
-//	_tprintf(TEXT("|"));
-//}
-
-//// Tijolos
-///*for (y = 4; y < 7; y++)
-//	for (x = 6; x < COLUNAS - 6; x++) {
-//		gotoxy(x, y);
-//		_tprintf(TEXT("#"));
-//	}
-
-//for (y = 8; y < 11; y++)
-//	for (x = 6; x < COLUNAS - 6; x++) {
-//		gotoxy(x, y);
-//		_tprintf(TEXT("&"));
-//	}*/
-
-
-//gotoxy(COLUNAS + 3, 0);
-//_tprintf(TEXT("-------------- ARKNOID / BREAKOUT------------\n"));
-//gotoxy(COLUNAS + 3, 2);
-//gotoxy(COLUNAS + 3, 26);
-//_tprintf(TEXT("ESC - sair"));
-
-//hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
-//hTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, NULL);
-
-//if (hTBola != NULL && hTeclas != NULL) {
-//	WaitForSingleObject(hMutex, INFINITE); //péssima solução usada com I / O
-//	gotoxy(COLUNAS + 3, 3);
-//	_tprintf(TEXT("Lancei as threads da bola e das teclas\n"));
-//	ReleaseMutex(hMutex);//péssima solução usada com I / O
-//}
-//else
-//	_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
-//if (WaitForSingleObject(hTBola, INFINITE) || (WaitForSingleObject(hTeclas, INFINITE)) == NULL)
-//	return -1;
-
-//CloseHandle(hMutex);
-//CloseHandle(hTBola);
-//CloseHandle(hTeclas);
-
-
-
-
-//
-//DWORD WINAPI threadBola(LPVOID param) {
-//	//int x, y;
-//	//// posição inicial da bola
-//	//x = COLUNAS / 2, y = LINHAS - 1;
-//	//int xd = 1, yd = 1;
-//	WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I / O
-//	gotoxy(x, y);
-//	_tprintf(TEXT("*"));
-//	ReleaseMutex(hMutex);//péssima solução usada com I / O
-//
-//	while (1) {
-//		WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I / O
-//
-//		// apaga a posição anterior
-//		gotoxy(x, y);
-//		_tprintf(TEXT(" "));
-//		x -= xd;
-//		y -= yd;
-//		if (x > COLUNAS - 2 || x < 2) { // limites direita e esquerda
-//			xd *= -1;
-//		}
-//		//if (y > LINHAS || y < 2) { // limites inferior e superior
-//		if (y < 2) { // limites superior
-//			yd *= -1;
-//		}
-//		gotoxy(x, y);
-//		_tprintf(TEXT("*"));
-//
-//		/*if (y > LINHAS) {
-//			gotoxy(0, LINHAS + 2);
-//			_tprintf(TEXT("Perdeu o jogo..."));
-//			exit(1);
-//		}*/
-//
-//		if (y >= LINHAS) // limites inferior
-//			if (x >= xp && x <= xp + 5)
-//				yd *= -1;
-//			else {
-//				gotoxy(0, LINHAS + 2);
-//				_tprintf(TEXT("Perdeu o jogo...\n"));
-//				exit(1);
-//			}
-//
-//		gotoxy(COLUNAS + 3, 22);
-//		_tprintf(TEXT("                         "));
-//		gotoxy(COLUNAS + 3, 22);
-//		_tprintf(TEXT("Bola (x,y) = (%.2d, %.2d)"), x, y);
-//		gotoxy(COLUNAS + 3, 23);
-//		_tprintf(TEXT("                         "));
-//		gotoxy(COLUNAS + 3, 23);
-//		_tprintf(TEXT("Bola (xd,yd) = (%d, %d)"), xd, yd);
-//		ReleaseMutex(hMutex);//péssima solução usada com I / O
-//		Sleep(50);
-//	}
-//}
-//
-//DWORD WINAPI threadTeclas(LPVOID param) {
-//	// barreira do jogador, posição inicial da barreira
-//	/*int xp = 1, yp = LINHAS, xpa = xp;*/
-//	WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I / O
-//	gotoxy(xp, yp);
-//	_tprintf(TEXT("_____"));
-//	ReleaseMutex(hMutex);//péssima solução usada com I / O
-//	// teclas
-//	TCHAR key_input;
-//	while (1) {
-//		key_input = _gettch();
-//		key_input = toupper(key_input);
-//		//_flushall();
-//		fflush(stdin);
-//		switch (key_input) {
-//		case 77: //direta
-//			if (xp < COLUNAS - 5) {
-//				WaitForSingleObject(hMutex, INFINITE);//péssima solução usada com I/O
-//				xpa = xp;
-//				xp += 5;
-//				gotoxy(xpa, yp);
-//				_tprintf(TEXT("     "));
-//				gotoxy(xp, yp);
-//				_tprintf(TEXT("_____"));
-//				//gotoxy(COLUNAS + 3, 24);
-//				//_tprintf(TEXT("                         "));
-//				gotoxy(COLUNAS + 3, 24);
-//				_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
-//				ReleaseMutex(hMutex);//péssima solução usada com I/O
-//			}
-//			break;
-//		case 75: // esquerda
-//			if (xp > 1) {
-//				WaitForSingleObject(hMutex, INFINITE); //péssima solução usada com I/O
-//				xpa = xp;
-//				xp -= 5;
-//				gotoxy(xpa, yp);
-//				_tprintf(TEXT("     "));
-//				gotoxy(xp, yp);
-//				_tprintf(TEXT("_____"));
-//				//gotoxy(COLUNAS + 3, 24);
-//				//_tprintf(TEXT("                         "));
-//				gotoxy(COLUNAS + 3, 24);
-//				_tprintf(TEXT("Barreira = xp: %.2d, xpa: %.2d"), xp, xpa);
-//				ReleaseMutex(hMutex);//péssima solução usada com I/O
-//			}
-//			break;
-//		case 27: // ESC = sair
-//			gotoxy(0, LINHAS + 2);
-//			exit(1);
-//			break;
-//		}
-//	}
-//}
-
+}

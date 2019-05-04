@@ -5,6 +5,8 @@
 // Mensagem
 typedef struct {
 	TCHAR nome[TEXTO];
-	int bolax, bolay;
 	int jogadorx, jogadory;
+	//COORDENADAS coord;
+	//ENTRAR entrar;
+	int termina;
 } MENSAGEM;

@@ -13,10 +13,12 @@ typedef struct {
 
 typedef struct {
 	COORDENADAS	coord;
+	COORDENADAS	coordAnt;
 } BOLA;
 
 typedef struct {
 	COORDENADAS	coord;
+	COORDENADAS	coordAnt;
 } BARREIRA;
 
 typedef struct {
@@ -50,4 +52,5 @@ typedef struct {
 	//JOGADOR jogadores[NUM_MAX_JOGADORES];
 	BOLA bola;
 	JOGADOR jogador;
+	int termina;
 } JOGO;
