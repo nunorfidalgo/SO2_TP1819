@@ -1,6 +1,6 @@
-#pragma once
+ï»¿#pragma once
 
-// Sincronização
+// SincronizaÃ§Ã£o
 typedef struct {
 	HANDLE hMemMensagem;
 	HANDLE hMutexMensagem;

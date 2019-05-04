@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define TEXTO 120
 #define NUM_BOLAS 3

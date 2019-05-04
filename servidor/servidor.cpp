@@ -1,4 +1,4 @@
-#include <windows.h>
+Ôªø#include <windows.h>
 #include <tchar.h>
 #include <io.h>
 #include <fcntl.h>
@@ -6,10 +6,10 @@
 
 #include "../bridge/bridge.h"
 
-// posiÁ„o inicial da bola
+// posi√ß√£o inicial da bola
 //int x = COLUNAS / 2, y = LINHAS - 1;
 //int xa = x, ya = y;
-//int xd = 1, yd = 1; // direcÁ„o
+//int xd = 1, yd = 1; // direc√ß√£o
 BOLA bola;
 
 SincControl sincControl;
@@ -80,7 +80,7 @@ bool verificaInstancia() {
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		CloseHandle(hServidor);
 		hServidor = NULL;
-		_tprintf(TEXT("%s: J· exite uma inst‚ncia do servidor a correr\n"), SERVIDOR);
+		_tprintf(TEXT("%s: J√° exite uma inst√¢ncia do servidor a correr\n"), SERVIDOR);
 		return true;
 	}
 	// the only instance, start in a usual way
@@ -149,10 +149,10 @@ DWORD WINAPI enviaJogo(LPVOID param) {
 }
 
 DWORD WINAPI threadBola(LPVOID param) {
-	// posiÁ„o inicial da bola
+	// posi√ß√£o inicial da bola
 	//int x = COLUNAS / 2, y = LINHAS - 1;
 	//int xa = x, ya = y;
-	//int xd = 1, yd = 1; // direcÁ„o
+	//int xd = 1, yd = 1; // direc√ß√£o
 	bola.coord.x = COLUNAS / 2;
 	bola.coord.y = LINHAS - 1;
 	bola.coordAnt.x = bola.coord.x;

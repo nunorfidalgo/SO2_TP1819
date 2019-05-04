@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include <windows.h>
 #include <locale.h>
@@ -14,7 +14,7 @@
 #define SERVIDOR TEXT("Servidor:")
 #define CLIENTE TEXT("Cliente:")
 
-// tamanho padr„o da linha de comandos do windows
+// tamanho padr√£o da linha de comandos do windows
 #define COLUNAS 41 // x
 #define LINHAS 26 // y
 
@@ -35,11 +35,11 @@
 #endif
 
 extern "C" {
-	// MÈmoria partilhada: Mensagens
+	// M√©moria partilhada: Mensagens
 	BRIDGE_API bool AcessoMensagensServidor(SincControl &sincControl);
 	BRIDGE_API bool AcessoMensagensCliente(SincControl &sincControl);
 
-	// MÈmoria partilhada: Mensagen
+	// M√©moria partilhada: Mensagen
 	BRIDGE_API bool AcessoJogoServidor(SincControl &sincControl);
 	BRIDGE_API bool AcessoJogoCliente(SincControl &sincControl);
 
