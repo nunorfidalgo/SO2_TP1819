@@ -16,7 +16,8 @@ HANDLE hMemMensagens;
 MENSAGEM *mensagem;
 
 int inicio_jogo = 0;
-int registo();
+int escreveRegisto();
+int leRegisto();
 // posição inicial da bola
 int x = COLUNAS / 2, y = LINHAS - 1;
 int xd = 1, yd = 1,xa=xd, ya=yd;
@@ -40,8 +41,7 @@ DWORD WINAPI enviaJogo(LPVOID param);
 DWORD WINAPI threadBola(LPVOID param);
 
 
-int _tmain(int argc, LPTSTR argv[])
-{
+int _tmain(int argc, LPTSTR argv[]) {
 #ifdef UNICODE
 	_setmode(_fileno(stdin), _O_WTEXT);
 	_setmode(_fileno(stdout), _O_WTEXT);
@@ -49,15 +49,18 @@ int _tmain(int argc, LPTSTR argv[])
 	system("cls");
 	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
 	//if (registry == NULL) 
-	
+
 	//exit(1);
-	if (registo() == -1) {
+	if (escreveRegisto() == -1) {
 		_tprintf(TEXT("[Erro] A escrever no registo\n"), GetLastError());
 		return -1;
 	}
 	else {
-		_tprintf(TEXT("[SERVIDOR] A escrever/ler registo\n"), GetLastError());
-		//_gettchar();
+		if (leRegisto() == -1) {
+			_tprintf(TEXT("[Erro] A ler do registo\n"), GetLastError());
+			return -1;
+		}
+		_gettchar();
 	}
 	
 	hMuMensagens = CreateMutex(NULL, FALSE, MUTEX_MENSAGENS);
@@ -254,7 +257,7 @@ DWORD WINAPI threadBola(LPVOID param) {
 	}
 }
 
-int registo() {
+int escreveRegisto() {
 
 	TCHAR frase[TAM];
 	HKEY chave;
@@ -280,8 +283,26 @@ int registo() {
 			RegSetValueEx(chave, TEXT("Top Ten"), 0, REG_SZ, (LPBYTE)TEXT("Nuno,Cláudio,Cláudio,Nuno,Melo,Fidalgo,21170023,21140369"), _tcslen(TEXT("Nuno,Cláudio,Cláudio,Nuno,Melo,Fidalgo,21170023,21140369")) * sizeof(TCHAR));
 			RegSetValueEx(chave, TEXT("Pontuações"), 0, REG_SZ, (LPBYTE)TEXT("2931,292,198,156,145,133,132,15"), _tcslen(TEXT("2931,292,198,156,145,133,132,15")) * sizeof(TCHAR));
 		}
+		//RegCloseKey(chave);
+	}
+	return 0;
+}
+
+int leRegisto() {
+
+	TCHAR frase[TAM];
+	HKEY chave;
+	DWORD queAconteceu, versao, tamanho;
+	TCHAR str[TAM], autores[TAM], top_ten[TAM], meta[TAM], pontuacoes[TAM];
+
+	if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\TP_SO2_2018_2019"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &chave, &queAconteceu) != ERROR_SUCCESS) {
+		_tprintf(TEXT("Erro ao criar/abrir chave (%d)\n"), GetLastError());
+		//_gettchar();
+		return -1;
+	}
+	else {
 		//Se a chave foi aberta, ler os valores lá guardados
-		else if (queAconteceu == REG_OPENED_EXISTING_KEY) {
+		if (queAconteceu == REG_OPENED_EXISTING_KEY) {
 			/*	_tprintf(TEXT("Chave: HKEY_CURRENT_USER\\Software\\TP_SO2_2018_2019 aberta\n"));
 				tamanho = 200;
 				RegQueryValueEx(chave, TEXT("Autores"), NULL, NULL, (LPBYTE)autores, &tamanho);
@@ -304,9 +325,11 @@ int registo() {
 			_stprintf_s(str, TAM, TEXT("Top Ten:%s\nPontuação:%s\n"), top_ten, pontuacoes);
 			_tprintf(TEXT("Lido do Registry:\n%s\n"), str);
 		}
+		else {
+			_tprintf(TEXT("Erro ao criar/abrir chave (%d)\n"), GetLastError());
+			return -1;
+		}
 		RegCloseKey(chave);
+		return 0;
 	}
-	//_gettchar();
-
-	return 0;
 }
