@@ -14,8 +14,10 @@ BOLA bola;
 
 SincControl sincControl;
 
+HANDLE hServidor;
 HANDLE hTMensagens, hTJogo, hTBola;
 
+bool verificaInstancia();
 DWORD WINAPI recebeMensagens(LPVOID param);
 DWORD WINAPI enviaJogo(LPVOID param);
 DWORD WINAPI threadBola(LPVOID param);
@@ -32,13 +34,14 @@ int _tmain(int argc, LPTSTR argv[])
 	system("cls");
 	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
 
-	if (!AcessoMensagensServidor(sincControl)) {
+	if (verificaInstancia())
 		return -1;
-	}
 
-	if (!AcessoJogoServidor(sincControl)) {
+	if (!AcessoMensagensServidor(sincControl))
 		return -1;
-	}
+
+	if (!AcessoJogoServidor(sincControl))
+		return -1;
 
 	hTMensagens = CreateThread(NULL, 0, recebeMensagens, NULL, 0, NULL);
 
@@ -70,6 +73,18 @@ int _tmain(int argc, LPTSTR argv[])
 	CloseHandle(hTJogo);
 	CloseHandle(hTBola);
 	return 0;
+}
+
+bool verificaInstancia() {
+	hServidor = CreateEventW(NULL, TRUE, FALSE, SERVIDOR);
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+		CloseHandle(hServidor);
+		hServidor = NULL;
+		_tprintf(TEXT("%s: Já exite uma instância do servidor a correr\n"), SERVIDOR);
+		return true;
+	}
+	// the only instance, start in a usual way
+	return false;
 }
 
 DWORD WINAPI recebeMensagens(LPVOID param) {
