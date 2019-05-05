@@ -127,17 +127,22 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
-		gotoxy(sincControl.jogo->bola.coordAnt.x, sincControl.jogo->bola.coordAnt.y);
-		_tprintf(TEXT(" "));
-		gotoxy(sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
-		_tprintf(TEXT("*"));
-
+		if (sincControl.jogo->bola.coordAnt.y < LINHAS) {
+			gotoxy(sincControl.jogo->bola.coordAnt.x, sincControl.jogo->bola.coordAnt.y);
+			_tprintf(TEXT(" "));
+			gotoxy(sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
+			_tprintf(TEXT("*"));
+		}
+		else {
+			//	gotoxy(sincControl.jogo->bola.coord.x , sincControl.jogo->bola.coord.y);
+			_tprintf(TEXT("_"));
+		}
 		// limpar a posição anteriro não esta a funcionar
 		/*gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, LINHAS);
 		_tprintf(TEXT("       "));*/
 		//limpa a barreira canto esquerdo
-		gotoxy(1, LINHAS);
-		_tprintf(TEXT("                                        ")); //nao apagar isto
+		gotoxy(0, LINHAS);
+		_tprintf(TEXT("|                                        ")); //nao apagar isto
 		gotoxy(sincControl.jogo->jogador.barreira.coord.x, LINHAS);
 		_tprintf(TEXT("_____"));
 
@@ -155,7 +160,6 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		// debug
 		/*_tprintf(TEXT("[Thread: %d] Recebo Jogo: Jogador: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
 		Sleep(VEL_JOGO);*/
-
 	}
 	return 0;
 }
