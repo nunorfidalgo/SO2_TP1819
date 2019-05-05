@@ -63,21 +63,18 @@ int _tmain(int argc, LPTSTR argv[])
 
 	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, &hTBolaId);
 	if (hTBola == NULL) {
-		_tprintf(TEXT("%s: [Erro: %d] Ao  criar a thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
+		_tprintf(TEXT("%s: [Erro: %d] Ao criar a thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
 		return -1;
 	}
 
-	if (WaitForSingleObject(hTMensagens, INFINITE)) {
+	if (WaitForSingleObject(hTMensagens, INFINITE) == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
-		//return -1;
 	}
 	if ((WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] do jogo...\n"), SERVIDOR, GetLastError(), hTJogoId);
-		//return -1;
 	}
 	if ((WaitForSingleObject(hTBola, INFINITE)) == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
-		//return -1;
 	}
 
 	_tprintf(TEXT("%s: [LastError %d] terminou...\n"), SERVIDOR, GetLastError());

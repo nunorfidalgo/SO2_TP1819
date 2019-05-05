@@ -75,7 +75,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
-	if (WaitForSingleObject(hTMensagens, INFINITE)) {
+	if (WaitForSingleObject(hTMensagens, INFINITE) == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
 		//return -1;
 	}
@@ -119,9 +119,10 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 	return 0;
 }
 
+
 DWORD WINAPI recebeJogo(LPVOID param) {
-	while (true) { // !sincControl.jogo->termina
-	//while (!sincControl.jogo->termina) {
+	while (true) {
+		//while (!sincControl.jogo->termina) {
 
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
@@ -131,14 +132,12 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		gotoxy(sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
 		_tprintf(TEXT("*"));
 
-		//limpa a barreira canto esquerdo
-		gotoxy(1, LINHAS);
-		_tprintf(TEXT("                                        ")); //nao apagar isto
-
 		// limpar a posição anteriro não esta a funcionar
 		/*gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, LINHAS);
 		_tprintf(TEXT("       "));*/
-
+		//limpa a barreira canto esquerdo
+		gotoxy(1, LINHAS);
+		_tprintf(TEXT("                                        ")); //nao apagar isto
 		gotoxy(sincControl.jogo->jogador.barreira.coord.x, LINHAS);
 		_tprintf(TEXT("_____"));
 
@@ -149,7 +148,7 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		gotoxy(COLUNAS + 3, 4);
 		_tprintf(TEXT("Barreira (xp, yp)=(%.2d, %.2d)"), sincControl.jogo->jogador.barreira.coord.x, LINHAS);
 
-		//if (sincControl.jogo->termina == 1) exit(1);
+		if (sincControl.jogo->termina == 1) exit(1);
 
 		ReleaseMutex(sincControl.hMutexJogo);
 
@@ -213,8 +212,8 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 	jogador.barreira.coord.x = 1;
 	jogador.barreira.coord.y = LINHAS;
 	TCHAR key_input;
-	while (true) { //!sincControl.jogo->termina
-	//while (!sincControl.jogo->termina) {
+	while (1) {
+		//while (!sincControl.jogo->termina) {
 		key_input = _gettch();
 		key_input = toupper(key_input);
 		_flushall();
@@ -230,16 +229,13 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 			}
 			break;
 		case 27: // ESC = sair
-			//system("cls");
 			sincControl.mensagem->termina = 1;
-			//sincControl.jogo->termina = 1;
 			gotoxy(0, LINHAS + 2);
 			_tprintf(TEXT("Jogador cancelou do jogo..."));
 			Sleep(1000);
 			exit(1);
 			break;
 		}
-		return 0;
 	}
-
+	return 0;
 }
