@@ -6,16 +6,12 @@
 
 #include "../bridge/bridge.h"
 
-// posição inicial da bola
-//int x = COLUNAS / 2, y = LINHAS - 1;
-//int xa = x, ya = y;
-//int xd = 1, yd = 1; // direcção
 BOLA bola;
-
 SincControl sincControl;
 
-HANDLE hServidor;
+HANDLE hServidor, hLogin;
 HANDLE hTMensagens, hTJogo, hTBola;
+DWORD hTMensagensId, hTJogoId, hTBolaId;
 
 bool verificaInstancia();
 DWORD WINAPI recebeMensagens(LPVOID param);
@@ -32,7 +28,7 @@ int _tmain(int argc, LPTSTR argv[])
 #endif
 
 	system("cls");
-	_tprintf(TEXT("%s iniciou...\n"), SERVIDOR);
+	_tprintf(TEXT("%s: Pronto...\n"), SERVIDOR);
 
 	if (verificaInstancia())
 		return -1;
@@ -43,30 +39,48 @@ int _tmain(int argc, LPTSTR argv[])
 	if (!AcessoJogoServidor(sincControl))
 		return -1;
 
-	hTMensagens = CreateThread(NULL, 0, recebeMensagens, NULL, 0, NULL);
+	_tprintf(TEXT("%s: Espera nome jogador...\n"), SERVIDOR);
+	hLogin = CreateEvent(NULL, TRUE, FALSE, TEXT("LOGIN"));
+	if (hLogin == NULL) {
+		_tprintf(TEXT("%s: [ERRO] Criação evento do login (%d)\n"), SERVIDOR, GetLastError());
+		return -1;
+	}
+	WaitForSingleObject(hLogin, INFINITE);
+	_tprintf(TEXT("%s: O jogo começou...\n"), SERVIDOR);
+	CloseHandle(hLogin);
 
-	hTJogo = CreateThread(NULL, 0, enviaJogo, NULL, 0, NULL);
-
-	if (hTMensagens == NULL || hTJogo == NULL) {
-		_tprintf(TEXT("%s Erro ao criar as threads da de recebeMensagens e enviaJogo\n"), SERVIDOR);
+	hTMensagens = CreateThread(NULL, 0, recebeMensagens, NULL, 0, &hTMensagensId);
+	if (hTMensagens == NULL) {
+		_tprintf(TEXT("%s: [Erro: %d] Ao  criar a thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
 		return -1;
 	}
 
+	hTJogo = CreateThread(NULL, 0, enviaJogo, NULL, 0, &hTJogoId);
+	if (hTJogo == NULL) {
+		_tprintf(TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), SERVIDOR, GetLastError(), hTJogoId);
+		return -1;
+	}
 
-	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, NULL);
-
+	hTBola = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadBola, NULL, 0, &hTBolaId);
 	if (hTBola == NULL) {
-		_tprintf(TEXT("Erro ao criar as threads da bola e teclas\n"));
+		_tprintf(TEXT("%s: [Erro: %d] Ao  criar a thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
 		return -1;
 	}
 
-	if (WaitForSingleObject(hTBola, INFINITE))
-		return -1;
-
-	if (WaitForSingleObject(hTMensagens, INFINITE) || (WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
-		_tprintf(TEXT("%s wait stop\n"), SERVIDOR);
-		return -1;
+	if (WaitForSingleObject(hTMensagens, INFINITE)) {
+		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
+		//return -1;
 	}
+	if ((WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
+		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] do jogo...\n"), SERVIDOR, GetLastError(), hTJogoId);
+		//return -1;
+	}
+	if ((WaitForSingleObject(hTBola, INFINITE)) == NULL) {
+		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
+		//return -1;
+	}
+
+	_tprintf(TEXT("%s: [LastError %d] terminou...\n"), SERVIDOR, GetLastError());
 
 	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
@@ -81,72 +95,58 @@ bool verificaInstancia() {
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		CloseHandle(hServidor);
 		hServidor = NULL;
-		_tprintf(TEXT("%s: Já exite uma instância do servidor a correr\n"), SERVIDOR);
+		_tprintf(TEXT("%s: [Erro: %d]Já exite uma instância do servidor a correr\n"), SERVIDOR, GetLastError());
 		return true;
 	}
-	// the only instance, start in a usual way
 	return false;
 }
 
 DWORD WINAPI recebeMensagens(LPVOID param) {
-	_tprintf(TEXT("termina msg: %d\n"), sincControl.mensagem->termina);
-	while (1)
-	{
-		if (sincControl.mensagem->termina == 1) exit(1);
+	int m = 1;
+	while (!sincControl.mensagem->termina) {
 
 		WaitForSingleObject(sincControl.hEventoMensagem, INFINITE);
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
-		_tprintf(TEXT("Recebi Mensagem: '%s'=(%d,%d)\n"), sincControl.mensagem->nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y);
-		_tcscpy_s(sincControl.jogo->jogador.nome, sincControl.mensagem->nome);
+		_tprintf(TEXT("[Thread: %d] Recebi Mensagem [%d]: Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), m, sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
+
+		_tcscpy_s(sincControl.jogo->jogador.nome, sincControl.mensagem->jogador.nome);
 		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogador.barreira.coord.x;
 		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogador.barreira.coord.y;
+		sincControl.jogo->termina = sincControl.mensagem->termina;
 
 		ReleaseMutex(sincControl.hMutexMensagem);
-		Sleep(500);
+		m++;
+
 	}
 	return 0;
 }
 
 DWORD WINAPI enviaJogo(LPVOID param) {
-	_tprintf(TEXT("termina jogo: %d\n"), sincControl.jogo->termina);
-	int i = 1;
+	int j = 1;
+	while (!sincControl.jogo->termina) {
 
-	_tprintf(TEXT("espero 8s...\n"));
-	Sleep(8000);
-
-	while (1) {
-		if (sincControl.jogo->termina == 1) exit(1);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
-
-		//sincControl.jogo->bola.coordAnt.x = xa;
-		//sincControl.jogo->bola.coordAnt.y = ya;
-		//sincControl.jogo->bola.coord.x = x;
-		//sincControl.jogo->bola.coord.y = y;
 
 		sincControl.jogo->bola.coordAnt.x = bola.coordAnt.x;
 		sincControl.jogo->bola.coordAnt.y = bola.coordAnt.y;
 		sincControl.jogo->bola.coord.x = bola.coord.x;
 		sincControl.jogo->bola.coord.y = bola.coord.y;
 
-		//CopyMemory(sincControl.jogo, &jogo, sizeof(JOGO));
-		_tprintf(TEXT("[%d] Envio Jogo: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d)\n"), i, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y);
-		i++;
+		_tprintf(TEXT("[Thread: %d] Envio Jogo [%d]: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), j, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
+		j++;
 
 		SetEvent(sincControl.hEventoJogo);
 		ReleaseMutex(sincControl.hMutexJogo);
 		ResetEvent(sincControl.hEventoJogo);
 
-		Sleep(100);
+		Sleep(VEL_JOGO);
 	}
 	return 0;
 }
 
 DWORD WINAPI threadBola(LPVOID param) {
-	// posição inicial da bola
-	//int x = COLUNAS / 2, y = LINHAS - 1;
-	//int xa = x, ya = y;
-	//int xd = 1, yd = 1; // direcção
+
 	bola.coord.x = COLUNAS / 2;
 	bola.coord.y = LINHAS - 1;
 	bola.coordAnt.x = bola.coord.x;
@@ -154,24 +154,20 @@ DWORD WINAPI threadBola(LPVOID param) {
 	bola.direcao.x = 1;
 	bola.direcao.y = 1;
 
-	while (1) {
+	while (!sincControl.jogo->termina) {
+		//while (true) { //!sincControl.jogo->termina
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
-		/*xa = x;
-		ya = y;
-		x -= xd;
-		y -= yd;*/
+
 		bola.coordAnt.x = bola.coord.x;
 		bola.coordAnt.y = bola.coord.y;
 		bola.coord.x -= bola.direcao.x;
-		bola.coord.y = bola.direcao.y;
+		bola.coord.y -= bola.direcao.y;
 
 		if (bola.coord.x > COLUNAS - 2 || bola.coord.x < 2) { // limites direita e esquerda
-			//xd *= -1;
 			bola.direcao.x *= -1;
 		}
 		if (bola.coord.y > LINHAS || bola.coord.y < 2) { // limites inferior e superior
 		//if (y < 2) { // limites superior
-			//yd *= -1;
 			bola.direcao.y *= -1;
 		}
 
@@ -191,7 +187,8 @@ DWORD WINAPI threadBola(LPVOID param) {
 		//		exit(1);
 		//	}
 		ReleaseMutex(sincControl.hMutexJogo);
-		Sleep(80);
+		Sleep(VEL_JOGO);
 	}
+	return 0;
 }
 

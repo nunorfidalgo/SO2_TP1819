@@ -11,12 +11,14 @@
 #include "jogo.h"
 #include "sinc.h"
 
-#define SERVIDOR TEXT("Servidor:")
-#define CLIENTE TEXT("Cliente:")
+#define SERVIDOR TEXT("Servidor")
+#define CLIENTE TEXT("Cliente")
 
 // tamanho padrão da linha de comandos do windows
 #define COLUNAS 41 // x
 #define LINHAS 26 // y
+
+#define VEL_JOGO 800
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
