@@ -18,7 +18,7 @@
 #define COLUNAS 41 // x
 #define LINHAS 26 // y
 
-#define VEL_JOGO 500
+#define VEL_JOGO 200
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")

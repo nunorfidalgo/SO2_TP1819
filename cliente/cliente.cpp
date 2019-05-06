@@ -88,7 +88,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 		//return -1;
 	}
 
-	_tprintf(TEXT("%s: [LastError %d] terminou...\n"), CLIENTE, GetLastError());
+	_tprintf(TEXT("%s: [LastError: %d] terminou...\n"), CLIENTE, GetLastError());
 
 	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
@@ -98,9 +98,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 }
 
 DWORD WINAPI envioMensagem(LPVOID param) {
-	while (true) {
-		//while (!sincControl.mensagem->termina) {
+	do {
 
+		SetEvent(sincControl.hEventoMensagem);
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
 		_tcscpy_s(sincControl.mensagem->jogador.nome, jogador.nome);
@@ -110,19 +110,19 @@ DWORD WINAPI envioMensagem(LPVOID param) {
 		//debug
 		//_tprintf(TEXT("[Thread: %d] Envio Mensagem: Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
 
-		SetEvent(sincControl.hEventoMensagem);
+		Sleep(VEL_JOGO);
+
+
 		ReleaseMutex(sincControl.hMutexMensagem);
 		ResetEvent(sincControl.hEventoMensagem);
 
-		Sleep(VEL_JOGO);
-	}
+	} while (!sincControl.mensagem->termina);
 	return 0;
 }
 
-
 DWORD WINAPI recebeJogo(LPVOID param) {
-	while (true) {
-		//while (!sincControl.jogo->termina) {
+	//while (true) {
+	while (!sincControl.mensagem->termina) {
 
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
@@ -138,8 +138,8 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 			_tprintf(TEXT("_"));
 		}
 		// limpar a posição anteriro não esta a funcionar
-		/*gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, LINHAS);
-		_tprintf(TEXT("       "));*/
+		gotoxy(sincControl.jogo->jogador.barreira.coordAnt.x, LINHAS);
+		_tprintf(TEXT("       "));
 		//limpa a barreira canto esquerdo
 		gotoxy(0, LINHAS);
 		_tprintf(TEXT("|                                        ")); //nao apagar isto
@@ -153,13 +153,12 @@ DWORD WINAPI recebeJogo(LPVOID param) {
 		gotoxy(COLUNAS + 3, 4);
 		_tprintf(TEXT("Barreira (xp, yp)=(%.2d, %.2d)"), sincControl.jogo->jogador.barreira.coord.x, LINHAS);
 
-		if (sincControl.jogo->termina == 1) exit(1);
-
-		ReleaseMutex(sincControl.hMutexJogo);
-
 		// debug
 		/*_tprintf(TEXT("[Thread: %d] Recebo Jogo: Jogador: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
 		Sleep(VEL_JOGO);*/
+
+		ReleaseMutex(sincControl.hMutexJogo);
+
 	}
 	return 0;
 }
@@ -216,8 +215,7 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 	jogador.barreira.coord.x = 1;
 	jogador.barreira.coord.y = LINHAS;
 	TCHAR key_input;
-	while (1) {
-		//while (!sincControl.jogo->termina) {
+	while (!sincControl.mensagem->termina) {
 		key_input = _gettch();
 		key_input = toupper(key_input);
 		_flushall();
@@ -234,10 +232,11 @@ DWORD WINAPI threadTeclas(LPVOID param) {
 			break;
 		case 27: // ESC = sair
 			sincControl.mensagem->termina = 1;
+			WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 			gotoxy(0, LINHAS + 2);
-			_tprintf(TEXT("Jogador cancelou do jogo..."));
-			Sleep(1000);
-			exit(1);
+			_tprintf(TEXT("Jogador cancelou do jogo...\n"));
+			ReleaseMutex(sincControl.hMutexJogo);
+			return -1;
 			break;
 		}
 	}

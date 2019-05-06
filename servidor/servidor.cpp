@@ -36,16 +36,11 @@ int _tmain(int argc, LPTSTR argv[])
 	_tprintf(TEXT("%s: Pronto...\n"), SERVIDOR);
 
 	if (escreveRegisto() == -1) {
-		//_tprintf(TEXT("[Erro] A escrever no registo\n"), GetLastError());
 		_tprintf(TEXT("%s: [Erro: %d] Não foi possível salvar os pontos no registo!\n"), SERVIDOR, GetLastError());
-		//return -1;
 	}
 	else {
 		if (leRegisto() == -1) {
-			//_tprintf(TEXT("[Erro] A ler do registo\n"), GetLastError());
 			_tprintf(TEXT("%s: [Erro: %d] Sem pontos no registo!\n"), SERVIDOR, GetLastError());
-
-			//return -1;
 		}
 	}
 
@@ -130,9 +125,9 @@ DWORD WINAPI recebeMensagens(LPVOID param) {
 		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogador.barreira.coord.x;
 		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogador.barreira.coord.y;
 		sincControl.jogo->termina = sincControl.mensagem->termina;
+		m++;
 
 		ReleaseMutex(sincControl.hMutexMensagem);
-		m++;
 
 	}
 	return 0;
@@ -142,6 +137,7 @@ DWORD WINAPI enviaJogo(LPVOID param) {
 	int j = 1;
 	while (!sincControl.jogo->termina) {
 
+		SetEvent(sincControl.hEventoJogo);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
 		sincControl.jogo->bola.coordAnt.x = bola.coordAnt.x;
@@ -149,14 +145,14 @@ DWORD WINAPI enviaJogo(LPVOID param) {
 		sincControl.jogo->bola.coord.x = bola.coord.x;
 		sincControl.jogo->bola.coord.y = bola.coord.y;
 
-		_tprintf(TEXT("[Thread: %d] Envio Jogo [%d]: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), j, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
+		_tprintf(TEXT("[Thread: %d] Envio Jogo [%d] Jogador: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), j, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
 		j++;
 
-		SetEvent(sincControl.hEventoJogo);
+		Sleep(VEL_JOGO);
+
 		ReleaseMutex(sincControl.hMutexJogo);
 		ResetEvent(sincControl.hEventoJogo);
 
-		Sleep(VEL_JOGO);
 	}
 	return 0;
 }
@@ -172,7 +168,7 @@ DWORD WINAPI threadBola(LPVOID param) {
 
 	while (!sincControl.jogo->termina) {
 		//while (true) { //!sincControl.jogo->termina
-		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
+		//WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
 		bola.coordAnt.x = bola.coord.x;
 		bola.coordAnt.y = bola.coord.y;
@@ -202,7 +198,7 @@ DWORD WINAPI threadBola(LPVOID param) {
 		//		_tprintf(TEXT("Perdeu o jogo...\n"));
 		//		exit(1);
 		//	}
-		ReleaseMutex(sincControl.hMutexJogo);
+		//ReleaseMutex(sincControl.hMutexJogo);
 		Sleep(VEL_JOGO);
 	}
 	return 0;
@@ -210,10 +206,10 @@ DWORD WINAPI threadBola(LPVOID param) {
 
 int escreveRegisto() {
 
-	TCHAR frase[TAM];
+	//TCHAR frase[TAM];
 	HKEY chave;
-	DWORD queAconteceu, versao, tamanho;
-	TCHAR str[TAM], autores[TAM], top_ten[TAM], meta[TAM], pontuacoes[TAM];
+	DWORD queAconteceu;
+	//TCHAR str[TAM], autores[TAM], top_ten[TAM], meta[TAM], pontuacoes[TAM];
 
 	//Criar/abrir uma chave em HKEY_CURRENT_USER\Software\TP_SO2_2018_2019
 	if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\TP_SO2_2018_2019"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &chave, &queAconteceu) != ERROR_SUCCESS) {
@@ -238,10 +234,9 @@ int escreveRegisto() {
 
 int leRegisto() {
 
-	TCHAR frase[TAM];
 	HKEY chave;
-	DWORD queAconteceu, versao, tamanho;
-	TCHAR str[TAM], autores[TAM], top_ten[TAM], meta[TAM], pontuacoes[TAM];
+	DWORD queAconteceu, tamanho;
+	TCHAR str[TAM], top_ten[TAM], pontuacoes[TAM];
 
 	if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\TP_SO2_2018_2019"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &chave, &queAconteceu) != ERROR_SUCCESS) {
 		_tprintf(TEXT("Erro ao criar/abrir chave (%d)\n"), GetLastError());
@@ -258,8 +253,8 @@ int leRegisto() {
 			RegQueryValueEx(chave, TEXT("Pontuações"), NULL, NULL, (LPBYTE)pontuacoes, &tamanho);
 			pontuacoes[tamanho / sizeof(TCHAR)] = '\0';
 
-			_stprintf_s(str, TAM, TEXT("Top Ten:%s\nPontuação:%s\n"), top_ten, pontuacoes);
-			_tprintf(TEXT("Lido do Registry:\n%s\n"), str);
+			_stprintf_s(str, TAM, TEXT("Top Ten: %s\nPontuação: %s\n"), top_ten, pontuacoes);
+			_tprintf(TEXT("Lido do Registry:\n%s"), str);
 		}
 		else {
 			_tprintf(TEXT("Erro ao criar/abrir chave (%d)\n"), GetLastError());

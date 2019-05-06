@@ -10,7 +10,6 @@ extern "C" {
 		sincControl.hMemMensagem = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(MENSAGEM), SHM_MENSAGEM);
 		if (sincControl.hMemMensagem == NULL || sincControl.hMutexMensagem == NULL || sincControl.hEventoMensagem == NULL) {
 			_tprintf(TEXT("%s: [Erro: %d] Na criação de objectos (%s)...\n"), SERVIDOR, GetLastError(), MENSAGEM_TXT);
-			return -1;
 			return false;
 		}
 		sincControl.mensagem = (MENSAGEM*)MapViewOfFile(sincControl.hMemMensagem, FILE_MAP_READ, 0, 0, sizeof(MENSAGEM));
