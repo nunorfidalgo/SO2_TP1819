@@ -199,7 +199,7 @@ DWORD WINAPI threadBola(LPVOID param) {
 		//		exit(1);
 		//	}
 		//ReleaseMutex(sincControl.hMutexJogo);
-		Sleep(VEL_JOGO);
+		Sleep(VEL_JOGO); // waitable timer
 	}
 	return 0;
 }

@@ -1,5 +1,4 @@
 ﻿#include "bridge.h"
-#include "mensagem.h"
 
 extern "C" {
 

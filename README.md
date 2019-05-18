@@ -16,15 +16,13 @@
 ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/IP ou UDP).
 
 ## Tecnologias
-* Threads;
-* Mutex, Events, Semáforos;
-* Named Pipes;
+* Threads, Mutex, Events, Semáforos, Named Pipes;
 * Win32 API
 * Windows GUI;
 
 # Entregas
-- [ ] Entrega meta1, com código retirado do github(desta forma o projecto fica o mais limpo possível e sem o "lixo" dos projetos compilados);
-- [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
+- [X] Entrega meta1, com código retirado do github(desta forma o projecto fica o mais limpo possível e sem o "lixo" dos projetos compilados);
+- [X] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
 
 # Para Fazer
 
@@ -36,7 +34,10 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Criação inicial do projecto para o GitHub;
 - [x] Adicionei colaborador;
 - [x] Definir tarefas iniciais;
-- [ ] Colocar as opções Debug / Release, x86 / x64 a funcionar;
+- [X] Colocar as opções Debug / Release, x86 / x64 a funcionar;
+
+## Meta 2
+- [ ] O servidor tem que ler ficheiro de configuração;
 
 ## Versão final
 - [ ] Correção dos projectos para C e devidas correções;
@@ -44,29 +45,34 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 
 ## Extras
 - [ ] Adicionar comunicação por TCP/IP ou UDP
+- [ ] Problema do unicode resolvido, aparentemente quando se colocano GitHub muda a codificação dos ficheiro, solução...
 
 # Outros
-- [ ] Suporte x86 / x64;
-- [ ] modo debug em ambas as arquiteturas;
+- [X] Suporte x86 / x64;
+- [X] modo debug em ambas as arquiteturas;
 
 ## Modulo "Bridge""
-- [x] Código inicial da bridge(DDL) :
-	- [x] Livraria DLL;
-- [ ] Dados de jogo;
+- [x] Código inicial da bridge(DDL);
+- [X] Dados de jogo;
 - [ ] Funções para zonas de memoria partilhada;
 
 ## Modulo "Servidor"
 - [x] Código inicial da servidor(consola);
 - [x] Interligação DLL implícita;
-- [ ] Estrutura de dados; (Em progresso!!);
-- [ ] Suporte a memoria partilhada;
+- [X] Estrutura de dados; (Em progresso!!);
+- [X] Suporte a threads;
+- [X] Suporte a memoria partilhada;
+- [X] Protegido de forma a executarmos o servidor em varias instancias;
 
 ## Modulo "Cliente"
 - [x] Código inicial da cliente(consola);
-- [ ] Suporte a memoria partilhada;
-- [ ] Suporte a threads;
+- [x] Interligação DLL implícita;
+- [X] Suporte a memoria partilhada;
+- [X] Suporte a threads;
+- [X] Recolhe as teclas do jogador;
 - [ ] Suporte a named pipes;
-- [ ] Recolhe as teclas do jogador;
 
-# Como jogar?
-TODO
+# NOTAS da Meta 1
+* fazer com que varios cientes não acedam ao servidor...
+* mudar as funções de comunicação para a DLL...
+* não esquecer de ver o waitable...
