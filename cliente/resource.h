@@ -15,7 +15,6 @@
 #define ID_AJUA_SOBRE                   40004
 #define IDM_JOGO_CONFIGS                40005
 #define IDM_JOGO_NOVO                   40006
-#define ID_JOGO_CONFIGS                 40007
 #define IDM_JOGO_SAIR                   40008
 #define IDM_AJUDA_SOBRE                 40009
 

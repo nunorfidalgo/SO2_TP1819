@@ -2,6 +2,9 @@
 #include "resource.h"
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow) {
+
+	//setlocale(LC_ALL, "pt-PT");
+
 	HWND hWnd;
 	MSG lpMsg;
 	WNDCLASSEX wcApp;

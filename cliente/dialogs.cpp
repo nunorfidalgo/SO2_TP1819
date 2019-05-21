@@ -52,27 +52,44 @@ LRESULT CALLBACK Cliente(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 }
 
 INT_PTR CALLBACK JogoNovo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
-	UNREFERENCED_PARAMETER(lParam);
+	/*UNREFERENCED_PARAMETER(lParam);
 
 	switch (message) {
 	case WM_INITDIALOG:
-		break;
+		break;*/
+
+		//case WM_COMMAND:
+		//	switch (LOWORD(wParam)) {
+		//		//case IDLIGAR:
+		//		//	//GetDlgItemText(hDlg, IDC_EDIT1, login, 30);
+		//		//	EndDialog(hDlg, 0);
+		//		//	return (INT_PTR)TRUE;
+		//		//	break;
+		//		//case IDCANCELAR:
+		//		//	EndDialog(hDlg, 0);
+		//		//	return (INT_PTR)TRUE;
+		//		//	break;
+		//	case IDCANCEL:
+		//		EndDialog(hDlg, 0);
+		//		return (INT_PTR)TRUE;
+		//		break;
+		//	}
+			//break;
+	/*}
+	return (INT_PTR)FALSE;*/
+
+
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-			//case IDLIGAR:
-			//	//GetDlgItemText(hDlg, IDC_EDIT1, login, 30);
-			//	EndDialog(hDlg, 0);
-			//	return (INT_PTR)TRUE;
-			//	break;
-			//case IDCANCELAR:
-			//	EndDialog(hDlg, 0);
-			//	return (INT_PTR)TRUE;
-			//	break;
-		case IDCANCEL:
-			EndDialog(hDlg, 0);
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
-			break;
 		}
 		break;
 	}
@@ -80,18 +97,34 @@ INT_PTR CALLBACK JogoNovo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 INT_PTR CALLBACK JogoConfigs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
-	UNREFERENCED_PARAMETER(lParam);
+	//UNREFERENCED_PARAMETER(lParam);
 
-	switch (message) {
+	//switch (message) {
+	//case WM_INITDIALOG:
+	//	break;
+
+	//	/*case WM_COMMAND:
+	//		switch (LOWORD(wParam)) {
+	//		case IDCANCEL:
+	//			EndDialog(hDlg, 0);
+	//			return (INT_PTR)TRUE;
+	//			break;
+	//		}
+	//		break;*/
+	//}
+	//return (INT_PTR)FALSE;
+
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
 	case WM_INITDIALOG:
-		break;
+		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case IDCANCEL:
-			EndDialog(hDlg, 0);
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
-			break;
 		}
 		break;
 	}
@@ -100,31 +133,47 @@ INT_PTR CALLBACK JogoConfigs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(lParam);
-
-	switch (message) {
+	switch (message)
+	{
 	case WM_INITDIALOG:
-		break;
+		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-			/*case IDOK:
-				EndDialog(hDlg, 0);
-				return (INT_PTR)TRUE;
-				break;*/
-		case IDCANCEL:
-			EndDialog(hDlg, 0);
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
-			break;
-			//case IDLINK:
-			//	MessageBox(NULL, TEXT("Dialog Link"), TEXT("link"), MB_ICONEXCLAMATION | MB_OK);
-			//	//ShellExecute(hDlg, TEXT("open"), TEXT("https://github.com/nunorfidalgo/SO2-TP"), NULL, NULL, SW_SHOWDEFAULT);
-			//	EndDialog(hDlg, 0);
-			//	return (INT_PTR)TRUE;
-			//	break;
 		}
 		break;
 	}
 	return (INT_PTR)FALSE;
+
+	/*UNREFERENCED_PARAMETER(lParam);
+
+	switch (message) {
+	case WM_INITDIALOG:
+		break;*/
+
+		//case WM_COMMAND:
+		//	switch (LOWORD(wParam)) {
+		//		/*case IDOK:
+		//			EndDialog(hDlg, 0);
+		//			return (INT_PTR)TRUE;
+		//			break;*/
+		//	case IDCANCEL:
+		//		EndDialog(hDlg, 0);
+		//		return (INT_PTR)TRUE;
+		//		break;
+		//	case IDC_SYSLINK1:
+		//		MessageBox(NULL, TEXT("Dialog Link"), TEXT("link"), MB_ICONEXCLAMATION | MB_OK);
+		//		//ShellExecute(hDlg, TEXT("open"), TEXT("https://github.com/nunorfidalgo/SO2-TP"), NULL, NULL, SW_SHOWDEFAULT);
+		//		/*EndDialog(hDlg, 0);*/
+		//		return (INT_PTR)TRUE;
+		//		break;
+		//	}
+		//	break;
+	/*}
+	return (INT_PTR)FALSE;*/
 }
 
 LRESULT CALLBACK TrataEventos(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam) {
