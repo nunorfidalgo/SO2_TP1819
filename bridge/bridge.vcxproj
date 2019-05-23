@@ -122,6 +122,7 @@
   <ItemGroup>
     <ClCompile Include="bridge.cpp" />
     <ClCompile Include="login.cpp" />
+    <ClCompile Include="memoria.cpp" />
     <ClCompile Include="mensagens.cpp" />
     <ClCompile Include="jogo.cpp" />
     <ClCompile Include="utils.cpp" />

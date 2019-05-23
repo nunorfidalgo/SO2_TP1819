@@ -21,6 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cliente-wda", "cliente-wda\cliente-wda.vcxproj", "{91158206-CAFA-4395-945F-BC81E6373A2A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{348A7182-AC80-40AD-A2C1-4A0FA6F1256C} = {348A7182-AC80-40AD-A2C1-4A0FA6F1256C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

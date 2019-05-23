@@ -15,19 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mensagens.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="jogo.cpp">
+    <ClCompile Include="memoria.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="login.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jogo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

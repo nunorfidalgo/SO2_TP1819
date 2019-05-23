@@ -1,7 +1,6 @@
 ﻿#include "bridge.h"
 
 extern "C" {
-
 	bool AcessoJogoServidor(SincControl &sincControl) {
 		sincControl.hMutexJogo = CreateMutex(NULL, FALSE, MUTEX_JOGO);
 		sincControl.hEventoJogo = CreateEvent(NULL, TRUE, FALSE, EVENTO_JOGO);
