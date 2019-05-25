@@ -7,8 +7,6 @@
 
 #include "targetver.h"
 
-#include "../bridge/bridge.h"
-
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files
 #include <windows.h>
@@ -19,8 +17,12 @@
 //#include <malloc.h>
 //#include <memory.h>
 //#include <tchar.h>
-#include <ShellAPI.h>
-#include <commctrl.h> 
-#include <assert.h> 
 
 // reference additional headers your program requires here
+#include <ShellAPI.h>
+#include <commctrl.h> 
+#include <assert.h>
+
+#include "../bridge/bridge.h"
+
+//#define TITLE_TEXT TEXT("Cliente Arkanoid/Breakout") -> definido nas string tables;

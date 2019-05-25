@@ -56,11 +56,6 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] Recebe jogo;
 - [x] Recolhe as teclas do jogador;
 
-# NOTAS da Meta 1
-* fazer com que varios cientes não acedam ao servidor...
-* mudar as funções de comunicação para a DLL...
-* não esquecer de ver o waitable...
-
 ## Entrega: Meta 1
 - [x] Criação inicial da solução em Visual Studio 2017 Community Edition;
 - [x] Criação do project servidor(GUI)
@@ -76,7 +71,17 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Entrega meta1 em modo release x86 e x64 com código retirado do github (fazer release no github com os binários);
 - [x] O README.md foi apenas actualizado/organizador depois da entrega desta meta;
 
+# NOTAS da Meta 1
+* fazer com que varios cientes não acedam ao servidor...
+* mudar as funções de comunicação para a DLL...
+* não esquecer de ver o waitable...
+
 # Meta 2 (Final)
+
+## NOTAS da Meta 1:
+- [ ] fazer com que varios cientes não acedam ao servidor...
+- [x] mudar as funções de comunicação para a DLL...
+- [ ] não esquecer de ver o waitable...
 
 ## Modulo (DDL) "Bridge" 
 - [x] Estrutura de dados; (Em progresso!!);
@@ -85,10 +90,10 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] Zona do Jogo;
 - [ ] Funções a implementar;
 	- [ ] Login;
-	- [ ] ReceiveBroadcast;
-	- [ ] SendMessage;
-	- [ ] ReceiveMessage;
-- [ ] Correções das notas da meta 1 (em seguida);
+	- [x] RecebeJogo(ReceiveBroadcast);
+	- [x] EnviaMensagem (SendMessage);
+	- [x] RecebeMensagem (ReceiveMessage);
+- [ ] Correções das notas da meta 1 (em progresso);
 
 ## Modulo "Servidor"
 - [x] Suporte a threads;
@@ -99,7 +104,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] Gerir o movimento ds(s) bola(s);
 	- [ ] Pelo uma para gerir os jogadores;
 - [x] Guardar/Ler pontuações no Registo do Windows;
-- [ ] Correções das notas da meta 1 (em seguida);
+- [ ] Correções das notas da meta 1 (em progresso);
 - [ ] Ler ficheiro de configuração;
 - [ ] Adiconar brindes;
 
@@ -107,7 +112,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Novo projecto feito para o cliente em WDA;
 - [x] Colocar as opções Debug / Release, x86 / x64 a funcionar;
 - [x] Interligação DLL implícita;
-- [ ] Correções das notas da meta 1 (em seguida);
+- [ ] Correções das notas da meta 1 (em progresso);
 - [ ] Suporte a memoria partilhada;
 - [ ] Suporte a named pipes;
 - [x] Suporte a threads;

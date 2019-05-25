@@ -123,10 +123,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bola.cpp" />
+    <ClCompile Include="configs.cpp" />
+    <ClCompile Include="registo.cpp" />
     <ClCompile Include="servidor.cpp" />
+    <ClCompile Include="threads.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="funcs.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="servidor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
