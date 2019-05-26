@@ -63,5 +63,11 @@
     <Image Include="cliente-wda.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\images\ball.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\paddle.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -169,6 +169,8 @@
     <ResourceCompile Include="cliente-wda.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\images\ball.bmp" />
+    <Image Include="..\images\paddle.bmp" />
     <Image Include="cliente-wda.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

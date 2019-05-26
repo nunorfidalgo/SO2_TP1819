@@ -20,7 +20,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// TODO: Place code here.
 
-	/**/
+	//jogador.barreira.coord.x = 180;
+	//bola.coord.x = 180;
+	//bola.coord.y = 500;
+
+	// get screen res
+	//_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: SM_CXSCREEN: %d, SM_CYSCREEN: %d\n"), CLIENTE, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+	//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
 
 	if (!AcessoMensagensCliente(sincControl)) {
 		MessageBox(NULL, TEXT("Erro ao aceder as mensagens"), MENSAGEM_TXT, MB_ICONEXCLAMATION | MB_OK);
@@ -39,7 +45,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return -1;
 	}
 
-	DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);
+	/*DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);*/
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO_LOCAL), NULL, NovoJogoLocal);
 
 	SetEvent(hLogin);
 	ResetEvent(hLogin);
@@ -65,8 +72,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
 		return -1;
 	}*/
-
-
 
 	// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -125,13 +130,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = trataEventos;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
 	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDC_MENU));
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.hbrBackground = /*CreateSolidBrush(RGB(8, 232, 222));*/ (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_MENU);
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -154,8 +159,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hInst = hInstance; // Store instance handle in our global variable
 
 	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
+		/*CW_USEDEFAULT*/ (GetSystemMetrics(SM_CXSCREEN) - _WINDOW_WIDTH) / 2,
+		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CYSCREEN) - _WINDOW_HEIGHT) / 2,
 		_WINDOW_WIDTH,
 		_WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
