@@ -10,7 +10,7 @@ DWORD WINAPI threadEnvioMensagem(LPVOID param) {
 }
 
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
-	recebeJogo(sincControl);
+	//recebeJogo(sincControl);
 	return 0;
 }
 

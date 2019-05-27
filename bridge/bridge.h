@@ -22,7 +22,7 @@
 #define _WINDOW_WIDTH 450// x
 #define _WINDOW_HEIGHT 600 // y
 
-#define VEL_JOGO 200
+#define VEL_JOGO 50
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
@@ -53,7 +53,7 @@ extern "C" {
 
 	// jogo.cpp
 	BRIDGE_API void enviaJogo(SincControl &sincControl, BOLA &bola);
-	BRIDGE_API void recebeJogo(SincControl &sincControl);
+	BRIDGE_API void recebeJogo(SincControl &sincControl, BOLA &bola);
 
 	// mensagens.cpp
 	BRIDGE_API void enviaMensagem(SincControl &sincControl, JOGADOR &jogador);

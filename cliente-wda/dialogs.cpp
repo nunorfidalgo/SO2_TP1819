@@ -4,6 +4,7 @@
 
 extern HINSTANCE hInst;
 extern SincControl sincControl;
+extern TCHAR erros[MAX_LOADSTRING];
 
 //HWND CreateSysLink(HWND hDlg, HINSTANCE hInst, RECT rect)
 //{
@@ -112,12 +113,26 @@ INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		switch (LOWORD(wParam))
 		{
+		case IDOK:
+			GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
+			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
+			//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
 			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
+			break;
+		case IDCANCEL:
+			EndDialog(hDlg, LOWORD(wParam));
+			break;
 		}
-		GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
+		//if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		//{
+		//	GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
+		//	EndDialog(hDlg, LOWORD(wParam));
+		//	return (INT_PTR)TRUE;
+		//}
+
+
 		break;
 	}
 	return (INT_PTR)FALSE;

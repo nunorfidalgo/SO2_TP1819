@@ -1,22 +1,20 @@
 #include "stdafx.h"
-#include "Resource.h"
+#include "cliente-wda.h"
 #include "funcs.h"
 
-#define MAX_LOADSTRING 100
-
 extern HINSTANCE hInst;
+
 extern JOGADOR jogador;
-//extern BOLA bola;
+extern BOLA bola;
 extern SincControl sincControl;
 extern TCHAR erros[MAX_LOADSTRING];
 
 HDC hdc = NULL;
 HDC auxDC = NULL;
 PAINTSTRUCT ps;
-
-int sair, nX = 0, nY = 0;
+int sair;
+//int nX = 0, nY = 0;
 // bola posicão inicial 180, 500
-
 HBRUSH bg = NULL;
 HBITMAP auxBM = NULL;
 HBITMAP hBola, hBarreira;
@@ -69,48 +67,65 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 	case WM_CREATE:
 	{
-		hdc = GetDC(hWnd);
 
 		hBola = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BOLA), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		hBarreira = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BARREIRA), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+
+		//hdc = GetDC(hWnd);
 		GetObject(hBola, sizeof(bmBola), &bmBola);
 		hdcBola = CreateCompatibleDC(hdc);
 		SelectObject(hdcBola, hBola);
+		//ReleaseDC(hWnd, hdc);
 
-		hBarreira = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BARREIRA), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		//hdc = GetDC(hWnd);
 		GetObject(hBarreira, sizeof(bmBarreira), &bmBarreira);
 		hdcBarreira = CreateCompatibleDC(hdc);
 		SelectObject(hdcBarreira, hBarreira);
+		//ReleaseDC(hWnd, hdc);
+
+		// Double Buffering
+		hdc = GetDC(hWnd);
+		auxDC = CreateCompatibleDC(hdc);
+		auxBM = CreateCompatibleBitmap(hdc, _WINDOW_WIDTH, _WINDOW_HEIGHT);
+		SelectObject(auxDC, auxBM);
+		SelectObject(auxDC, /*bg*/CreateSolidBrush(RGB(255, 255, 255)));
+		//PatBlt(auxDC, 0, 0, nX, nY, PATCOPY);
+		PatBlt(auxDC, 0, 0, _WINDOW_WIDTH, _WINDOW_HEIGHT, PATCOPY);
+		ReleaseDC(hWnd, hdc);
 
 		// OBTEM AS DIMENSOES DO DISPLAY e define a cor de fundo;
-		bg = CreateSolidBrush(RGB(255, 255, 255)/*(8, 232, 222)*/);
-		nX = GetSystemMetrics(SM_CXSCREEN);
-		nY = GetSystemMetrics(SM_CYSCREEN);
+		//bg = CreateSolidBrush(RGB(255, 255, 255)/*(8, 232, 222)*/);
+		//nX = GetSystemMetrics(SM_CXSCREEN);
+		//nY = GetSystemMetrics(SM_CYSCREEN);
 
-		// PREPARA 'BITMAP' E ASSOCIA A UM 'DC' EM MEMORIA... 
-		auxDC = CreateCompatibleDC(hdc);
-		auxBM = CreateCompatibleBitmap(hdc, nX, nY);
-		SelectObject(auxDC, auxBM);
-		SelectObject(auxDC, bg);
-		PatBlt(auxDC, 0, 0, nX, nY, PATCOPY);
-
-		ReleaseDC(hWnd, hdc);
 	}
 	break;
 
 	case WM_PAINT:
 	{
 		// DESENHA NO 'DC' EM MEMORIA... 		
-		PatBlt(auxDC, 0, 0, nX, nY, PATCOPY);
+		//PatBlt(auxDC, 0, 0, nX, nY, PATCOPY);
+		PatBlt(auxDC, 0, 0, _WINDOW_WIDTH, _WINDOW_HEIGHT, PATCOPY);
 
-		BitBlt(auxDC, 180, 500, bmBola.bmWidth, bmBola.bmHeight, hdcBola, 0, 0, SRCCOPY);
-		//BitBlt(auxDC, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, bmBola.bmWidth, bmBola.bmHeight, hdcBola, 0, 0, SRCCOPY);
-		//BitBlt(auxDC, 180, 520, bmBarreira.bmWidth, bmBarreira.bmHeight, hdcBarreira, 0, 0, SRCCOPY);
+		/*BitBlt(auxDC, 180, 500, bmBola.bmWidth, bmBola.bmHeight, hdcBola, 0, 0, SRCCOPY);*/
+		BitBlt(auxDC, bola.coord.x, bola.coord.y, bmBola.bmWidth, bmBola.bmHeight, hdcBola, 0, 0, SRCCOPY);
+
+		//StretchBlt(auxDC, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, bmBola.bmWidth, bmBola.bmHeight, hdcBola, 0, 0, bmBola.bmWidth, bmBola.bmHeight, SRCCOPY);
+		//TransparentBlt(auxDC, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, bmBola.bmWidth, bmBola.bmHeight, hdcBola, 0, 0, bmBola.bmWidth, bmBola.bmHeight, RGB(255, 255, 255));
+		//InvalidateRect(hWnd, NULL, TRUE);
+
+		//BitBlt(auxDC, 180, 520, bmBarreira.bmWidth, bmBarreira.bmHeight, hdcBarreira, 0, 0, SRCCOPY);X
 		//BitBlt(auxDC, x, 520, bmBarreira.bmWidth, bmBarreira.bmHeight, hdcBarreira, 0, 0, SRCCOPY);
 		BitBlt(auxDC, jogador.barreira.coord.x, 520, bmBarreira.bmWidth, bmBarreira.bmHeight, hdcBarreira, 0, 0, SRCCOPY);
+		//StretchBlt(auxDC, jogador.barreira.coord.x, 520, 9, 90, hdcBarreira, 0, 0, 9, 90, SRCCOPY);
+		//TransparentBlt(auxDC, jogador.barreira.coord.x, 520, 9, 90, hdcBarreira, 0, 0, 9, 90, RGB(255, 255, 255));
+		//TransparentBlt(auxDC, jogador.barreira.coord.x, 520, 9, 90, hdcBarreira, 0, 0, 9, 90, RGB(255, 255, 255));
+		//TransparentBlt(janelaAux, (pacoteTratar.dataPacket.arrayTab[i].x * escala), (pacoteTratar.dataPacket.arrayTab[i].y * escala), 40, 40, hdcDasImg.Basica, 0, 0, 40, 40, RGB(255, 255, 255)); // estica e tira a cor de fundo
 
 		// COPIA INFORMACAO DO 'DC' EM MEMORIA PARA O DISPLAY... 
 		hdc = BeginPaint(hWnd, &ps);
-		BitBlt(hdc, 0, 0, nX, nY, auxDC, 0, 0, SRCCOPY);
+		//BitBlt(hdc, 0, 0, nX, nY, auxDC, 0, 0, SRCCOPY);
+		BitBlt(hdc, 0, 0, _WINDOW_WIDTH, _WINDOW_HEIGHT, auxDC, 0, 0, SRCCOPY);
 		EndPaint(hWnd, &ps);
 	}
 	break;
@@ -119,23 +134,24 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	{
 		jogador.barreira.coord.x = GET_X_LPARAM(lParam);
 		//GET_Y_LPARAM(lParam);
-		InvalidateRect(hWnd, NULL, FALSE);
+
+		InvalidateRect(hWnd, NULL, TRUE);
 	}
 	break;
 
-	case WM_LBUTTONDOWN:
-	{
-		RECT rect;
-		int width, height;
-		if (GetWindowRect(hWnd, &rect))
-		{
-			width = rect.right - rect.left;
-			height = rect.bottom - rect.top;
-		}
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: nX: %d, nY: %d\n"), CLIENTE, width, height);
-		MessageBox(NULL, erros, TEXT("Info"), MB_ICONEXCLAMATION | MB_OK);
-	}
-	break;
+	//case WM_LBUTTONDOWN:
+	//{
+	//	RECT rect;
+	//	int width, height;
+	//	if (GetWindowRect(hWnd, &rect))
+	//	{
+	//		width = rect.right - rect.left;
+	//		height = rect.bottom - rect.top;
+	//	}
+	//	_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: nX: %d, nY: %d\n"), CLIENTE, width, height);
+	//	MessageBox(NULL, erros, TEXT("Info"), MB_ICONEXCLAMATION | MB_OK);
+	//}
+	//break;
 
 	case WM_KEYDOWN:
 	{
@@ -147,7 +163,7 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			jogador.barreira.coord.x += 5;
 			break;
 		}
-		InvalidateRect(hWnd, NULL, FALSE);
+		InvalidateRect(hWnd, NULL, TRUE);
 	}
 	break;
 

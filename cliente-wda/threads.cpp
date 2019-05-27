@@ -1,7 +1,9 @@
 #include "stdafx.h"
+//#include "globals.h"
 #include "funcs.h"
 
 extern JOGADOR jogador;
+extern BOLA bola;
 extern SincControl sincControl;
 
 DWORD WINAPI threadEnvioMensagem(LPVOID param) {
@@ -11,6 +13,6 @@ DWORD WINAPI threadEnvioMensagem(LPVOID param) {
 }
 
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
-	recebeJogo(sincControl);
+	recebeJogo(sincControl, bola);
 	return 0;
 }

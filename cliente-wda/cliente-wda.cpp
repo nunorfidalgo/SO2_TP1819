@@ -1,7 +1,7 @@
 // cliente-wda.cpp : Defines the entry point for the application.
 //
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "cliente-wda.h"
 #include "globals.h"
 #include "funcs.h"
@@ -66,13 +66,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return -1;
 	}
 
-	/*htTeclas = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadTeclas, NULL, 0, &htTeclasId);
-	if (htTeclas == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] das teclas...\n"), CLIENTE, GetLastError(), htTeclasId);
-		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
-		return -1;
-	}*/
-
 	// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadStringW(hInstance, IDC_CLIENTEWDA, szWindowClass, MAX_LOADSTRING);
@@ -99,21 +92,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	if (WaitForSingleObject(hTMensagens, INFINITE) == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
-		MessageBox(NULL, erros, TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
+		//_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
+		//MessageBox(NULL, erros, TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
 	}
 	if ((WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
-		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
+		//_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
+		//MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
 	}
-	//if ((WaitForSingleObject(htTeclas, INFINITE)) == NULL) {
-	//	_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das teclas...\n"), CLIENTE, GetLastError(), htTeclasId);
-	//}
 
 	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
 	CloseHandle(hTJogo);
-	//CloseHandle(htTeclas);
 
 	return (int)msg.wParam;
 }
@@ -159,7 +148,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hInst = hInstance; // Store instance handle in our global variable
 
 	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		/*CW_USEDEFAULT*/ (GetSystemMetrics(SM_CXSCREEN) - _WINDOW_WIDTH) / 2,
+		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CXSCREEN) - _WINDOW_WIDTH) / 2,
 		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CYSCREEN) - _WINDOW_HEIGHT) / 2,
 		_WINDOW_WIDTH,
 		_WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);

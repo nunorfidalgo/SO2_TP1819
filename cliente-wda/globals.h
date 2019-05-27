@@ -4,10 +4,10 @@
 
 #include "stdafx.h"
 
-#define MAX_LOADSTRING 100
+//#define MAX_LOADSTRING 100
 
 // Global Variables:
-HINSTANCE hInst;                                // current instance
+//HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
@@ -15,19 +15,15 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 
-//LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-//INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-//INT_PTR CALLBACK    NovoJogo(HWND, UINT, WPARAM, LPARAM);
-//INT_PTR CALLBACK    JogoConfigs(HWND, UINT, WPARAM, LPARAM);
+HINSTANCE hInst;
 
 JOGADOR jogador;
-//BOLA bola;
+BOLA bola;
 SincControl sincControl;
-
 TCHAR erros[MAX_LOADSTRING];
 
 HANDLE hLogin;
-HANDLE htTeclas, hTMensagens, hTJogo;
-DWORD hTMensagensId, hTJogoId, htTeclasId;
+HANDLE hTMensagens, hTJogo, htDoubleBuff;
+DWORD hTMensagensId, hTJogoId, htDoubleBuffId;
 
 #endif

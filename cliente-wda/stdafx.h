@@ -26,3 +26,5 @@
 #include "../bridge/bridge.h"
 
 //#define TITLE_TEXT TEXT("Cliente Arkanoid/Breakout") -> definido nas string tables;
+
+#define MAX_LOADSTRING 100

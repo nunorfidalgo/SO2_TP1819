@@ -31,7 +31,7 @@ extern "C" {
 			WaitForSingleObject(sincControl.hEventoMensagem, INFINITE);
 			WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
-			_tprintf(TEXT("[Thread: %d] Recebi Mensagem [%d]: Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), m, sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
+			//_tprintf(TEXT("[Thread: %d] Recebi Mensagem [%d]: Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), m, sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
 
 			_tcscpy_s(sincControl.jogo->jogador.nome, sincControl.mensagem->jogador.nome);
 			sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogador.barreira.coord.x;
