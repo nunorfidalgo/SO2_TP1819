@@ -13,6 +13,9 @@ DWORD WINAPI threadEnvioMensagem(LPVOID param) {
 }
 
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
-	recebeJogo(sincControl, bola);
+	while (!sincControl.mensagem->termina) {
+		recebeJogo(sincControl, bola);
+		InvalidateRect(GetActiveWindow(), NULL, TRUE);
+	}
 	return 0;
 }

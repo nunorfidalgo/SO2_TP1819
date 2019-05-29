@@ -26,17 +26,17 @@ extern "C" {
 	}
 
 	void recebeJogo(SincControl &sincControl, BOLA &bola) {
-		while (!sincControl.mensagem->termina) {
+		//while (!sincControl.mensagem->termina) {
 
-			WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
-			WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
+		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
+		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
-			bola.coord.x = sincControl.jogo->bola.coord.x;
-			bola.coord.y = sincControl.jogo->bola.coord.y;
+		bola.coord.x = sincControl.jogo->bola.coord.x;
+		bola.coord.y = sincControl.jogo->bola.coord.y;
 
-			ReleaseMutex(sincControl.hMutexJogo);
+		ReleaseMutex(sincControl.hMutexJogo);
 
-		}
+		//}
 	}
 
 

@@ -13,8 +13,6 @@ HDC hdc = NULL;
 HDC auxDC = NULL;
 PAINTSTRUCT ps;
 int sair;
-//int nX = 0, nY = 0;
-// bola posicão inicial 180, 500
 HBRUSH bg = NULL;
 HBITMAP auxBM = NULL;
 HBITMAP hBola, hBarreira;
