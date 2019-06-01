@@ -12,10 +12,10 @@ void MovimentoBola() {
 		bola.coord.x -= bola.direcao.x;
 		bola.coord.y -= bola.direcao.y;
 
-		if (bola.coord.x > _WINDOW_WIDTH || bola.coord.x < 0) { // limites direita e esquerda
+		if (bola.coord.x > _WINDOW_WIDTH - 20 || bola.coord.x < 0) { // limites direita e esquerda
 			bola.direcao.x *= -1;
 		}
-		if (bola.coord.y > _WINDOW_HEIGHT || bola.coord.y < 0) { // limites inferior e superior
+		if (bola.coord.y > _WINDOW_HEIGHT - 20 || bola.coord.y < 0) { // limites inferior e superior
 		//if (y < 2) { // limites superior
 			bola.direcao.y *= -1;
 		}
@@ -36,6 +36,6 @@ void MovimentoBola() {
 		//		exit(1);
 		//	}
 		//ReleaseMutex(sincControl.hMutexJogo);
-		Sleep(VEL_JOGO); // waitable timer
+		Sleep(10); // waitable timer
 	}
 }

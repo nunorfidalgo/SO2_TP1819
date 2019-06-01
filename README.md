@@ -79,7 +79,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 # Meta 2 (Final)
 
 ## NOTAS da Meta 1:
-- [ ] fazer com que varios cientes não acedam ao servidor...
+- [x] fazer com que varios cientes não acedam ao servidor...
 - [x] mudar as funções de comunicação para a DLL...
 - [ ] não esquecer de ver o waitable...
 
@@ -94,6 +94,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] EnviaMensagem (SendMessage);
 	- [x] RecebeMensagem (ReceiveMessage);
 - [ ] Correções das notas da meta 1 (em progresso);
+- [ ] Usar a função de segurança para escrever no registo e nos namedpipes;
 
 ## Modulo "Servidor"
 - [x] Suporte a threads;
@@ -105,16 +106,22 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [ ] Pelo uma para gerir os jogadores;
 - [x] Guardar/Ler pontuações no Registo do Windows;
 - [ ] Correções das notas da meta 1 (em progresso);
+	- [x] fazer com que varios cientes não acedam ao servidor...
+	- [x] mudar as funções de comunicação para a DLL...
+	- [ ] não esquecer de ver o waitable...
 - [ ] Ler ficheiro de configuração;
-- [ ] Adiconar brindes;
+- [ ] Adicionar brindes;
+- [ ] Usar a função de segurança para escrever no registo;
 
 ## Modulo "Cliente"
 - [x] Novo projecto feito para o cliente em WDA;
 - [x] Colocar as opções Debug / Release, x86 / x64 a funcionar;
 - [x] Interligação DLL implícita;
 - [ ] Correções das notas da meta 1 (em progresso);
-- [ ] Suporte a memoria partilhada;
-- [ ] Suporte a named pipes;
+	- [x] fazer com que varios cientes não acedam ao servidor...
+	- [x] mudar as funções de comunicação para a DLL...
+	- [ ] não esquecer de ver o waitable...
+- [x] Suporte a memoria partilhada;
 - [x] Suporte a threads;
 	- [x] Envio mensagens;
 	- [x] Recebe jogo;
@@ -123,13 +130,23 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Suporte ao WDA;
 	- [x] Menu adicionado com dialogs de Login, Configurações e Sobre;
 	- [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Acelaradores);
-	- [ ] Melhorar as funções de eventos, colocar apenas uma função para tratar os dialogs do menu e outro sendo o trataEventos;
-	- [ ] Colocar o Dialog de Login a funcionar;
+	- [x] Melhorar as funções de eventos, colocar apenas uma função para tratar os dialogs do menu e outro sendo o trataEventos;
+	- [x] Ao executar o cliente ele detecta se o servidor esta a correr localmente e liga-se por memoria partilhada, senão pede IP ao utilizador;
+	- [x] Colocar o Dialog de Login a funcionar (NECESSÁRIO MELHORAR);
+		- [ ] Login a funcionar (não é necessário password) (INCOMPLETO);
 	- [ ] Colocar o Dialog de configurações a funcionar;
-	- [ ] Dialog Sobre feito;
+	- [ ] Dialog Sobre;
 		- [ ] Apenas falta abrir o link do github com o Syslink Control;
-- [ ] Colocar a bola a funcionar;
-- [ ] Login a funcionar (não é necessário password);
+	- [x] Double Buffering implementado;
+	- [ ] Bitmap da bola e da barreira a funcionar;
+	- [x] Colocar focus no nome nos DialogBox onde pede o nome do jogador; 
+	- [x] Barreira do jogador a funcionar com rato e teclas;
+	- [ ] Colocar a bola a funcionar;
+		- [ ] Bug quando se coloca a bola a mexer;
+		- [ ] Corrigir as margens da bola;
+		- [ ] Detetar a bola na barreira e então fim do jogo;
+- [ ] Suporte a named pipes;
+- [ ] Usar função de segurança para os named pipes (Colocar na DLL);
 - [ ] Icons WDA;
 
 ## Modulos:

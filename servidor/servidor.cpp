@@ -38,6 +38,7 @@ int _tmain(int argc, LPTSTR argv[])
 		_tprintf(TEXT("%s: [ERRO] Criação evento do login (%d)\n"), SERVIDOR, GetLastError());
 		return -1;
 	}
+
 	WaitForSingleObject(hLogin, INFINITE);
 	_tprintf(TEXT("[Thread: %d] Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
 	_tprintf(TEXT("%s: O jogo começou...\n"), SERVIDOR);
@@ -86,7 +87,7 @@ bool verificaInstancia() {
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		CloseHandle(hServidor);
 		hServidor = NULL;
-		_tprintf(TEXT("%s: [Erro: %d]Já exite uma instância do servidor a correr\n"), SERVIDOR, GetLastError());
+		_tprintf(TEXT("%s: [Erro: %d]Já exite uma instância do servidor a correr...\n"), SERVIDOR, GetLastError());
 		return true;
 	}
 	return false;

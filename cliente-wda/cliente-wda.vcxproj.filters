@@ -27,27 +27,12 @@
     <ClInclude Include="cliente-wda.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="funcs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cliente-wda.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="eventos.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dialogs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="threads.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
