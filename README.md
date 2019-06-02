@@ -1,55 +1,55 @@
-# Trabalho Pr·tico de Sistema Operativos 2 2018 / 2019 - ISEC
+# Trabalho Pr√°tico de Sistema Operativos 2 2018 / 2019 - ISEC
 
 ## Nome do trabalho: Clone Arknoid/Breakout
 * Desenvolvido em Visual Studio 2017 / 2019 Community Edition;
-* Coment·rios e cÛdigo em PT-PT (o mais poÌvel);
+* Coment√°rios e c√≥digo em PT-PT (o mais po√≠vel);
 
 ## Alunos
 * Nuno Fidalgo [21140369]
-* Cl·udio Melo [21170023]
+* Cl√°udio Melo [21170023]
 
-## Breve descriÁ„o:
-- ImplementaÁ„o de um jogo estilo Arknoid / Breakout
-- Jogo divido por servidor e cliente com uma DLL(bridge) que implementa as comuniÁıes entre o servidor e cliente;
-- No servidor vamos ter toda a mec‚nica de jogo;
-- Cliente tem apenas a configuraÁ„o de teclas, envio de nome do jogador e tem de detetar se est· em modo local(memoria partilhada) 
+## Breve descri√ß√£o:
+- Implementa√ß√£o de um jogo estilo Arknoid / Breakout
+- Jogo divido por servidor e cliente com uma DLL(bridge) que implementa as comuni√ß√µes entre o servidor e cliente;
+- No servidor vamos ter toda a mec√¢nica de jogo;
+- Cliente tem apenas a configura√ß√£o de teclas, envio de nome do jogador e tem de detetar se est√° em modo local(memoria partilhada) 
 ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/IP ou UDP).
 
 ## Tecnologias
 * Win32 API
-* Threads, Mutex, Events, Sem·foros, Named Pipes;
+* Threads, Mutex, Events, Sem√°foros, Named Pipes;
 * Windows GUI (WDA);
 * Arquitetura: cliente/servidor;
 
 # Meta 1
 
 ## Modulo (DDL) "Bridge" 
-- [x] CÛdigo inicial da bridge(DDL);
+- [x] C√≥digo inicial da bridge(DDL);
 - [x] Estrutura de dados; (Em progresso!!);
-- [x] FunÁıes para zonas de memoria partilhada;
+- [x] Fun√ß√µes para zonas de memoria partilhada;
 	- [x] Zona de Mensagens;
 	- [x] Zona do Jogo;
-- [x] FunÁıes a implementar;
+- [x] Fun√ß√µes a implementar;
 	- [x] Login;
 	- [x] RecebeJogo(ReceiveBroadcast);
 	- [x] EnviaMensagem (SendMessage);
 	- [x] RecebeMensagem (ReceiveMessage);
 
 ## Modulo "Servidor"
-- [x] CÛdigo inicial da servidor(consola);
-- [x] InterligaÁ„o DLL implÌcita;
+- [x] C√≥digo inicial da servidor(consola);
+- [x] Interliga√ß√£o DLL impl√≠cita;
 - [x] Suporte a memoria partilhada;
 - [x] Protegido de forma a executarmos o servidor em varias instancias;
-- [x] Login... d· inÌcio ao jogo;
+- [x] Login... d√° in√≠cio ao jogo;
 - [x] Suporte a threads;
 	- [x] Recebe mensagens;
 	- [x] Envio jogo;
 	- [x] Movimento da bola;
-- [x] Guardar/Ler pontuaÁıes no Registo do Windows;
+- [x] Guardar/Ler pontua√ß√µes no Registo do Windows;
 
 ## Modulo "Cliente"
-- [x] CÛdigo inicial da cliente(consola);
-- [x] InterligaÁ„o DLL implÌcita;
+- [x] C√≥digo inicial da cliente(consola);
+- [x] Interliga√ß√£o DLL impl√≠cita;
 - [x] Suporte a memoria partilhada;
 - [x] Suporte a threads;
 	- [x] Envio mensagens;
@@ -57,44 +57,44 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Recolhe as teclas do jogador;
 
 ## Entrega: Meta 1
-- [x] CriaÁ„o inicial da soluÁ„o em Visual Studio 2017 Community Edition;
-- [x] CriaÁ„o do project servidor(GUI)
-- [x] CriaÁ„o do project cliente(GUI)
-- [x] CriaÁ„o do project bridge(DLL)
-- [x] CriaÁ„o inicial do projecto para o GitHub;
+- [x] Cria√ß√£o inicial da solu√ß√£o em Visual Studio 2017 Community Edition;
+- [x] Cria√ß√£o do project servidor(GUI)
+- [x] Cria√ß√£o do project cliente(GUI)
+- [x] Cria√ß√£o do project bridge(DLL)
+- [x] Cria√ß√£o inicial do projecto para o GitHub;
 - [x] Adicionei o colega como colaborador;
 - [x] Definir tarefas iniciais;
-- [x] Colocar as opÁıes Debug / Release, x86 / x64 a funcionar;
-- [x] CorreÁ„o dos projectos para C e devidas correÁıes;
+- [x] Colocar as op√ß√µes Debug / Release, x86 / x64 a funcionar;
+- [x] Corre√ß√£o dos projectos para C e devidas corre√ß√µes;
 - [x] Diagramas de arquitectura;
-- [x] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificaÁ„o dos ficheiro, soluÁ„o...
-- [x] Entrega meta1 em modo release x86 e x64 com cÛdigo retirado do github (fazer release no github com os bin·rios);
+- [x] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codifica√ß√£o dos ficheiro, solu√ß√£o...
+- [x] Entrega meta1 em modo release x86 e x64 com c√≥digo retirado do github (fazer release no github com os bin√°rios);
 - [x] O README.md foi apenas actualizado/organizador depois da entrega desta meta;
 
 # NOTAS da Meta 1
-* fazer com que varios cientes n„o acedam ao servidor...
-* mudar as funÁıes de comunicaÁ„o para a DLL...
-* n„o esquecer de ver o waitable...
+* fazer com que varios cientes n√£o acedam ao servidor...
+* mudar as fun√ß√µes de comunica√ß√£o para a DLL...
+* n√£o esquecer de ver o waitable...
 
 # Meta 2 (Final)
 
 ## NOTAS da Meta 1:
-- [x] fazer com que varios cientes n„o acedam ao servidor...
-- [x] mudar as funÁıes de comunicaÁ„o para a DLL...
-- [ ] n„o esquecer de ver o waitable...
+- [x] fazer com que varios cientes n√£o acedam ao servidor...
+- [x] mudar as fun√ß√µes de comunica√ß√£o para a DLL...
+- [ ] n√£o esquecer de ver o waitable...
 
 ## Modulo (DDL) "Bridge" 
 - [x] Estrutura de dados; (Em progresso!!);
-- [ ] FunÁıes para zonas de memoria partilhada;
+- [ ] Fun√ß√µes para zonas de memoria partilhada;
 	- [x] Zona de Mensagens;
 	- [x] Zona do Jogo;
-- [ ] FunÁıes a implementar;
+- [ ] Fun√ß√µes a implementar;
 	- [ ] Login;
 	- [x] RecebeJogo(ReceiveBroadcast);
 	- [x] EnviaMensagem (SendMessage);
 	- [x] RecebeMensagem (ReceiveMessage);
-- [ ] CorreÁıes das notas da meta 1 (em progresso);
-- [ ] Usar a funÁ„o de seguranÁa para escrever no registo e nos namedpipes;
+- [ ] Corre√ß√µes das notas da meta 1 (em progresso);
+- [ ] Usar a fun√ß√£o de seguran√ßa para escrever no registo e nos namedpipes;
 
 ## Modulo "Servidor"
 - [x] Suporte a threads;
@@ -104,37 +104,37 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [ ] Gerir o movimento dos brindes;
 	- [x] Gerir o movimento ds(s) bola(s);
 	- [ ] Pelo uma para gerir os jogadores;
-- [x] Guardar/Ler pontuaÁıes no Registo do Windows;
-- [ ] CorreÁıes das notas da meta 1 (em progresso);
-	- [x] fazer com que varios cientes n„o acedam ao servidor...
-	- [x] mudar as funÁıes de comunicaÁ„o para a DLL...
-	- [ ] n„o esquecer de ver o waitable...
-- [ ] Ler ficheiro de configuraÁ„o;
+- [x] Guardar/Ler pontua√ß√µes no Registo do Windows;
+- [ ] Corre√ß√µes das notas da meta 1 (em progresso);
+	- [x] fazer com que varios cientes n√£o acedam ao servidor...
+	- [x] mudar as fun√ß√µes de comunica√ß√£o para a DLL...
+	- [ ] n√£o esquecer de ver o waitable...
+- [ ] Ler ficheiro de configura√ß√£o;
 - [ ] Adicionar brindes;
-- [ ] Usar a funÁ„o de seguranÁa para escrever no registo;
+- [ ] Usar a fun√ß√£o de seguran√ßa para escrever no registo;
 
 ## Modulo "Cliente"
 - [x] Novo projecto feito para o cliente em WDA;
-- [x] Colocar as opÁıes Debug / Release, x86 / x64 a funcionar;
-- [x] InterligaÁ„o DLL implÌcita;
-- [ ] CorreÁıes das notas da meta 1 (em progresso);
-	- [x] fazer com que varios cientes n„o acedam ao servidor...
-	- [x] mudar as funÁıes de comunicaÁ„o para a DLL...
-	- [ ] n„o esquecer de ver o waitable...
+- [x] Colocar as op√ß√µes Debug / Release, x86 / x64 a funcionar;
+- [x] Interliga√ß√£o DLL impl√≠cita;
+- [ ] Corre√ß√µes das notas da meta 1 (em progresso);
+	- [x] fazer com que varios cientes n√£o acedam ao servidor...
+	- [x] mudar as fun√ß√µes de comunica√ß√£o para a DLL...
+	- [ ] n√£o esquecer de ver o waitable...
 - [x] Suporte a memoria partilhada;
 - [x] Suporte a threads;
 	- [x] Envio mensagens;
 	- [x] Recebe jogo;
-	- [ ] mostrar a informaÁ„o do jogo?;
+	- [ ] mostrar a informa√ß√£o do jogo?;
 	- [x] Recolhe as teclas do jogador?;
 - [x] Suporte ao WDA;
-	- [x] Menu adicionado com dialogs de Login, ConfiguraÁıes e Sobre;
+	- [x] Menu adicionado com dialogs de Login, Configura√ß√µes e Sobre;
 	- [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Acelaradores);
-	- [x] Melhorar as funÁıes de eventos, colocar apenas uma funÁ„o para tratar os dialogs do menu e outro sendo o trataEventos;
-	- [x] Ao executar o cliente ele detecta se o servidor esta a correr localmente e liga-se por memoria partilhada, sen„o pede IP ao utilizador;
-	- [x] Colocar o Dialog de Login a funcionar (NECESS¡RIO MELHORAR);
-		- [ ] Login a funcionar (n„o È necess·rio password) (INCOMPLETO);
-	- [ ] Colocar o Dialog de configuraÁıes a funcionar;
+	- [x] Melhorar as fun√ß√µes de eventos, colocar apenas uma fun√ß√£o para tratar os dialogs do menu e outro sendo o trataEventos;
+	- [x] Ao executar o cliente ele detecta se o servidor esta a correr localmente e liga-se por memoria partilhada, sen√£o pede IP ao utilizador;
+	- [x] Colocar o Dialog de Login a funcionar (NECESS√ÅRIO MELHORAR);
+		- [ ] Login a funcionar (n√£o √© necess√°rio password) (INCOMPLETO);
+	- [ ] Colocar o Dialog de configura√ß√µes a funcionar;
 	- [ ] Dialog Sobre;
 		- [ ] Apenas falta abrir o link do github com o Syslink Control;
 	- [x] Double Buffering implementado;
@@ -144,9 +144,9 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [ ] Colocar a bola a funcionar;
 		- [ ] Bug quando se coloca a bola a mexer;
 		- [ ] Corrigir as margens da bola;
-		- [ ] Detetar a bola na barreira e ent„o fim do jogo;
+		- [ ] Detetar a bola na barreira e ent√£o fim do jogo;
 - [ ] Suporte a named pipes;
-- [ ] Usar funÁ„o de seguranÁa para os named pipes (Colocar na DLL);
+- [ ] Usar fun√ß√£o de seguran√ßa para os named pipes (Colocar na DLL);
 - [ ] Icons WDA;
 
 ## Modulos:
@@ -157,34 +157,38 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 * Tijolo;
 	* Normal;
 	* Reistente;
-	* M·gico;
+	* M√°gico;
 * Brinde;
-	* Speed-up;
-	* Slow-down;
+	* Speed-up - aumenta velocidade da bola em 20%;
+	* Slow-down - diminui velocidade da bola em 20%;
 	* Vida-extra;
-	* Triple;
-	* Outros;
+	* Triple - faz aparecer duas novas bolas a partir de locais aleat√≥rios;
+	* Outros - aumentar/diminuir barreira;
 
 ### Ciclo de vida (ver bem no enunciado):
-* CriaÁ„o do Jogo;
-* AssociaÁ„o ao jogo;
-* InÌcio do jogo;
+* Cria√ß√£o do Jogo;
+* Associa√ß√£o ao jogo;
+* In√≠cio do jogo;
 * Decorrer do jogo;
 * Final do jogo;
 
 ## Entrega: Meta 2 (Final)
 
-- [x] Colocar as opÁıes Debug / Release, x86 / x64 a funcionar;
-- [ ] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificaÁ„o dos ficheiro, soluÁ„o...
+- [x] Colocar as op√ß√µes Debug / Release, x86 / x64 a funcionar;
+- [ ] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codifica√ß√£o dos ficheiro, solu√ß√£o...
 - [ ] Melhorar os diagramas;
-- [ ] A resolus„o para o problema do encoding dos ficheiros;
-- [ ] Entrega final em modo release x86 e x64 com cÛdigo retirado do github(fazer release no github com os bin·rios);
+- [ ] A resolus√£o para o problema do encoding dos ficheiros;
+- [ ] Entrega final em modo release x86 e x64 com c√≥digo retirado do github(fazer release no github com os bin√°rios);
 
 # Outros
 - [x] Suporte x86 / x64;
 - [x] modo debug em ambas as arquiteturas;
-- [ ] Mudar ficheiros para .c; -> n„o È possivel de momento devido ao uso da DLL ter funÁıes com elementos de cpp;
+- [ ] Mudar ficheiros para .c; -> n√£o √© possivel de momento devido ao uso da DLL ter fun√ß√µes com elementos de cpp;
 
 ## Extras
 - [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Acelaradores); 
-- [ ] Adicionar comunicaÁ„o por TCP/IP ou UDP
+- [ ] Adicionar comunica√ß√£o por TCP/IP ou UDP
+- [ ]  Efeitos sonoros/musicais (sem se limitar a meros ‚Äúbeeps‚Äù) ‚Äì 5%
+- [ ]  Anima√ß√µes gr√°ficas (por exemplo, explos√µes dos tijolos) ‚Äì 10%
+- [ ] Tijolos com movimento ‚Äì 10 %
+- [ ]  Implementa√ß√£o do servidor como Servi√ßo NT ‚Äì 5 %
