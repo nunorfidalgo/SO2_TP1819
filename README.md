@@ -67,7 +67,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Colocar as opções Debug / Release, x86 / x64 a funcionar;
 - [x] Correção dos projectos para C e devidas correções;
 - [x] Diagramas de arquitectura;
-- [x] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiro, solução...
+- [x] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiros, solução...
 - [x] Entrega meta1 em modo release x86 e x64 com código retirado do github (fazer release no github com os binários);
 - [x] O README.md foi apenas actualizado/organizador depois da entrega desta meta;
 
@@ -186,7 +186,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [ ] Mudar ficheiros para .c; -> não é possivel de momento devido ao uso da DLL ter funções com elementos de cpp;
 
 ## Extras
-- [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Acelaradores); 
+- [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Aceleradores); 
 - [ ] Adicionar comunicação por TCP/IP ou UDP
 - [ ] Efeitos sonoros/musicais (sem se limitar a meros “beeps”) – 5%
 - [ ] Animações gráficas (por exemplo, explosões dos tijolos) – 10%
