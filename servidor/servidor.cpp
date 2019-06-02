@@ -7,13 +7,13 @@ int _tmain(int argc, LPTSTR argv[])
 
 #ifdef UNICODE
 	_setmode(_fileno(stdin), _O_WTEXT);
-	_setmode(_fileno(stdout), _O_WTEXT);
+	_setmode(_fileno(stdout), _O_WTEXT);   
 	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
 
 	system("cls");
 	_tprintf(TEXT("%s: Pronto...\n"), SERVIDOR);
-
+	leConfig();
 	if (escreveRegisto() == -1) {
 		_tprintf(TEXT("%s: [Erro: %d] Não foi possível salvar os pontos no registo!\n"), SERVIDOR, GetLastError());
 	}

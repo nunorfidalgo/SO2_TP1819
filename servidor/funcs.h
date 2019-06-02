@@ -9,5 +9,5 @@ DWORD WINAPI threadBola(LPVOID param);
 void MovimentoBola();
 int escreveRegisto();
 int leRegisto();
-
+int leConfig();
 #endif

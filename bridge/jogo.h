@@ -54,4 +54,32 @@ typedef struct {
 	BOLA bola;
 	JOGADOR jogador;
 	int termina;
+	int maxJogador[NUM_MAX_JOGADORES];//MAX_JOGADORES = 20
+	int numNiveis;//NUM_NIVEIS = 3
+	int numSpeedUps;//NUM_SPEEDUPS = 3
+	int numSlowDowns;//NUM_SLOWDOWNS = 3
+	int durSpeedUps;//DURACAO_SPEEDUPS = 10
+	int durSlowDowns;//DURACAO_SLOWDOWNS = 10
+	float probSpeedUps;//PROBAB_SPEEDUPS = 10
+	float probSlowDowns;//PROBAB_SLOWDOWNS = 5
+	int numVidas;//NUM_VIDAS = 3
+	int numTijolos;//NUM_TIJOLOS = 15
+	int velocidade;//VELOCIDADE = 100
 } JOGO;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
