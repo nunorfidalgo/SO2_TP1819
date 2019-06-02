@@ -2,6 +2,9 @@
 #include "globals.h"
 #include "funcs.h"
 
+TOPTEN topten;
+SECURITY_ATTRIBUTES sa;
+
 int _tmain(int argc, LPTSTR argv[])
 {
 
@@ -13,18 +16,16 @@ int _tmain(int argc, LPTSTR argv[])
 
 	system("cls");
 	_tprintf(TEXT("%s: Pronto...\n"), SERVIDOR);
-
-	if (escreveRegisto() == -1) {
-		_tprintf(TEXT("%s: [Erro: %d] Não foi possível salvar os pontos no registo!\n"), SERVIDOR, GetLastError());
-	}
-	else {
-		if (leRegisto() == -1) {
-			_tprintf(TEXT("%s: [Erro: %d] Sem pontos no registo!\n"), SERVIDOR, GetLastError());
-		}
-	}
+	Seguranca(&sa);
 
 	if (verificaInstancia())
 		return -1;
+
+	leRegisto(topten);
+
+	/*if (leRegisto(topten) == -1) {
+		_tprintf(TEXT("%s: [Erro: %d] Não foi possível aceder ao registo!\n"), SERVIDOR, GetLastError());
+	}*/
 
 	if (!AcessoMensagensServidor(sincControl))
 		return -1;
@@ -70,6 +71,10 @@ int _tmain(int argc, LPTSTR argv[])
 	}
 	if ((WaitForSingleObject(hTBola, INFINITE)) == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
+	}
+
+	if (escreveRegisto(topten) == -1) {
+		_tprintf(TEXT("%s: [Erro: %d] Impossibilidade de salvar dados no registo!\n"), SERVIDOR, GetLastError());
 	}
 
 	_tprintf(TEXT("%s: [LastError %d] terminou...\n"), SERVIDOR, GetLastError());

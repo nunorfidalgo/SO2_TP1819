@@ -179,6 +179,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [ ] Melhorar os diagramas;
 - [ ] A resolusão para o problema do encoding dos ficheiros;
 - [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
+- [ ] Attributos de segurança no resgisto; 
 
 # Outros
 - [x] Suporte x86 / x64;

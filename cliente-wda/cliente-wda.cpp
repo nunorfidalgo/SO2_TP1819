@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "cliente-wda.h"
 
-//#define TITLE_TEXT TEXT("Cliente Arkanoid/Breakout") -> definido nas string tables;
 #define MAX_LOADSTRING 100
 
 /* Global Variables */
@@ -78,30 +77,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// name pipes...
 	}
 
-	//hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
-	//if (hLogin == NULL) {
-	//	/*_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [ERRO] Criação evento do login (%d)\n"), CLIENTE, GetLastError());
-	//	MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
-	//	return -1;*/
-	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);
-	//}
-	//else {
-	//	if (!AcessoMensagensCliente(sincControl)) {
-	//		MessageBox(NULL, TEXT("Erro ao aceder as mensagens"), MENSAGEM_TXT, MB_ICONEXCLAMATION | MB_OK);
-	//		return -1;
-	//	}
-
-	//	if (!AcessoJogoCliente(sincControl)) {
-	//		MessageBox(NULL, TEXT("Erro ao aceder ao jogo"), JOGO_TXT, MB_ICONEXCLAMATION | MB_OK);
-	//		return -1;
-	//	}
-	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO_LOCAL), NULL, NovoJogoLocal);
-	//}
-
-	//SetEvent(hLogin);
-	//ResetEvent(hLogin);
-	//CloseHandle(hLogin);
-
 	hTMensagens = CreateThread(NULL, 0, threadEnvioMensagem, NULL, 0, &hTMensagensId);
 	if (hTMensagens == NULL) {
 		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
@@ -140,15 +115,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
-
-	if (WaitForSingleObject(hTMensagens, INFINITE) == NULL) {
-		//_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
-		//MessageBox(NULL, erros, TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
-	}
-	if ((WaitForSingleObject(hTJogo, INFINITE)) == NULL) {
-		//_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
-		//MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
-	}
+	WaitForSingleObject(hTMensagens, INFINITE);
+	WaitForSingleObject(hTJogo, INFINITE);
 
 	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
@@ -524,20 +492,6 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		InvalidateRect(hWnd, NULL, FALSE);
 	}
 	break;
-
-	//case WM_LBUTTONDOWN:
-	//{
-	//	RECT rect;
-	//	int width, height;
-	//	if (GetWindowRect(hWnd, &rect))
-	//	{
-	//		width = rect.right - rect.left;
-	//		height = rect.bottom - rect.top;
-	//	}
-	//	_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: nX: %d, nY: %d\n"), CLIENTE, width, height);
-	//	MessageBox(NULL, erros, TEXT("Info"), MB_ICONEXCLAMATION | MB_OK);
-	//}
-	//break;
 
 	case WM_KEYDOWN:
 	{

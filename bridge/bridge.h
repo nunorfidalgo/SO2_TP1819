@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include <windows.h>
-#include <locale.h>
 #include <tchar.h>
+//#include <locale.h>
 #include <io.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -62,4 +62,7 @@ extern "C" {
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
 	BRIDGE_API void closeSincControl(SincControl &sincControl);
+
+	BRIDGE_API void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD);
+	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES * sa);
 }
