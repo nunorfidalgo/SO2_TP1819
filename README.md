@@ -129,7 +129,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] Recolhe as teclas do jogador?;
 - [x] Suporte ao WDA;
 	- [x] Menu adicionado com dialogs de Login, Configurações e Sobre;
-	- [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Acelaradores);
+	- [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Aceleradores);
 	- [x] Melhorar as funções de eventos, colocar apenas uma função para tratar os dialogs do menu e outro sendo o trataEventos;
 	- [x] Ao executar o cliente ele detecta se o servidor esta a correr localmente e liga-se por memoria partilhada, senão pede IP ao utilizador;
 	- [x] Colocar o Dialog de Login a funcionar (NECESSÁRIO MELHORAR);
@@ -175,20 +175,20 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 ## Entrega: Meta 2 (Final)
 
 - [x] Colocar as opções Debug / Release, x86 / x64 a funcionar;
-- [ ] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiro, solução...
+- [ ] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiros, solução...
 - [ ] Melhorar os diagramas;
-- [ ] A resolusão para o problema do encoding dos ficheiros;
+- [ ] A resolução para o problema do encoding dos ficheiros;
 - [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
 
 # Outros
 - [x] Suporte x86 / x64;
-- [x] modo debug em ambas as arquiteturas;
+- [x] Modo debug em ambas as arquiteturas;
 - [ ] Mudar ficheiros para .c; -> não é possivel de momento devido ao uso da DLL ter funções com elementos de cpp;
 
 ## Extras
 - [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Acelaradores); 
 - [ ] Adicionar comunicação por TCP/IP ou UDP
-- [ ]  Efeitos sonoros/musicais (sem se limitar a meros “beeps”) – 5%
-- [ ]  Animações gráficas (por exemplo, explosões dos tijolos) – 10%
+- [ ] Efeitos sonoros/musicais (sem se limitar a meros “beeps”) – 5%
+- [ ] Animações gráficas (por exemplo, explosões dos tijolos) – 10%
 - [ ] Tijolos com movimento – 10 %
-- [ ]  Implementação do servidor como Serviço NT – 5 %
+- [ ] Implementação do servidor como Serviço NT – 5 %
