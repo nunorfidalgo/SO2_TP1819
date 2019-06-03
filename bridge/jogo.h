@@ -61,7 +61,7 @@ typedef struct {
 	int durSpeedUps;//DURACAO_SPEEDUPS = 10
 	int durSlowDowns;//DURACAO_SLOWDOWNS = 10
 	float probSpeedUps;//PROBAB_SPEEDUPS = 10
-	float probSpeedUps;//PROBAB_SLOWDOWNS = 5
+	float probSlowDowns;//PROBAB_SLOWDOWNS = 5
 	int numVidas;//NUM_VIDAS = 3
 	int numTijolos;//NUM_TIJOLOS = 15
 	int velocidade;//VELOCIDADE = 100
