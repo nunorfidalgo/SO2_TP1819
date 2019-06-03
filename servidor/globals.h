@@ -6,7 +6,7 @@
 
 BOLA bola;
 SincControl sincControl;
-
+JOGO configJogo;
 HANDLE hServidor, hLogin;
 HANDLE hTMensagens, hTJogo, hTBola;
 DWORD hTMensagensId, hTJogoId, hTBolaId;

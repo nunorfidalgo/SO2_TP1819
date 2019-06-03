@@ -65,7 +65,7 @@ typedef struct {
 	int numVidas;//NUM_VIDAS = 3
 	int numTijolos;//NUM_TIJOLOS = 15
 	int velocidade;//VELOCIDADE = 100
-} JOGO;
+}JOGO;
 
 
 
