@@ -54,7 +54,7 @@ typedef struct {
 	BOLA bola;
 	JOGADOR jogador;
 	int termina;
-	int maxJogador[NUM_MAX_JOGADORES];//MAX_JOGADORES = 20
+	int maxJogador;//MAX_JOGADORES = 20
 	int numNiveis;//NUM_NIVEIS = 3
 	int numSpeedUps;//NUM_SPEEDUPS = 3
 	int numSlowDowns;//NUM_SLOWDOWNS = 3
