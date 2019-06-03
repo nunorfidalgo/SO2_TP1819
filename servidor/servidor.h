@@ -5,4 +5,4 @@
 
 #include "../bridge/bridge.h"
 
-#define TAM 200
+#define MAX 256

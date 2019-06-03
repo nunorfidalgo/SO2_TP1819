@@ -12,13 +12,25 @@ void MovimentoBola() {
 		bola.coord.x -= bola.direcao.x;
 		bola.coord.y -= bola.direcao.y;
 
-		if (bola.coord.x > _WINDOW_WIDTH - 20 || bola.coord.x < 0) { // limites direita e esquerda
+		if (bola.coord.x > _WINDOW_WIDTH - 30 || bola.coord.x < 0) { // limites direita e esquerda
 			bola.direcao.x *= -1;
 		}
-		if (bola.coord.y > _WINDOW_HEIGHT - 20 || bola.coord.y < 0) { // limites inferior e superior
-		//if (y < 2) { // limites superior
+		if (bola.coord.y > _WINDOW_HEIGHT - 78 || bola.coord.y < 0) { // limites inferior e superior
+		//if (bola.coord.y < 0) { // limites superior
 			bola.direcao.y *= -1;
 		}
+
+		/*if (bola.coord.y > _WINDOW_HEIGHT - 78) {
+			sincControl.jogo->termina = 1;
+		}*/
+
+		// barreira
+		if (bola.coord.y >= _WINDOW_HEIGHT - 78) // limites inferior
+			if (bola.coord.x >= sincControl.jogo->jogador.barreira.coord.x && bola.coord.x <= sincControl.jogo->jogador.barreira.coord.x + 5)
+				bola.direcao.y *= -1;
+			else {
+				sincControl.jogo->termina = 1;
+			}
 
 		/*if (y > LINHAS) {
 			gotoxy(0, LINHAS + 2);
@@ -35,7 +47,7 @@ void MovimentoBola() {
 		//		_tprintf(TEXT("Perdeu o jogo...\n"));
 		//		exit(1);
 		//	}
-		//ReleaseMutex(sincControl.hMutexJogo);
+
 		Sleep(10); // waitable timer
 	}
 }
