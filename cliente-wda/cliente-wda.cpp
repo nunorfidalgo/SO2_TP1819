@@ -26,6 +26,7 @@ int sair = 0, maxX = 0, maxY = 0;
 HBITMAP hBitMap = NULL, hBitBola = NULL, hBitBarreira = NULL;
 BITMAP bmpBola, bmpBarreira;
 
+RECT rect;
 HWND global_hWnd = NULL;
 
 
@@ -41,7 +42,6 @@ INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 DWORD WINAPI threadEnvioMensagem(LPVOID param);
 DWORD WINAPI threadRecebeJogo(LPVOID param);
 
-
 /* WinMain */
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -56,6 +56,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		PostQuitMessage(-1);
 		return -1;
 	}
+
+	jogador.barreira.coord.x = 180;
 
 	if (AcessoMensagensCliente(sincControl) && AcessoJogoCliente(sincControl)) {
 
@@ -77,12 +79,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// name pipes...
 	}
 
-	hTMensagens = CreateThread(NULL, 0, threadEnvioMensagem, NULL, 0, &hTMensagensId);
+	//enviaMensagem(sincControl, jogador);
+
+	/*hTMensagens = CreateThread(NULL, 0, threadEnvioMensagem, NULL, 0, &hTMensagensId);
 	if (hTMensagens == NULL) {
 		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
 		MessageBox(NULL, erros, TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
 		return -1;
-	}
+	}*/
 
 	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
 	if (hTJogo == NULL) {
@@ -115,11 +119,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
-	WaitForSingleObject(hTMensagens, INFINITE);
+	//WaitForSingleObject(hTMensagens, INFINITE);
 	WaitForSingleObject(hTJogo, INFINITE);
 
 	closeSincControl(sincControl);
-	CloseHandle(hTMensagens);
+	//CloseHandle(hTMensagens);
 	CloseHandle(hTJogo);
 
 	return (int)msg.wParam;
@@ -182,15 +186,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;
 }
 
-DWORD WINAPI threadEnvioMensagem(LPVOID param) {
-	jogador.barreira.coord.x = 180;
-	enviaMensagem(sincControl, jogador);
-	return 0;
-}
+//DWORD WINAPI threadEnvioMensagem(LPVOID param) {
+//	jogador.barreira.coord.x = 180;
+//	enviaMensagem(sincControl, jogador);
+//	return 0;
+//}
 
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
 	while (!sincControl.mensagem->termina) {
-		//while (!sincControl.mensagem->termina || global_hWnd != NULL) {
+
 		recebeJogo(sincControl, bola);
 		tempDC = CreateCompatibleDC(memDC);
 
@@ -199,7 +203,6 @@ DWORD WINAPI threadRecebeJogo(LPVOID param) {
 		BitBlt(memDC, jogador.barreira.coord.x, 520, bmpBarreira.bmWidth, bmpBarreira.bmHeight, tempDC, 0, 0, SRCCOPY);
 
 		SelectObject(tempDC, hBitBola);
-		//PatBlt(memDC, 0, 0, maxX, maxY, PATCOPY);
 		BitBlt(memDC, bola.coord.x, bola.coord.y, bmpBola.bmWidth, bmpBola.bmHeight, tempDC, 0, 0, SRCCOPY);
 
 		DeleteDC(tempDC);
@@ -222,13 +225,15 @@ INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
-			GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
+			GetDlgItemText(hDlg, IDC_EDIT_NOME, jogador.nome, TEXTO);
 			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
 			//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
+			enviaMensagem(sincControl, jogador);
 			EndDialog(hDlg, LOWORD(wParam));
 			break;
 		case IDCANCEL:
 			EndDialog(hDlg, LOWORD(wParam));
+			DestroyWindow(global_hWnd);
 			PostQuitMessage(-1);
 			break;
 		}
@@ -244,25 +249,24 @@ INT_PTR CALLBACK NovoJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		//SetFocus(GetDlgItem(hDlg, IDC_EDIT_NOME));
 		return (INT_PTR)FALSE;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-			/*case IDC_EDIT_NOME:
-				SetFocus(GetDlgItem(hDlg, IDC_EDIT_NOME));
-				break;*/
-
 		case IDOK:
 			GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
 			//GetDlgItemText(hDlg, IDC_IPADDRESS, sincControl.mensagem->jogador.???, TEXTO);
 			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
 			//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
 			EndDialog(hDlg, LOWORD(wParam));
+			MessageBox(hDlg, TEXT("Falta implementar"), TEXT("ERRO"), MB_ICONERROR | MB_OK);
+			DestroyWindow(global_hWnd);
+			PostQuitMessage(-1);
 			break;
 		case IDCANCEL:
 			EndDialog(hDlg, LOWORD(wParam));
+			DestroyWindow(global_hWnd);
 			PostQuitMessage(-1);
 			break;
 		}
@@ -478,18 +482,6 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 	case WM_PAINT:
 	{
-		//tempDC = CreateCompatibleDC(memDC);
-
-		//SelectObject(tempDC, hBitBarreira);
-		//PatBlt(memDC, 0, 0, maxX, maxY, PATCOPY);
-		//BitBlt(memDC, jogador.barreira.coord.x, 520, bmpBarreira.bmWidth, bmpBarreira.bmHeight, tempDC, 0, 0, SRCCOPY);
-
-		//SelectObject(tempDC, hBitBola);
-		////PatBlt(memDC, 0, 0, maxX, maxY, PATCOPY);
-		//BitBlt(memDC, bola.coord.x, bola.coord.y, bmpBola.bmWidth, bmpBola.bmHeight, tempDC, 0, 0, SRCCOPY);
-
-		//DeleteDC(tempDC);
-
 		hDC = BeginPaint(hWnd, &ps);
 		BitBlt(hDC, 0, 0, maxX, maxY, memDC, 0, 0, SRCCOPY);
 		EndPaint(hWnd, &ps);
@@ -497,30 +489,33 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	break;
 
 	case WM_ERASEBKGND:
-
 		return (1);
-
 		break;
 
 	case WM_MOUSEMOVE:
 	{
+		GetClientRect(hWnd, &rect); // dimensão da janela...
 		jogador.barreira.coord.x = GET_X_LPARAM(lParam);
-		//GET_Y_LPARAM(lParam);
-		//InvalidateRect(hWnd, NULL, FALSE);
+		if (jogador.barreira.coord.x < 0)
+			jogador.barreira.coord.x = 0;
+		if (jogador.barreira.coord.x > (unsigned int)(rect.right - bmpBarreira.bmWidth))
+			jogador.barreira.coord.x = rect.right - bmpBarreira.bmWidth;
+		enviaMensagem(sincControl, jogador);
 	}
 	break;
 
 	case WM_KEYDOWN:
 	{
+		GetClientRect(hWnd, &rect); // dimensão da janela...
 		switch (wParam) {
 		case VK_LEFT:
-			jogador.barreira.coord.x -= 20;
+			jogador.barreira.coord.x = jogador.barreira.coord.x > 0 ? jogador.barreira.coord.x - 20 : 0;
 			break;
 		case VK_RIGHT:
-			jogador.barreira.coord.x += 20;
+			jogador.barreira.coord.x = jogador.barreira.coord.x < (unsigned int)(rect.right - bmpBarreira.bmWidth) ? jogador.barreira.coord.x + 20 : (unsigned int)(rect.right - bmpBarreira.bmWidth);
 			break;
 		}
-		//InvalidateRect(hWnd, NULL, FALSE);
+		enviaMensagem(sincControl, jogador);
 	}
 	break;
 
@@ -543,6 +538,8 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 		DeleteObject(hBitMap);
 		DeleteDC(memDC);
+
+		enviaMensagem(sincControl, jogador);
 
 		DestroyWindow(hWnd);
 		PostQuitMessage(0);

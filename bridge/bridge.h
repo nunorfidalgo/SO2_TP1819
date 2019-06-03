@@ -22,7 +22,7 @@
 #define _WINDOW_WIDTH 450// x
 #define _WINDOW_HEIGHT 600 // y
 
-#define VEL_JOGO 50
+#define VEL_JOGO 10
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")

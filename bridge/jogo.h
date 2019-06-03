@@ -13,7 +13,6 @@ typedef struct {
 
 typedef struct {
 	COORDENADAS	coord;
-	COORDENADAS	coordAnt;
 	COORDENADAS direcao;
 } BOLA;
 
@@ -25,7 +24,6 @@ typedef struct {
 
 typedef struct {
 	COORDENADAS	coord;
-	COORDENADAS	coordAnt;
 } BARREIRA;
 
 typedef struct {

@@ -1,10 +1,9 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-//extern BOLA bola;
-//extern SincControl sincControl;
+JOGO jogo;
 
-BOLA bola;
+BOLA bola; // isto desaparece e temos que usar o jogo!!
 SincControl sincControl;
 
 HANDLE hServidor, hLogin;

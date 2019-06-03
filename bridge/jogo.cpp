@@ -9,8 +9,6 @@ extern "C" {
 			SetEvent(sincControl.hEventoJogo);
 			WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
-			sincControl.jogo->bola.coordAnt.x = bola.coordAnt.x;
-			sincControl.jogo->bola.coordAnt.y = bola.coordAnt.y;
 			sincControl.jogo->bola.coord.x = bola.coord.x;
 			sincControl.jogo->bola.coord.y = bola.coord.y;
 
