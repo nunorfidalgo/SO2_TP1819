@@ -36,6 +36,8 @@
 
 #define LOGIN TEXT("LOGIN")
 
+#define JOGO_TIMER TEXT("WAITABLE_TIMER_SERVIDOR")
+
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)
 #else
