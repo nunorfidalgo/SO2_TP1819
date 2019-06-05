@@ -47,6 +47,8 @@ void MovimentoBola() {
 		//		exit(1);
 		//	}
 
-		Sleep(10); // waitable timer
+		//Sleep(10); 
+		WaitForSingleObject(sincControl.hTimer, INFINITE); // waitable timer
+
 	}
 }
