@@ -20,12 +20,16 @@ int _tmain(int argc, LPTSTR argv[]) {
 	if (verificaInstancia())
 		return -1;
 
+	leConfig(argc, argv);
+
 	initWaitableTimer(sincControl);
 	//if (initWaitableTimer(sincControl)) // WaitableTimer
 	//	return -1;
 
 
 	leRegisto(topten);
+
+
 
 	if (!AcessoMensagensServidor(sincControl))
 		return -1;
