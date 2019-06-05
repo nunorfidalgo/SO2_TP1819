@@ -20,16 +20,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 	if (verificaInstancia())
 		return -1;
 
-	/* WaitableTimer*/
-	ZeroMemory(&sincControl.time, sizeof(SYSTEMTIME));
-	GetSystemTime(&sincControl.time);
-	sincControl.hTimer = CreateWaitableTimer(NULL, FALSE, JOGO_TIMER);
-	if (sincControl.hTimer == NULL) {
-		_tprintf(TEXT("%s: [Erro: %d] Ao criar WaitableTimer do jogo...\n"), SERVIDOR, GetLastError());
-		return -1;
-	}
-	SystemTimeToFileTime(&sincControl.time, &sincControl.ftime);
-	SetWaitableTimer(sincControl.hTimer, reinterpret_cast<LARGE_INTEGER*>(&sincControl.ftime), 1, NULL, NULL, 0);
+	initWaitableTimer(sincControl);
+	//if (initWaitableTimer(sincControl)) // WaitableTimer
+	//	return -1;
 
 
 	leRegisto(topten);

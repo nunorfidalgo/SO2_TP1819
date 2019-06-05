@@ -9,15 +9,13 @@ extern "C" {
 			SetEvent(sincControl.hEventoJogo);
 			WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
 
-			WaitForSingleObject(sincControl.hTimer, INFINITE);
+			WaitForSingleObject(sincControl.hTimer, INFINITE); // waitable timer
 
 			sincControl.jogo->bola.coord.x = bola.coord.x;
 			sincControl.jogo->bola.coord.y = bola.coord.y;
 
 			//_tprintf(TEXT("[Thread: %d] Envio Jogo [%d] Jogador: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), j, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
 			//j++;
-
-			//Sleep(VEL_JOGO);
 
 			ReleaseMutex(sincControl.hMutexJogo);
 			ResetEvent(sincControl.hEventoJogo);

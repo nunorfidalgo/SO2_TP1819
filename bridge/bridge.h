@@ -22,7 +22,7 @@
 #define _WINDOW_WIDTH 450// x
 #define _WINDOW_HEIGHT 600 // y
 
-#define VEL_JOGO 10
+#define VEL_JOGO 1 // 1 mili segundos
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
@@ -64,6 +64,7 @@ extern "C" {
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
 	BRIDGE_API void closeSincControl(SincControl &sincControl);
+	BRIDGE_API bool initWaitableTimer(SincControl&sincControl);
 
 	BRIDGE_API void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD);
 	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES * sa);
