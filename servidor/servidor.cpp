@@ -5,8 +5,7 @@
 TOPTEN topten;
 SECURITY_ATTRIBUTES sa;
 
-int _tmain(int argc, LPTSTR argv[])
-{
+int _tmain(int argc, LPTSTR argv[]) {
 
 #ifdef UNICODE
 	_setmode(_fileno(stdin), _O_WTEXT);
@@ -32,11 +31,8 @@ int _tmain(int argc, LPTSTR argv[])
 	SystemTimeToFileTime(&sincControl.time, &sincControl.ftime);
 	SetWaitableTimer(sincControl.hTimer, reinterpret_cast<LARGE_INTEGER*>(&sincControl.ftime), 1, NULL, NULL, 0);
 
-	leRegisto(topten);
 
-	/*if (leRegisto(topten) == -1) {
-		_tprintf(TEXT("%s: [Erro: %d] Não foi possível aceder ao registo!\n"), SERVIDOR, GetLastError());
-	}*/
+	leRegisto(topten);
 
 	if (!AcessoMensagensServidor(sincControl))
 		return -1;
