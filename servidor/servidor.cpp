@@ -13,8 +13,10 @@ int _tmain(int argc, LPTSTR argv[]) {
 	//system("cls");
 	_tprintf(TEXT("%s: Pronto...\n"), SERVIDOR);
 
-	leConfig();
+	leConfig(argc, argv);
+	_tprintf(TEXT("%s: [Erro: %d] Não 1")SERVIDOR, GetLastError());
 	system("pause");
+	_tprintf(TEXT("%s: [Erro: %d] Não 2")SERVIDOR, GetLastError());
 	if (escreveRegisto() == -1) {
 		_tprintf(TEXT("%s: [Erro: %d] Não foi possível salvar os pontos no registo!\n"), SERVIDOR, GetLastError());
 	}
