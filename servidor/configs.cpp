@@ -50,15 +50,27 @@ int leConfig(int argc, LPTSTR argv[]) {
 		_ftscanf_s(infile, TEXT("NUM_TIJOLOS=%d\n"), &jogo.numTijolos);
 		_ftscanf_s(infile, TEXT("VELOCIDADE=%d\n"), &jogo.velocidade);
 
-		//}
 	}
+	fclose(infile);
+	return 0;
+}
 
+
+
+void mostraConfig(JOGO& jogo) {
 
 	_tprintf(TEXT("Configuração carregada com sucesso\n"));
-	//input.fname, input.lname);
+	//_tprintf(TEXT("NUM_ITENS=%d\n"), &num);
+	_tprintf(TEXT("NUM_MAX_JOGADORES=%d\n"), jogo.maxJogador);
+	_tprintf(TEXT("NUM_NIVEIS=%d\n"), jogo.numNiveis);
+	_tprintf(TEXT("NUM_SPEEDUPS=%d\n"), jogo.numSpeedUps);
+	_tprintf(TEXT("NUM_SLOWDOWNS=%d\n"), jogo.numSlowDowns);
+	_tprintf(TEXT("DURACAO_SPEEDUPS=%d\n"), jogo.durSpeedUps);
+	_tprintf(TEXT("DURACAO_SLOWDOWNS=%d\n"), jogo.durSlowDowns);
+	_tprintf(TEXT("PROBAB_SPEEDUPS=%f\n"), jogo.probSpeedUps);
+	_tprintf(TEXT("PROBAB_SLOWDOWNS=%f\n"), jogo.probSlowDowns);
+	_tprintf(TEXT("NUM_VIDAS=%d\n"), jogo.numVidas);
+	_tprintf(TEXT("NUM_TIJOLOS=%d\n"), jogo.numTijolos);
+	_tprintf(TEXT("VELOCIDADE=%d\n"), jogo.velocidade);
 
-// close file 
-	fclose(infile);
-	//}
-	return 0;
 }

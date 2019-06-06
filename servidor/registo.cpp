@@ -49,7 +49,7 @@ int escreveRegisto(TOPTEN& topten) {
 int leRegisto(TOPTEN& topten) {
 
 	HKEY chave;
-	DWORD queAconteceu, tamanho = MAX;
+	DWORD tamanho = MAX;
 
 	TCHAR autores[MAX];
 	TCHAR meta[MAX];
@@ -61,7 +61,7 @@ int leRegisto(TOPTEN& topten) {
 	TCHAR* next_token1 = NULL;
 
 	if (RegOpenKey(HKEY_CURRENT_USER, CHAVE_REG, &chave) != ERROR_SUCCESS) {
-		_tprintf(TEXT("%s:  Erro ao aceder ao registo! (%d)\n"), SERVIDOR, GetLastError());
+		_tprintf(TEXT("%s:  Erro ao aceder ao registo / Servidor sem dados! (%d)\n"), SERVIDOR, GetLastError());
 		return -1;
 	}
 

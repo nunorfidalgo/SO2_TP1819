@@ -14,5 +14,6 @@ int escreveRegisto(TOPTEN& topten);
 int leRegisto(TOPTEN& topten);
 
 int leConfig(int argc, LPTSTR argv[]);
+void mostraConfig(JOGO& jogo);
 
 #endif

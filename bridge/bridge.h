@@ -22,7 +22,7 @@
 #define _WINDOW_WIDTH 450// x
 #define _WINDOW_HEIGHT 600 // y
 
-#define VEL_JOGO 1 // 1 mili segundos
+//#define VEL_JOGO 10 // 1 mili segundos
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
@@ -35,9 +35,14 @@
 #define JOGO_TXT TEXT("Jogo")
 
 #define LOGIN TEXT("LOGIN")
-
 #define JOGO_TIMER TEXT("WAITABLE_TIMER_SERVIDOR")
 
+//----------------------------------------------------------------PIPES
+
+
+
+#define PIPE_NAME TEXT("\\\\.\\pipe\\tp_so2_1819")
+//----------------------------------------------------------------
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)
 #else
@@ -47,25 +52,25 @@
 extern "C" {
 	// Mémoria partilhada: memoria.cpp
 	// Mensagens
-	BRIDGE_API bool AcessoMensagensServidor(SincControl &sincControl);
-	BRIDGE_API bool AcessoMensagensCliente(SincControl &sincControl);
+	BRIDGE_API bool AcessoMensagensServidor(SincControl& sincControl);
+	BRIDGE_API bool AcessoMensagensCliente(SincControl& sincControl);
 	// Jogo
-	BRIDGE_API bool AcessoJogoServidor(SincControl &sincControl);
-	BRIDGE_API bool AcessoJogoCliente(SincControl &sincControl);
+	BRIDGE_API bool AcessoJogoServidor(SincControl& sincControl);
+	BRIDGE_API bool AcessoJogoCliente(SincControl& sincControl);
 
 	// jogo.cpp
-	BRIDGE_API void enviaJogo(SincControl &sincControl, BOLA &bola);
-	BRIDGE_API void recebeJogo(SincControl &sincControl, BOLA &bola);
+	BRIDGE_API void enviaJogo(SincControl& sincControl, BOLA& bola);
+	BRIDGE_API void recebeJogo(SincControl& sincControl, BOLA& bola);
 
 	// mensagens.cpp
-	BRIDGE_API void enviaMensagem(SincControl &sincControl, JOGADOR &jogador);
-	BRIDGE_API void recebeMensagens(SincControl &sincControl);
+	BRIDGE_API void enviaMensagem(SincControl& sincControl, JOGADOR& jogador);
+	BRIDGE_API void recebeMensagens(SincControl& sincControl);
 
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
-	BRIDGE_API void closeSincControl(SincControl &sincControl);
-	BRIDGE_API bool initWaitableTimer(SincControl&sincControl);
+	BRIDGE_API void closeSincControl(SincControl& sincControl);
+	BRIDGE_API bool initWaitableTimer(SincControl& sincControl, JOGO& jogo);
 
 	BRIDGE_API void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD);
-	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES * sa);
+	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES* sa);
 }

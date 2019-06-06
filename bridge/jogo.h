@@ -1,10 +1,6 @@
 ﻿#pragma once
 
 #define TEXTO 120
-#define NUM_BOLAS 3
-#define NUM_BARREIRAS 40
-#define NUM_TIJOLOS 40
-#define NUM_MAX_JOGADORES 20
 #define TOP_TEN 10
 
 typedef struct {
@@ -52,7 +48,7 @@ typedef struct {
 	BOLA bola;
 	JOGADOR jogador;
 	int termina;
-	int maxJogador[NUM_MAX_JOGADORES];//MAX_JOGADORES = 20
+	int maxJogador;//MAX_JOGADORES = 20
 	int numNiveis;//NUM_NIVEIS = 3
 	int numSpeedUps;//NUM_SPEEDUPS = 3
 	int numSlowDowns;//NUM_SLOWDOWNS = 3

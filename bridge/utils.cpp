@@ -15,7 +15,7 @@ extern "C" {
 		SetConsoleCursorPosition(hStdout, coord);
 	}
 
-	void closeSincControl(SincControl &sincControl) {
+	void closeSincControl(SincControl& sincControl) {
 		CloseHandle(sincControl.hMutexMensagem);
 		CloseHandle(sincControl.hEventoMensagem);
 		CloseHandle(sincControl.hMutexJogo);
@@ -26,7 +26,7 @@ extern "C" {
 		CloseHandle(sincControl.hMemJogo);
 	}
 
-	bool initWaitableTimer(SincControl&sincControl) {
+	bool initWaitableTimer(SincControl& sincControl, JOGO& jogo) {
 		/* WaitableTimer*/
 		ZeroMemory(&sincControl.time, sizeof(SYSTEMTIME));
 		GetSystemTime(&sincControl.time);
@@ -36,13 +36,12 @@ extern "C" {
 			return false;
 		}
 		SystemTimeToFileTime(&sincControl.time, &sincControl.ftime);
-		SetWaitableTimer(sincControl.hTimer, reinterpret_cast<LARGE_INTEGER*>(&sincControl.ftime), VEL_JOGO, NULL, NULL, 0);
+		SetWaitableTimer(sincControl.hTimer, reinterpret_cast<LARGE_INTEGER*>(&sincControl.ftime), jogo.velocidade, NULL, NULL, 0);
 		return true;
 	}
 
 	// Buffer clean up routine
-	void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD)
-	{
+	void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD) {
 		if (pEveryoneSID)
 			FreeSid(pEveryoneSID);
 		if (pAdminSID)
@@ -53,8 +52,7 @@ extern "C" {
 			LocalFree(pSD);
 	}
 
-	void Seguranca(SECURITY_ATTRIBUTES * sa)
-	{
+	void Seguranca(SECURITY_ATTRIBUTES* sa) {
 		PSECURITY_DESCRIPTOR pSD;
 		PACL pAcl;
 		EXPLICIT_ACCESS ea;
@@ -75,8 +73,7 @@ extern "C" {
 
 		// Create a well-known SID for the Everyone group.
 		if (!AllocateAndInitializeSid(&SIDAuthWorld, 1, SECURITY_WORLD_RID,
-			0, 0, 0, 0, 0, 0, 0, &pEveryoneSID))
-		{
+			0, 0, 0, 0, 0, 0, 0, &pEveryoneSID)) {
 			_stprintf_s(str, 256, TEXT("AllocateAndInitializeSid() error %u\n"), GetLastError());
 			_tprintf(str);
 			Cleanup(pEveryoneSID, pAdminSID, NULL, pSD);

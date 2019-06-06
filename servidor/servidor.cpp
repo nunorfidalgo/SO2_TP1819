@@ -21,8 +21,9 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 
 	leConfig(argc, argv);
+	mostraConfig(jogo);
 
-	initWaitableTimer(sincControl);
+	initWaitableTimer(sincControl, jogo);
 	//if (initWaitableTimer(sincControl)) // WaitableTimer
 	//	return -1;
 
