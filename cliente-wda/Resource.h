@@ -26,6 +26,13 @@
 #define IDC_EDIT_ESQUERDA               119
 #define IDC_EDIT2                       120
 #define IDC_EDIT_DIREITA                120
+#define IDB_TIJOLO1                     155
+#define IDB_TIJOLO2                     156
+#define IDB_TIJOLO4                     157
+#define IDB_TIJOLO5                     158
+#define IDB_TIJOLO3                     159
+#define IDB_BITMAP1                     160
+#define IDB_BACKGROUND1                 160
 #define IDC_IPADDRESS1                  1010
 #define IDC_STATIC                      -1
 
@@ -34,7 +41,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        154
+#define _APS_NEXT_RESOURCE_VALUE        161
 #define _APS_NEXT_COMMAND_VALUE         32783
 #define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           110

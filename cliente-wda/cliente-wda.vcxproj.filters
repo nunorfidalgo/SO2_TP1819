@@ -51,5 +51,23 @@
     <Image Include="..\images\paddle.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\images\block01.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\block02.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\block03.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\block04.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\block05.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\background.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

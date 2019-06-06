@@ -128,6 +128,7 @@
     <ClCompile Include="registo.cpp" />
     <ClCompile Include="servidor.cpp" />
     <ClCompile Include="threads.cpp" />
+    <ClCompile Include="tijolo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="funcs.h" />

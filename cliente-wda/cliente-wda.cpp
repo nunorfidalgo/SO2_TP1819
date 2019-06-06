@@ -13,6 +13,8 @@ BOOL                InitInstance(HINSTANCE, int);
 
 JOGADOR jogador;
 BOLA bola;
+
+TIJOLO tijolo1, tijolo2, tijolo3, tijolo4, tijolo5;
 SincControl sincControl;
 TCHAR erros[MAX_LOADSTRING];
 
@@ -23,8 +25,8 @@ DWORD hTMensagensId, hTJogoId, htDoubleBuffId;
 HDC hDC = NULL, memDC = NULL, tempDC = NULL;
 PAINTSTRUCT ps;
 int sair = 0, maxX = 0, maxY = 0;
-HBITMAP hBitMap = NULL, hBitBola = NULL, hBitBarreira = NULL;
-BITMAP bmpBola, bmpBarreira;
+HBITMAP hBitMap = NULL, hBitBola = NULL, hBitBarreira = NULL, hBitTijolo1 = NULL, hBitTijolo2 = NULL, hBitTijolo3 = NULL, hBitTijolo4 = NULL, hBitTijolo5 = NULL;
+BITMAP bmpBola, bmpBarreira, bmpTijolo1, bmpTijolo2, bmpTijolo3, bmpTijolo4, bmpTijolo5;
 
 RECT rect;
 HWND global_hWnd = NULL;
@@ -46,8 +48,7 @@ DWORD WINAPI threadRecebeJogo(LPVOID param);
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow)
-{
+	_In_ int       nCmdShow) {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -101,8 +102,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	MyRegisterClass(hInstance);
 
 	// Perform application initialization:
-	if (!InitInstance(hInstance, nCmdShow))
-	{
+	if (!InitInstance(hInstance, nCmdShow)) {
 		return FALSE;
 	}
 
@@ -111,10 +111,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	MSG msg;
 
 	// Main message loop:
-	while (GetMessage(&msg, nullptr, 0, 0))
-	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-		{
+	while (GetMessage(&msg, nullptr, 0, 0)) {
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
@@ -134,8 +132,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 //  PURPOSE: Registers the window class.
 //
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
+ATOM MyRegisterClass(HINSTANCE hInstance) {
 	WNDCLASSEXW wcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -165,8 +162,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 	hInst = hInstance; // Store instance handle in our global variable
 
 	global_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
@@ -175,8 +171,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		_WINDOW_WIDTH,
 		_WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
-	if (!global_hWnd)
-	{
+	if (!global_hWnd) {
 		return FALSE;
 	}
 
@@ -205,25 +200,180 @@ DWORD WINAPI threadRecebeJogo(LPVOID param) {
 		SelectObject(tempDC, hBitBola);
 		BitBlt(memDC, bola.coord.x, bola.coord.y, bmpBola.bmWidth, bmpBola.bmHeight, tempDC, 0, 0, SRCCOPY);
 
+		//linha 1
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 15, tijolo1.coord.y + 20, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 55, tijolo2.coord.y + 20, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 95, tijolo3.coord.y + 20, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 135, tijolo4.coord.y + 20, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 175, tijolo5.coord.y + 20, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 215, tijolo1.coord.y + 20, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 255, tijolo2.coord.y + 20, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 295, tijolo3.coord.y + 20, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 335, tijolo4.coord.y + 20, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 375, tijolo5.coord.y + 20, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+		//linha2
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 375, tijolo1.coord.y + 40, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 335, tijolo2.coord.y + 40, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 295, tijolo3.coord.y + 40, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 255, tijolo4.coord.y + 40, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 215, tijolo5.coord.y + 40, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 175, tijolo1.coord.y + 40, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 135, tijolo2.coord.y + 40, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 95, tijolo3.coord.y + 40, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 55, tijolo4.coord.y + 40, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 15, tijolo5.coord.y + 40, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		//linha3
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 15, tijolo1.coord.y + 60, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 55, tijolo2.coord.y + 60, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 95, tijolo3.coord.y + 60, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 135, tijolo4.coord.y + 60, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 175, tijolo5.coord.y + 60, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 215, tijolo1.coord.y + 60, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 255, tijolo2.coord.y + 60, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 295, tijolo3.coord.y + 60, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 335, tijolo4.coord.y + 60, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 375, tijolo5.coord.y + 60, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		//linha4
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 375, tijolo1.coord.y + 80, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 335, tijolo2.coord.y + 80, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 295, tijolo3.coord.y + 80, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 255, tijolo4.coord.y + 80, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 215, tijolo5.coord.y + 80, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 175, tijolo1.coord.y + 80, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 135, tijolo2.coord.y + 80, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 95, tijolo3.coord.y + 80, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 55, tijolo4.coord.y + 80, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 15, tijolo5.coord.y + 80, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		//linha5
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 15, tijolo1.coord.y + 100, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 55, tijolo2.coord.y + 100, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 95, tijolo3.coord.y + 100, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 135, tijolo4.coord.y + 100, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 175, tijolo5.coord.y + 100, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo1);
+		BitBlt(memDC, tijolo1.coord.x + 215, tijolo1.coord.y + 100, bmpTijolo1.bmWidth, bmpTijolo1.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo2);
+		BitBlt(memDC, tijolo2.coord.x + 255, tijolo2.coord.y + 100, bmpTijolo2.bmWidth, bmpTijolo2.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo3);
+		BitBlt(memDC, tijolo3.coord.x + 295, tijolo3.coord.y + 100, bmpTijolo3.bmWidth, bmpTijolo3.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo4);
+		BitBlt(memDC, tijolo4.coord.x + 335, tijolo4.coord.y + 100, bmpTijolo4.bmWidth, bmpTijolo4.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitTijolo5);
+		BitBlt(memDC, tijolo5.coord.x + 375, tijolo5.coord.y + 100, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+
+
+
+
 		DeleteDC(tempDC);
 		InvalidateRect(global_hWnd, NULL, TRUE);
 	}
 	return 0;
 }
 
-INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(lParam);
 
-	switch (message)
-	{
+	switch (message) {
 	case WM_INITDIALOG:
 		SetFocus(GetDlgItem(hDlg, IDC_EDIT_NOME));
 		return (INT_PTR)FALSE;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
+		switch (LOWORD(wParam)) {
 		case IDOK:
 			GetDlgItemText(hDlg, IDC_EDIT_NOME, jogador.nome, TEXTO);
 			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
@@ -242,18 +392,15 @@ INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	return (INT_PTR)FALSE;
 }
 
-INT_PTR CALLBACK NovoJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK NovoJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(lParam);
 	SetFocus(GetDlgItem(hDlg, IDC_EDIT_NOME));
-	switch (message)
-	{
+	switch (message) {
 	case WM_INITDIALOG:
 		return (INT_PTR)FALSE;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
+		switch (LOWORD(wParam)) {
 		case IDOK:
 			GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
 			//GetDlgItemText(hDlg, IDC_IPADDRESS, sincControl.mensagem->jogador.???, TEXTO);
@@ -275,18 +422,15 @@ INT_PTR CALLBACK NovoJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	return (INT_PTR)FALSE;
 }
 
-INT_PTR CALLBACK JogoConfigs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK JogoConfigs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(lParam);
 	SetFocus(GetDlgItem(hDlg, IDC_EDIT_ESQUERDA));
-	switch (message)
-	{
+	switch (message) {
 	case WM_INITDIALOG:
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
@@ -295,17 +439,14 @@ INT_PTR CALLBACK JogoConfigs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	return (INT_PTR)FALSE;
 }
 
-INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
+	switch (message) {
 	case WM_INITDIALOG:
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
@@ -426,14 +567,12 @@ INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 //
 LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) // trataEventos
 {
-	switch (message)
-	{
+	switch (message) {
 
 	case WM_COMMAND:
 	{
 		// Parse the menu selections:
-		switch (LOWORD(wParam))
-		{
+		switch (LOWORD(wParam)) {
 
 		case IDM_SOBRE:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_SOBRE), hWnd, Sobre);
@@ -476,6 +615,21 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 		hBitBarreira = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BARREIRA), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
 		GetObject(hBitBarreira, sizeof(bmpBarreira), &bmpBarreira);
+
+		hBitTijolo1 = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TIJOLO1), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		GetObject(hBitTijolo1, sizeof(bmpTijolo1), &bmpTijolo1);
+
+		hBitTijolo2 = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TIJOLO2), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		GetObject(hBitTijolo2, sizeof(bmpTijolo2), &bmpTijolo2);
+
+		hBitTijolo3 = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TIJOLO3), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		GetObject(hBitTijolo3, sizeof(bmpTijolo3), &bmpTijolo3);
+
+		hBitTijolo4 = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TIJOLO4), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		GetObject(hBitTijolo4, sizeof(bmpTijolo4), &bmpTijolo4);
+
+		hBitTijolo5 = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TIJOLO5), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		GetObject(hBitTijolo5, sizeof(bmpTijolo5), &bmpTijolo5);
 
 	}
 	break;
