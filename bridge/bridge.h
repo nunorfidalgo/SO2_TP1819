@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include <windows.h>
-#include <locale.h>
 #include <tchar.h>
+//#include <locale.h>
 #include <io.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -22,7 +22,7 @@
 #define _WINDOW_WIDTH 450// x
 #define _WINDOW_HEIGHT 600 // y
 
-#define VEL_JOGO 200
+#define VEL_JOGO 1 // 1 mili segundos
 
 #define MUTEX_MENSAGEM TEXT("MutexMensagem")
 #define EVENTO_MENSAGEM TEXT("EventoMensagem")
@@ -35,6 +35,8 @@
 #define JOGO_TXT TEXT("Jogo")
 
 #define LOGIN TEXT("LOGIN")
+
+#define JOGO_TIMER TEXT("WAITABLE_TIMER_SERVIDOR")
 
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)
@@ -53,7 +55,7 @@ extern "C" {
 
 	// jogo.cpp
 	BRIDGE_API void enviaJogo(SincControl &sincControl, BOLA &bola);
-	BRIDGE_API void recebeJogo(SincControl &sincControl);
+	BRIDGE_API void recebeJogo(SincControl &sincControl, BOLA &bola);
 
 	// mensagens.cpp
 	BRIDGE_API void enviaMensagem(SincControl &sincControl, JOGADOR &jogador);
@@ -62,4 +64,8 @@ extern "C" {
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
 	BRIDGE_API void closeSincControl(SincControl &sincControl);
+	BRIDGE_API bool initWaitableTimer(SincControl&sincControl);
+
+	BRIDGE_API void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD);
+	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES * sa);
 }

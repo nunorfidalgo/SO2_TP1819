@@ -2,6 +2,9 @@
 #include "globals.h"
 #include "funcs.h"
 
+TOPTEN topten;
+SECURITY_ATTRIBUTES sa;
+
 int _tmain(int argc, LPTSTR argv[]) {
 
 #ifdef UNICODE
@@ -10,24 +13,23 @@ int _tmain(int argc, LPTSTR argv[]) {
 	_setmode(_fileno(stderr), _O_WTEXT);
 #endif
 
-	//system("cls");
+	system("cls");
 	_tprintf(TEXT("%s: Pronto...\n"), SERVIDOR);
-
-	leConfig(argc, argv);
-	_tprintf(TEXT("%s: [Erro: %d] Não 1")SERVIDOR, GetLastError());
-	system("pause");
-	_tprintf(TEXT("%s: [Erro: %d] Não 2")SERVIDOR, GetLastError());
-	if (escreveRegisto() == -1) {
-		_tprintf(TEXT("%s: [Erro: %d] Não foi possível salvar os pontos no registo!\n"), SERVIDOR, GetLastError());
-	}
-	else {
-		if (leRegisto() == -1) {
-			_tprintf(TEXT("%s: [Erro: %d] Sem pontos no registo!\n"), SERVIDOR, GetLastError());
-		}
-	}
+	Seguranca(&sa);
 
 	if (verificaInstancia())
 		return -1;
+
+	leConfig(argc, argv);
+
+	initWaitableTimer(sincControl);
+	//if (initWaitableTimer(sincControl)) // WaitableTimer
+	//	return -1;
+
+
+	leRegisto(topten);
+
+
 
 	if (!AcessoMensagensServidor(sincControl))
 		return -1;
@@ -41,19 +43,21 @@ int _tmain(int argc, LPTSTR argv[]) {
 		_tprintf(TEXT("%s: [ERRO] Criação evento do login (%d)\n"), SERVIDOR, GetLastError());
 		return -1;
 	}
+
 	WaitForSingleObject(hLogin, INFINITE);
+	_tprintf(TEXT("[Thread: %d] Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
 	_tprintf(TEXT("%s: O jogo começou...\n"), SERVIDOR);
 	CloseHandle(hLogin);
 
 	hTMensagens = CreateThread(NULL, 0, threadRecebeMensagens, NULL, 0, &hTMensagensId);
 	if (hTMensagens == NULL) {
-		_tprintf(TEXT("%s: [Erro: %d] Ao  criar a thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
+		_tprintf(TEXT("%s: [Erro: %d] Ao criar a thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
 		return -1;
 	}
 
 	hTJogo = CreateThread(NULL, 0, threadEnviaJogo, NULL, 0, &hTJogoId);
 	if (hTJogo == NULL) {
-		_tprintf(TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), SERVIDOR, GetLastError(), hTJogoId);
+		_tprintf(TEXT("%s: [Erro: %d] Ao criar a thread[%d] do jogo...\n"), SERVIDOR, GetLastError(), hTJogoId);
 		return -1;
 	}
 
@@ -73,6 +77,10 @@ int _tmain(int argc, LPTSTR argv[]) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] da bola...\n"), SERVIDOR, GetLastError(), hTBolaId);
 	}
 
+	if (escreveRegisto(topten) == -1) {
+		_tprintf(TEXT("%s: [Erro: %d] Impossibilidade de salvar dados no registo!\n"), SERVIDOR, GetLastError());
+	}
+
 	_tprintf(TEXT("%s: [LastError %d] terminou...\n"), SERVIDOR, GetLastError());
 
 	closeSincControl(sincControl);
@@ -88,7 +96,7 @@ bool verificaInstancia() {
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		CloseHandle(hServidor);
 		hServidor = NULL;
-		_tprintf(TEXT("%s: [Erro: %d]Já exite uma instância do servidor a correr\n"), SERVIDOR, GetLastError());
+		_tprintf(TEXT("%s: [Erro: %d]Já exite uma instância do servidor a correr...\n"), SERVIDOR, GetLastError());
 		return true;
 	}
 	return false;

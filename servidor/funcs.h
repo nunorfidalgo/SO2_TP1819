@@ -7,7 +7,12 @@ DWORD WINAPI threadEnviaJogo(LPVOID param);
 DWORD WINAPI threadBola(LPVOID param);
 
 void MovimentoBola();
-int escreveRegisto();
-int leRegisto();
+
+//int escreveRegisto();
+//int leRegisto();
+int escreveRegisto(TOPTEN& topten);
+int leRegisto(TOPTEN& topten);
+
 int leConfig(int argc, LPTSTR argv[]);
+
 #endif

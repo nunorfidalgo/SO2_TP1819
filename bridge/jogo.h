@@ -4,7 +4,7 @@
 #define NUM_BOLAS 3
 #define NUM_BARREIRAS 40
 #define NUM_TIJOLOS 40
-#define NUM_MAX_JOGADORES 4
+#define NUM_MAX_JOGADORES 20
 #define TOP_TEN 10
 
 typedef struct {
@@ -13,7 +13,6 @@ typedef struct {
 
 typedef struct {
 	COORDENADAS	coord;
-	COORDENADAS	coordAnt;
 	COORDENADAS direcao;
 } BOLA;
 
@@ -25,7 +24,6 @@ typedef struct {
 
 typedef struct {
 	COORDENADAS	coord;
-	COORDENADAS	coordAnt;
 } BARREIRA;
 
 typedef struct {
@@ -54,7 +52,7 @@ typedef struct {
 	BOLA bola;
 	JOGADOR jogador;
 	int termina;
-	int maxJogador;//MAX_JOGADORES = 20
+	int maxJogador[NUM_MAX_JOGADORES];//MAX_JOGADORES = 20
 	int numNiveis;//NUM_NIVEIS = 3
 	int numSpeedUps;//NUM_SPEEDUPS = 3
 	int numSlowDowns;//NUM_SLOWDOWNS = 3
@@ -65,21 +63,4 @@ typedef struct {
 	int numVidas;//NUM_VIDAS = 3
 	int numTijolos;//NUM_TIJOLOS = 15
 	int velocidade;//VELOCIDADE = 100
-}JOGO;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} JOGO;
