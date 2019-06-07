@@ -4,7 +4,7 @@
 
 extern SECURITY_ATTRIBUTES sa;
 
-int escreveRegisto(TOPTEN &topten) {
+int escreveRegisto(TOPTEN& topten) {
 
 	HKEY chave;
 	DWORD queAconteceu;
@@ -25,24 +25,28 @@ int escreveRegisto(TOPTEN &topten) {
 	//_tprintf(TEXT("top ten:\n%s"), pontuacoes);
 
 	if (RegCreateKeyEx(HKEY_CURRENT_USER, CHAVE_REG, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, &sa, &chave, &queAconteceu) != ERROR_SUCCESS) {
-		_tprintf(TEXT("%s: Erro ao criar chave no registo! (%d)\n"), SERVIDOR, GetLastError());
+		_tprintf(TEXT("%s: Erro ao criar chave ou chave já existe no registo! (%d)\n"), SERVIDOR, GetLastError());
 		return -1;
 	}
 	else {
+		_tprintf(TEXT("%s: Chave criada com sucesso no registo!\n"), SERVIDOR);
 		if (queAconteceu == REG_CREATED_NEW_KEY) {
-			_tprintf(TEXT("%s: Chave criada com sucesso no registo!\n"), SERVIDOR);
 			RegSetValueEx(chave, TEXT("Autores"), 0, REG_SZ, (LPBYTE)autores, _tcslen(autores) * sizeof(TCHAR));
 			RegSetValueEx(chave, TEXT("Meta"), 0, REG_SZ, (LPBYTE)meta, _tcslen(meta) * sizeof(TCHAR));
 			RegSetValueEx(chave, TEXT("Top Ten"), 0, REG_SZ, (LPBYTE)top_ten, _tcslen(top_ten) * sizeof(TCHAR));
 			_tprintf(TEXT("%s: Dados guardados no registo!\n"), SERVIDOR);
-			RegCloseKey(chave);
-			return 1;
 		}
+
+
+		RegCloseKey(chave);
+
+		return 1;
 	}
+	_tprintf(TEXT("%s: Dados já existem no registo!\n"), SERVIDOR);
 	return 0;
 }
 
-int leRegisto(TOPTEN &topten) {
+int leRegisto(TOPTEN& topten) {
 
 	HKEY chave;
 	DWORD queAconteceu, tamanho = MAX;
@@ -53,62 +57,61 @@ int leRegisto(TOPTEN &topten) {
 
 	TCHAR seps[] = TEXT("=\n");
 	//TCHAR teste[] = TEXT("Nuno=1000\nClaudio=20\nNuno2=10002\nClaudio2=202\n");
-	TCHAR *token1 = NULL;
-	TCHAR *next_token1 = NULL;
+	TCHAR* token1 = NULL;
+	TCHAR* next_token1 = NULL;
 
-	if (RegCreateKeyEx(HKEY_CURRENT_USER, CHAVE_REG, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, &sa, &chave, &queAconteceu) != ERROR_SUCCESS) {
-		_tprintf(TEXT("%s: Erro ao abrir chave do registo! (%d)\n"), SERVIDOR, GetLastError());
+	if (RegOpenKey(HKEY_CURRENT_USER, CHAVE_REG, &chave) != ERROR_SUCCESS) {
+		_tprintf(TEXT("%s:  Erro ao aceder ao registo! (%d)\n"), SERVIDOR, GetLastError());
 		return -1;
 	}
+
 	else {
-		if (queAconteceu == REG_OPENED_EXISTING_KEY) {
+		//	if (queAconteceu == REG_OPENED_EXISTING_KEY) {
+		//_tprintf(TEXT("%s:  Erro ao criar chave ou chave já existe no registo! (%d)\n"), SERVIDOR, GetLastError());
+		RegQueryValueEx(chave, TEXT("Autores"), NULL, NULL, (LPBYTE)autores, &tamanho);
+		autores[tamanho / sizeof(TCHAR)] = '\0';
 
-			RegQueryValueEx(chave, TEXT("Autores"), NULL, NULL, (LPBYTE)autores, &tamanho);
-			autores[tamanho / sizeof(TCHAR)] = '\0';
+		RegQueryValueEx(chave, TEXT("Meta"), NULL, NULL, (LPBYTE)meta, &tamanho);
+		meta[tamanho / sizeof(TCHAR)] = '\0';
 
-			RegQueryValueEx(chave, TEXT("Meta"), NULL, NULL, (LPBYTE)meta, &tamanho);
-			meta[tamanho / sizeof(TCHAR)] = '\0';
+		RegQueryValueEx(chave, TEXT("Top Ten"), NULL, NULL, (LPBYTE)top_ten, &tamanho);
+		top_ten[tamanho / sizeof(TCHAR)] = '\0';
 
-			RegQueryValueEx(chave, TEXT("Top Ten"), NULL, NULL, (LPBYTE)top_ten, &tamanho);
-			top_ten[tamanho / sizeof(TCHAR)] = '\0';
+		_tprintf(TEXT("%s: Ler do Registry:\n"), SERVIDOR);
+		_tprintf(TEXT("%s: Autores: %s\n"), SERVIDOR, autores);
+		_tprintf(TEXT("%s: Meta: %s\n"), SERVIDOR, meta);
+		_tprintf(TEXT("%s: Topten: %s\n"), SERVIDOR, top_ten);
 
-			_tprintf(TEXT("%s: Ler do Registry:\n"), SERVIDOR);
-			_tprintf(TEXT("%s: Autores: %s\n"), SERVIDOR, autores);
-			_tprintf(TEXT("%s: Meta: %s\n"), SERVIDOR, meta);
-			_tprintf(TEXT("%s: Topten: %s\n"), SERVIDOR, top_ten);
-
-			token1 = _tcstok_s(top_ten, seps, &next_token1);
-			int i = 0, num = 0;
-			while (token1 != NULL || i < TOP_TEN)
-			{
-				if (token1 != NULL)
-				{
-					//_tprintf(TEXT("[%d] token1: %s\n"), i, token1);
-					if (num % 2 == 0) {
-						/*_tprintf(TEXT("[%d] par\n"), i);*/
-						_tcscpy_s(topten.pontuacoes[i].nome, token1);
-						_tprintf(TEXT("[%d] par: %s\n"), i, topten.pontuacoes[i].nome);
-					}
-					else {
-						//_tprintf(TEXT("[%d] impar\n"), i);
-						topten.pontuacoes[i].pontos = _tstoi(token1);
-						_tprintf(TEXT("[%d] impar: %d\n"), i, topten.pontuacoes[i].pontos);
-						i++;
-					}
-					token1 = _tcstok_s(NULL, seps, &next_token1);
-					//_tprintf(TEXT("[%d] next_token1: %s\n"), i, next_token1);
-					num++;
+		token1 = _tcstok_s(top_ten, seps, &next_token1);
+		int i = 0, num = 0;
+		while (token1 != NULL || i < TOP_TEN) {
+			if (token1 != NULL) {
+				//_tprintf(TEXT("[%d] token1: %s\n"), i, token1);
+				if (num % 2 == 0) {
+					/*_tprintf(TEXT("[%d] par\n"), i);*/
+					_tcscpy_s(topten.pontuacoes[i].nome, token1);
+					_tprintf(TEXT("[%d] par: %s\n"), i, topten.pontuacoes[i].nome);
 				}
 				else {
-					_tcscpy_s(topten.pontuacoes[i].nome, TEXT(""));
-					topten.pontuacoes[i].pontos = 0;
+					//_tprintf(TEXT("[%d] impar\n"), i);
+					topten.pontuacoes[i].pontos = _tstoi(token1);
+					_tprintf(TEXT("[%d] impar: %d\n"), i, topten.pontuacoes[i].pontos);
 					i++;
 				}
+				token1 = _tcstok_s(NULL, seps, &next_token1);
+				//_tprintf(TEXT("[%d] next_token1: %s\n"), i, next_token1);
+				num++;
 			}
-			RegCloseKey(chave);
-			return 1;
+			else {
+				_tcscpy_s(topten.pontuacoes[i].nome, TEXT(""));
+				topten.pontuacoes[i].pontos = 0;
+				i++;
+			}
 		}
+		RegCloseKey(chave);
+		return 1;
 	}
+	//}
 	return 0;
 }
 
