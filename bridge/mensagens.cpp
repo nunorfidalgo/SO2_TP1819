@@ -61,7 +61,9 @@ extern "C" {
 
 				ResetEvent(sincPipes.hEvent[i]);
 				WaitForSingleObject(sincPipes.hMutex, INFINITE);
+
 				sincPipes.hPipes[i].activo = TRUE;
+
 				ReleaseMutex(sincPipes.hMutex);
 				sincPipes.numClientes++;
 			}

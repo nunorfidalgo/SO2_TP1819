@@ -75,7 +75,7 @@ int leRegisto(TOPTEN& topten) {
 		meta[tamanho / sizeof(TCHAR)] = '\0';
 
 		RegQueryValueEx(chave, TEXT("Top Ten"), NULL, NULL, (LPBYTE)top_ten, &tamanho);
-		top_ten[tamanho / sizeof(TCHAR)] = '\0';
+		top_ten[tamanho * sizeof(TCHAR)] = '\0';
 
 		_tprintf(TEXT("%s: Ler do Registry:\n"), SERVIDOR);
 		_tprintf(TEXT("%s: Autores: %s\n"), SERVIDOR, autores);

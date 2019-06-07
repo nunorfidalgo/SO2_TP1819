@@ -66,7 +66,7 @@ extern "C" {
 		}
 
 		//_tprintf(TEXT("[LEITOR] Ligação ao pipe do escritor... (CreateFile)\n"));
-		hPipe = CreateFile(PIPE_NAME, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		hPipe = CreateFile(PIPE_NAME, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 		if (hPipe == NULL) {
 			//_tprintf(TEXT("[ERRO] Ligar ao pipe '%s'! (CreateFile)\n"), PIPE_NAME);
