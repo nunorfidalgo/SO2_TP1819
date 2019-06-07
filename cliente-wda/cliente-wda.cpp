@@ -25,7 +25,7 @@ DWORD hTMensagensId, hTJogoId, htDoubleBuffId;
 HDC hDC = NULL, memDC = NULL, tempDC = NULL;
 PAINTSTRUCT ps;
 int sair = 0, maxX = 0, maxY = 0;
-HBITMAP hBitMap = NULL, hBitBola = NULL, hBitBarreira = NULL, hBitTijolo1 = NULL, hBitTijolo2 = NULL, hBitTijolo3 = NULL, hBitTijolo4 = NULL, hBitTijolo5 = NULL;
+HBITMAP hBitMap = NULL, hBitWallpaper = NULL, hBitBola = NULL, hBitBarreira = NULL, hBitTijolo1 = NULL, hBitTijolo2 = NULL, hBitTijolo3 = NULL, hBitTijolo4 = NULL, hBitTijolo5 = NULL;
 BITMAP bmpBola, bmpBarreira, bmpTijolo1, bmpTijolo2, bmpTijolo3, bmpTijolo4, bmpTijolo5;
 
 RECT rect;
@@ -190,15 +190,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
 	while (!sincControl.mensagem->termina) {
 
+
+
 		recebeJogo(sincControl, bola);
+
 		tempDC = CreateCompatibleDC(memDC);
+		PatBlt(memDC, 0, 0, maxX, maxY, PATCOPY);
+
+		SelectObject(tempDC, hBitWallpaper);
+		BitBlt(memDC, 0, 0, maxX, maxY, tempDC, 0, 0, SRCCOPY);
 
 		SelectObject(tempDC, hBitBarreira);
-		PatBlt(memDC, 0, 0, maxX, maxY, PATCOPY);
+
 		BitBlt(memDC, jogador.barreira.coord.x, 520, bmpBarreira.bmWidth, bmpBarreira.bmHeight, tempDC, 0, 0, SRCCOPY);
 
-		SelectObject(tempDC, hBitBola);
-		BitBlt(memDC, bola.coord.x, bola.coord.y, bmpBola.bmWidth, bmpBola.bmHeight, tempDC, 0, 0, SRCCOPY);
 
 		//linha 1
 		SelectObject(tempDC, hBitTijolo1);
@@ -353,6 +358,9 @@ DWORD WINAPI threadRecebeJogo(LPVOID param) {
 
 		SelectObject(tempDC, hBitTijolo5);
 		BitBlt(memDC, tijolo5.coord.x + 375, tijolo5.coord.y + 100, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
+
+		SelectObject(tempDC, hBitBola);
+		BitBlt(memDC, bola.coord.x, bola.coord.y, bmpBola.bmWidth, bmpBola.bmHeight, tempDC, 0, 0, SRCCOPY);
 
 		DeleteDC(tempDC);
 		InvalidateRect(global_hWnd, NULL, TRUE);
@@ -605,6 +613,9 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		SelectObject(memDC, hBitMap);
 		DeleteObject(hBitMap);
 		ReleaseDC(hWnd, hDC);
+
+		hBitWallpaper = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BACKGROUND1), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+		GetObject(hBitBola, sizeof(bmpBola), &bmpBola);
 
 		hBitBola = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BOLA), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
 		GetObject(hBitBola, sizeof(bmpBola), &bmpBola);
