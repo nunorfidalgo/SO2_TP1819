@@ -30,13 +30,12 @@ int escreveRegisto(TOPTEN& topten) {
 	}
 	else {
 		_tprintf(TEXT("%s: Chave criada com sucesso no registo!\n"), SERVIDOR);
-		if (queAconteceu == REG_CREATED_NEW_KEY) {
+		if (queAconteceu == REG_CREATED_NEW_KEY || queAconteceu == REG_OPENED_EXISTING_KEY) {
 			RegSetValueEx(chave, TEXT("Autores"), 0, REG_SZ, (LPBYTE)autores, _tcslen(autores) * sizeof(TCHAR));
 			RegSetValueEx(chave, TEXT("Meta"), 0, REG_SZ, (LPBYTE)meta, _tcslen(meta) * sizeof(TCHAR));
 			RegSetValueEx(chave, TEXT("Top Ten"), 0, REG_SZ, (LPBYTE)top_ten, _tcslen(top_ten) * sizeof(TCHAR));
 			_tprintf(TEXT("%s: Dados guardados no registo!\n"), SERVIDOR);
 		}
-
 
 		RegCloseKey(chave);
 

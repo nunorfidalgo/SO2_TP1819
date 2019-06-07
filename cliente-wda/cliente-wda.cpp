@@ -354,10 +354,6 @@ DWORD WINAPI threadRecebeJogo(LPVOID param) {
 		SelectObject(tempDC, hBitTijolo5);
 		BitBlt(memDC, tijolo5.coord.x + 375, tijolo5.coord.y + 100, bmpTijolo5.bmWidth, bmpTijolo5.bmHeight, tempDC, 0, 0, SRCCOPY);
 
-
-
-
-
 		DeleteDC(tempDC);
 		InvalidateRect(global_hWnd, NULL, TRUE);
 	}
