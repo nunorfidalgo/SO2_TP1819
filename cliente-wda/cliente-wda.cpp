@@ -212,7 +212,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
 	while (!sincControl.mensagem->termina || !mensagem.termina) {
 
-		recebeJogoMemPart(sincControl, bola);
+		if (local == true)
+			recebeJogoMemPart(sincControl, bola);
+		//else
+		//	recebeJogoPipe();
+
 		tempDC = CreateCompatibleDC(memDC);
 
 		SelectObject(tempDC, hBitBarreira);

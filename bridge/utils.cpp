@@ -15,7 +15,7 @@ extern "C" {
 		SetConsoleCursorPosition(hStdout, coord);
 	}
 
-	void closeSincControl(SincControl& sincControl) {
+	void closeSincControl(SincControl &sincControl) {
 		CloseHandle(sincControl.hMutexMensagem);
 		CloseHandle(sincControl.hEventoMensagem);
 		CloseHandle(sincControl.hMutexJogo);
@@ -26,7 +26,7 @@ extern "C" {
 		CloseHandle(sincControl.hMemJogo);
 	}
 
-	bool initWaitableTimer(SincControl& sincControl, JOGO& jogo) {
+	bool initWaitableTimer(SincControl &sincControl, JOGO &jogo) {
 		/* WaitableTimer*/
 		ZeroMemory(&sincControl.time, sizeof(SYSTEMTIME));
 		GetSystemTime(&sincControl.time);
@@ -52,7 +52,7 @@ extern "C" {
 			LocalFree(pSD);
 	}
 
-	void Seguranca(SECURITY_ATTRIBUTES* sa) {
+	void Seguranca(SECURITY_ATTRIBUTES *sa) {
 		PSECURITY_DESCRIPTOR pSD;
 		PACL pAcl;
 		EXPLICIT_ACCESS ea;

@@ -4,6 +4,7 @@
 
 TOPTEN topten;
 SECURITY_ATTRIBUTES sa;
+extern JOGO jogo;
 
 int _tmain(int argc, LPTSTR argv[])
 {
@@ -20,7 +21,7 @@ int _tmain(int argc, LPTSTR argv[])
 	if (verificaInstancia())
 		return -1;
 
-	initWaitableTimer(sincControl);
+	initWaitableTimer(sincControl, jogo);
 	//if (initWaitableTimer(sincControl)) // WaitableTimer
 	//	return -1;
 
