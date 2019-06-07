@@ -3,7 +3,7 @@
 extern "C" {
 
 	// Mensagens
-	bool AcessoMensagensServidor(SincControl &sincControl) {
+	bool AcessoMensagensMemPartServidor(SincControl &sincControl) {
 		sincControl.hMutexMensagem = CreateMutex(NULL, FALSE, MUTEX_MENSAGEM);
 		sincControl.hEventoMensagem = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGEM);
 		sincControl.hMemMensagem = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(MENSAGEM), SHM_MENSAGEM);
@@ -19,9 +19,7 @@ extern "C" {
 		return true;
 	}
 
-	bool AcessoMensagensCliente(SincControl &sincControl) {
-		//sincControl.hMutexMensagem = CreateMutex(NULL, FALSE, MUTEX_MENSAGEM);
-		//sincControl.hEventoMensagem = CreateEvent(NULL, TRUE, FALSE, EVENTO_MENSAGEM);
+	bool AcessoMensagensMemPartCliente(SincControl &sincControl) {
 		sincControl.hMutexMensagem = OpenMutex(SYNCHRONIZE, FALSE, MUTEX_MENSAGEM);
 		sincControl.hEventoMensagem = OpenEvent(FILE_MAP_WRITE, FALSE, EVENTO_MENSAGEM);
 		sincControl.hMemMensagem = OpenFileMapping(FILE_MAP_WRITE, TRUE, SHM_MENSAGEM);
@@ -38,7 +36,7 @@ extern "C" {
 	}
 
 	// Jogo
-	bool AcessoJogoServidor(SincControl &sincControl) {
+	bool AcessoJogoMemPartServidor(SincControl &sincControl) {
 		sincControl.hMutexJogo = CreateMutex(NULL, FALSE, MUTEX_JOGO);
 		sincControl.hEventoJogo = CreateEvent(NULL, TRUE, FALSE, EVENTO_JOGO);
 		sincControl.hMemJogo = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(JOGO), SHM_JOGO);
@@ -54,7 +52,7 @@ extern "C" {
 		return true;
 	}
 
-	bool AcessoJogoCliente(SincControl &sincControl) {
+	bool AcessoJogoMemPartCliente(SincControl &sincControl) {
 		sincControl.hMutexJogo = OpenMutex(SYNCHRONIZE, FALSE, MUTEX_JOGO);
 		sincControl.hEventoJogo = OpenEvent(FILE_MAP_WRITE, FALSE, EVENTO_JOGO);
 		sincControl.hMemJogo = OpenFileMapping(FILE_MAP_READ, TRUE, SHM_JOGO);
