@@ -16,9 +16,8 @@ BOLA bola;
 SincControl sincControl;
 TCHAR erros[MAX_LOADSTRING];
 
-HANDLE hLogin, hCliente;
-HANDLE hTMensagens, hTJogo, htDoubleBuff;
-DWORD hTMensagensId, hTJogoId, htDoubleBuffId;
+HANDLE hLogin, hCliente, hTJogo;
+DWORD hTJogoId;
 
 HDC hDC = NULL, memDC = NULL, tempDC = NULL;
 PAINTSTRUCT ps;
@@ -29,6 +28,11 @@ BITMAP bmpBola, bmpBarreira;
 RECT rect;
 HWND global_hWnd = NULL;
 
+HANDLE hPipe;
+
+bool local;
+
+MENSAGEM mensagem;
 
 /* Funções */
 bool verificaInstancia();
@@ -39,7 +43,6 @@ INT_PTR CALLBACK NovoJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 INT_PTR CALLBACK JogoConfigs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-DWORD WINAPI threadEnvioMensagem(LPVOID param);
 DWORD WINAPI threadRecebeJogo(LPVOID param);
 
 /* WinMain */
@@ -52,32 +55,57 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	// TODO: Place code here.
+
+	jogador.barreira.coord.x = 180; // posição inicial
+	jogador.barreira.coord.y = 0;
+	jogador.cor = 0;
+	jogador.pontos = 0;
+	_tcscpy_s(jogador.nome, TEXT(""));
+
+	memcpy(&jogador, &mensagem.jogador, sizeof(JOGADOR));
+	mensagem.termina = 0;
+
 	if (verificaInstancia()) {
 		PostQuitMessage(-1);
 		return -1;
 	}
 
-	jogador.barreira.coord.x = 180;
+	//if (AcessoMensagensMemPartCliente(sincControl) && AcessoJogoMemPartCliente(sincControl)) {
 
-	if (AcessoMensagensCliente(sincControl) && AcessoJogoCliente(sincControl)) {
-
-		hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
+		/*hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
 		if (hLogin == NULL) {
 			_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [ERRO] Criação evento do login (%d)\n"), CLIENTE, GetLastError());
 			MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
 			return -1;
-		}
+		}*/
 		//MessageBox(NULL, TEXT("pipe"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
-		DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO_LOCAL), NULL, NovoJogoLocal);
-		SetEvent(hLogin);
-		ResetEvent(hLogin);
-		CloseHandle(hLogin);
-	}
-	else {
+	//DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO_LOCAL), NULL, NovoJogoLocal);
+	/*SetEvent(hLogin);
+	ResetEvent(hLogin);
+	CloseHandle(hLogin);*/
+	//	local = true;
+	//}
+	//else {
 		//MessageBox(NULL, TEXT("Local"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
-		DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);
-		// name pipes...
+
+	// named pipes
+	if (!AcessoPipeMensagensCliente(hPipe)) {
+		_stprintf_s(erros, MAX_LOADSTRING, TEXT("[ERRO] Ligar ao pipe '%s'! (CreateFile)\n"), PIPE_NAME);
+		MessageBox(NULL, erros, TEXT("Pipe"), MB_ICONEXCLAMATION | MB_OK);
+		return -1;
 	}
+	/*DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);*/
+
+	_tcscpy_s(jogador.nome, TEXT("dasdasdasd"));
+	_tcscpy_s(mensagem.jogador.nome, jogador.nome);
+
+	_stprintf_s(erros, MAX_LOADSTRING, TEXT("Nome: %s\n"), mensagem.jogador.nome);
+	MessageBox(NULL, erros, TEXT("Pipe"), MB_ICONEXCLAMATION | MB_OK);
+
+	enviaMensagemPipe(hPipe, &mensagem);
+	local = false;
+
+	//}
 
 	//enviaMensagem(sincControl, jogador);
 
@@ -88,12 +116,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return -1;
 	}*/
 
-	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
-	if (hTJogo == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
-		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
-		return -1;
-	}
+	//hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
+	//if (hTJogo == NULL) {
+	//	_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
+	//	MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
+	//	return -1;
+	//}
 
 	// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -119,12 +147,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
-	//WaitForSingleObject(hTMensagens, INFINITE);
 	WaitForSingleObject(hTJogo, INFINITE);
-
-	closeSincControl(sincControl);
-	//CloseHandle(hTMensagens);
-	CloseHandle(hTJogo);
 
 	return (int)msg.wParam;
 }
@@ -170,8 +193,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hInst = hInstance; // Store instance handle in our global variable
 
 	global_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CXSCREEN) - _WINDOW_WIDTH) / 2,
-		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CYSCREEN) - _WINDOW_HEIGHT) / 2,
+		(GetSystemMetrics(SM_CXSCREEN) - _WINDOW_WIDTH) / 2,
+		(GetSystemMetrics(SM_CYSCREEN) - _WINDOW_HEIGHT) / 2,
 		_WINDOW_WIDTH,
 		_WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
@@ -186,16 +209,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;
 }
 
-//DWORD WINAPI threadEnvioMensagem(LPVOID param) {
-//	jogador.barreira.coord.x = 180;
-//	enviaMensagem(sincControl, jogador);
-//	return 0;
-//}
-
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
-	while (!sincControl.mensagem->termina) {
+	while (!sincControl.mensagem->termina || !mensagem.termina) {
 
-		recebeJogo(sincControl, bola);
+		recebeJogoMemPart(sincControl, bola);
 		tempDC = CreateCompatibleDC(memDC);
 
 		SelectObject(tempDC, hBitBarreira);
@@ -226,9 +243,7 @@ INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		{
 		case IDOK:
 			GetDlgItemText(hDlg, IDC_EDIT_NOME, jogador.nome, TEXTO);
-			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
-			//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
-			enviaMensagem(sincControl, jogador);
+			enviaMensagemMemPart(sincControl, jogador);
 			EndDialog(hDlg, LOWORD(wParam));
 			break;
 		case IDCANCEL:
@@ -255,14 +270,13 @@ INT_PTR CALLBACK NovoJogo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
-			GetDlgItemText(hDlg, IDC_EDIT_NOME, sincControl.mensagem->jogador.nome, TEXTO);
-			//GetDlgItemText(hDlg, IDC_IPADDRESS, sincControl.mensagem->jogador.???, TEXTO);
-			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
-			//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
+			/*GetDlgItemText(hDlg, IDC_EDIT_NOME, jogador.nome, TEXTO);
+			_tcscpy_s(mensagem.jogador.nome, jogador.nome);
+			enviaMensagemPipe(hPipe, &mensagem);*/
 			EndDialog(hDlg, LOWORD(wParam));
-			MessageBox(hDlg, TEXT("Falta implementar"), TEXT("ERRO"), MB_ICONERROR | MB_OK);
+			/*MessageBox(hDlg, TEXT("Falta implementar"), TEXT("ERRO"), MB_ICONERROR | MB_OK);
 			DestroyWindow(global_hWnd);
-			PostQuitMessage(-1);
+			PostQuitMessage(-1);*/
 			break;
 		case IDCANCEL:
 			EndDialog(hDlg, LOWORD(wParam));
@@ -319,111 +333,111 @@ INT_PTR CALLBACK Sobre(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 //{
 //	return CreateWindowEx(0, WC_LINK,
 //		L"For more information, <A HREF=\"https://www.microsoft.com\">click here</A> " \
-//		L"or <A ID=\"idInfo\">here</A>.",
-//		WS_VISIBLE | WS_CHILD | WS_TABSTOP,
-//		rect.left, rect.top, rect.right, rect.bottom,
-//		hDlg, NULL, hInst, NULL);
-//}
+	//		L"or <A ID=\"idInfo\">here</A>.",
+	//		WS_VISIBLE | WS_CHILD | WS_TABSTOP,
+	//		rect.left, rect.top, rect.right, rect.bottom,
+	//		hDlg, NULL, hInst, NULL);
+	//}
 
 
-//// Message handler for about box.
-//INT_PTR CALLBACK trataDialogs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-//{
-//	UNREFERENCED_PARAMETER(lParam);
-//	switch (message)
-//	{
-//	case WM_INITDIALOG:
-//		return (INT_PTR)TRUE;
-//
-//	case WM_COMMAND:
-//		switch (LOWORD(wParam)) {
-//		case IDOK:
-//			EndDialog(hDlg, 0);
-//			return (INT_PTR)TRUE;
-//			break;
-//		case IDCANCEL:
-//			/*MessageBox(NULL, TEXT("Teste"), TEXT("teste"), MB_ICONEXCLAMATION | MB_OK);*/
-//			EndDialog(hDlg, 0);
-//			return (INT_PTR)TRUE;
-//			break;
-//
-//			// g_hLink is the handle of the SysLink control.
-//		case WM_NOTIFY:
-//
-//			switch (((LPNMHDR)lParam)->code)
-//			{
-//
-//			case NM_CLICK:          // Fall through to the next case.
-//
-//			case NM_RETURN:
-//			{
-//				MessageBox(NULL, TEXT("Teste SysLink"), TEXT("SysLink"), MB_ICONEXCLAMATION | MB_OK);
-//				//PNMLINK pNMLink = (PNMLINK)lParam;
-//				//LITEM   item = pNMLink->item;
-//
-//				//if (/*(((LPNMHDR)lParam)->hwndFrom == g_hLink) &&*/ (item.iLink == 0))
-//				//{
-//				//	ShellExecute(NULL, L"open", item.szUrl, NULL, NULL, SW_SHOW);
-//				//}
-//
-//				//else if (wcscmp(item.szID, L"idInfo") == 0)
-//				//{
-//				//	MessageBox(hDlg, L"This isn't much help.", L"Example", MB_OK);
-//				//}
-//
-//				break;
-//			}
-//			}
-//
-//			break;
-//			/*case IDC_SYSLINK1:
-//				MessageBox(NULL, TEXT("Dialog Link"), TEXT("link"), MB_ICONEXCLAMATION | MB_OK);
-//				EndDialog(hDlg, 0);
-//				return (INT_PTR)TRUE;
-//				break;*/
-//				//case IDC_SYSLINK1:
-//
-//				//	switch (pNMHdr->code)
-//				//	{
-//				//	case NM_CLICK:
-//				//	case NM_RETURN:
-//				//	{
-//				//		PNMLINK pNMLink = (PNMLINK)pNMHdr;
-//				//		LITEM item = pNMLink->item;
-//
-//				//		// Judging by the index of the link 
-//				//		if (item.iLink == 0) // If it is the first link 
-//				//		{
-//				//			ShellExecute(NULL, L"open", item.szUrl, NULL, NULL, SW_SHOW);
-//				//		}
-//				//		// Judging by the ID of the link 
-//				//		else if (wcscmp(item.szID, L"idBlog") == 0)
-//				//		{
-//				//			MessageBox(hDlg, L"http://blogs.msdn.com/codefx",
-//				//				L"All-In-One Code Framework Blog", MB_OK);
-//				//		}
-//				//		break;
-//				//	}
-//				//	}
-//
-//				//	EndDialog(hDlg, 0);
-//				//	return (INT_PTR)TRUE;
-//				//	break;
-//		}
-//	}
-//	return (INT_PTR)FALSE;
-//}
+	//// Message handler for about box.
+	//INT_PTR CALLBACK trataDialogs(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+	//{
+	//	UNREFERENCED_PARAMETER(lParam);
+	//	switch (message)
+	//	{
+	//	case WM_INITDIALOG:
+	//		return (INT_PTR)TRUE;
+	//
+	//	case WM_COMMAND:
+	//		switch (LOWORD(wParam)) {
+	//		case IDOK:
+	//			EndDialog(hDlg, 0);
+	//			return (INT_PTR)TRUE;
+	//			break;
+	//		case IDCANCEL:
+	//			/*MessageBox(NULL, TEXT("Teste"), TEXT("teste"), MB_ICONEXCLAMATION | MB_OK);*/
+	//			EndDialog(hDlg, 0);
+	//			return (INT_PTR)TRUE;
+	//			break;
+	//
+	//			// g_hLink is the handle of the SysLink control.
+	//		case WM_NOTIFY:
+	//
+	//			switch (((LPNMHDR)lParam)->code)
+	//			{
+	//
+	//			case NM_CLICK:          // Fall through to the next case.
+	//
+	//			case NM_RETURN:
+	//			{
+	//				MessageBox(NULL, TEXT("Teste SysLink"), TEXT("SysLink"), MB_ICONEXCLAMATION | MB_OK);
+	//				//PNMLINK pNMLink = (PNMLINK)lParam;
+	//				//LITEM   item = pNMLink->item;
+	//
+	//				//if (/*(((LPNMHDR)lParam)->hwndFrom == g_hLink) &&*/ (item.iLink == 0))
+	//				//{
+	//				//	ShellExecute(NULL, L"open", item.szUrl, NULL, NULL, SW_SHOW);
+	//				//}
+	//
+	//				//else if (wcscmp(item.szID, L"idInfo") == 0)
+	//				//{
+	//				//	MessageBox(hDlg, L"This isn't much help.", L"Example", MB_OK);
+	//				//}
+	//
+	//				break;
+	//			}
+	//			}
+	//
+	//			break;
+	//			/*case IDC_SYSLINK1:
+	//				MessageBox(NULL, TEXT("Dialog Link"), TEXT("link"), MB_ICONEXCLAMATION | MB_OK);
+	//				EndDialog(hDlg, 0);
+	//				return (INT_PTR)TRUE;
+	//				break;*/
+	//				//case IDC_SYSLINK1:
+	//
+	//				//	switch (pNMHdr->code)
+	//				//	{
+	//				//	case NM_CLICK:
+	//				//	case NM_RETURN:
+	//				//	{
+	//				//		PNMLINK pNMLink = (PNMLINK)pNMHdr;
+	//				//		LITEM item = pNMLink->item;
+	//
+	//				//		// Judging by the index of the link 
+	//				//		if (item.iLink == 0) // If it is the first link 
+	//				//		{
+	//				//			ShellExecute(NULL, L"open", item.szUrl, NULL, NULL, SW_SHOW);
+	//				//		}
+	//				//		// Judging by the ID of the link 
+	//				//		else if (wcscmp(item.szID, L"idBlog") == 0)
+	//				//		{
+	//				//			MessageBox(hDlg, L"http://blogs.msdn.com/codefx",
+	//				//				L"All-In-One Code Framework Blog", MB_OK);
+	//				//		}
+	//				//		break;
+	//				//	}
+	//				//	}
+	//
+	//				//	EndDialog(hDlg, 0);
+	//				//	return (INT_PTR)TRUE;
+	//				//	break;
+	//		}
+	//	}
+	//	return (INT_PTR)FALSE;
+	//}
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
+	//
+	//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
+	//
+	//  PURPOSE: Processes messages for the main window.
+	//
+	//  WM_COMMAND  - process the application menu
+	//  WM_PAINT    - Paint the main window
+	//  WM_DESTROY  - post a quit message and return
+	//
+	//
 LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) // trataEventos
 {
 	switch (message)
@@ -450,7 +464,6 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		case IDM_JOGO_SAIR:
 			sair = MessageBox(hWnd, TEXT("Sair do jogo?"), TEXT("Confirme:"), MB_YESNO);
 			if (sair == IDYES) {
-				//sincControl.mensagem->termina = 1;
 				DestroyWindow(hWnd);
 			}
 			break;
@@ -500,7 +513,11 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			jogador.barreira.coord.x = 0;
 		if (jogador.barreira.coord.x > (unsigned int)(rect.right - bmpBarreira.bmWidth))
 			jogador.barreira.coord.x = rect.right - bmpBarreira.bmWidth;
-		enviaMensagem(sincControl, jogador);
+		if (local == true)
+			enviaMensagemMemPart(sincControl, jogador);
+		else {
+			enviaMensagemPipe(hPipe, &mensagem);
+		}
 	}
 	break;
 
@@ -515,7 +532,11 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			jogador.barreira.coord.x = jogador.barreira.coord.x < (unsigned int)(rect.right - bmpBarreira.bmWidth) ? jogador.barreira.coord.x + 20 : (unsigned int)(rect.right - bmpBarreira.bmWidth);
 			break;
 		}
-		enviaMensagem(sincControl, jogador);
+		if (local == true)
+			enviaMensagemMemPart(sincControl, jogador);
+		else {
+			enviaMensagemPipe(hPipe, &mensagem);
+		}
 	}
 	break;
 
@@ -523,7 +544,6 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	{
 		sair = MessageBox(hWnd, TEXT("Sair do jogo?"), TEXT("Confirme:"), MB_YESNO);
 		if (sair == IDYES) {
-			//sincControl.mensagem->termina = 1;
 			DestroyWindow(hWnd);
 		}
 	}
@@ -532,6 +552,12 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	case WM_DESTROY:
 	{
 		sincControl.mensagem->termina = 1;
+		mensagem.termina = 1;
+		if (local == true)
+			enviaMensagemMemPart(sincControl, jogador);
+		else {
+			enviaMensagemPipe(hPipe, &mensagem);
+		}
 
 		DeleteObject(hBitBola);
 		DeleteObject(hBitBarreira);
@@ -539,7 +565,9 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		DeleteObject(hBitMap);
 		DeleteDC(memDC);
 
-		enviaMensagem(sincControl, jogador);
+		closeSincControl(sincControl);
+		CloseHandle(hPipe);
+		CloseHandle(hTJogo);
 
 		DestroyWindow(hWnd);
 		PostQuitMessage(0);

@@ -2,12 +2,13 @@
 #define GLOBALS_H
 
 JOGO jogo;
-
 BOLA bola; // isto desaparece e temos que usar o jogo!!
 SincControl sincControl;
-JOGO configJogo;
+SincPipes sincPipes;
+MENSAGEM mensagem;
+
 HANDLE hServidor, hLogin;
-HANDLE hTMensagens, hTJogo, hTBola;
-DWORD hTMensagensId, hTJogoId, hTBolaId;
+HANDLE hTMensagens, hTJogo, hTBola, hTEscutaMensagens;
+DWORD hTMensagensId, hTJogoId, hTBolaId, hTEscutaMensagensId;
 
 #endif

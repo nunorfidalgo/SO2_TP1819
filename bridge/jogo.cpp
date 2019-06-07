@@ -2,7 +2,7 @@
 
 extern "C" {
 
-	void enviaJogo(SincControl &sincControl, BOLA &bola) {
+	void enviaJogoMemPart(SincControl &sincControl, BOLA &bola) {
 		int j = 1;
 		while (!sincControl.jogo->termina) {
 
@@ -22,7 +22,7 @@ extern "C" {
 		}
 	}
 
-	void recebeJogo(SincControl &sincControl, BOLA &bola) {
+	void recebeJogoMemPart(SincControl &sincControl, BOLA &bola) {
 
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);
@@ -32,6 +32,14 @@ extern "C" {
 
 		ReleaseMutex(sincControl.hMutexJogo);
 	}
+
+	//void enviaJogoPipe(SincPipes &sincPipes, BOLA &bola) {
+
+	//}
+
+	//void recebeJogoPipe(SincPipes &sincPipes, BOLA &bola) {
+
+	//}
 
 
 }

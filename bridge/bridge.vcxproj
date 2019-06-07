@@ -125,6 +125,7 @@
     <ClCompile Include="memoria.cpp" />
     <ClCompile Include="mensagens.cpp" />
     <ClCompile Include="jogo.cpp" />
+    <ClCompile Include="pipes.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
