@@ -39,12 +39,6 @@ typedef struct {
 } TOPTEN;
 
 typedef struct {
-	//TCHAR nome[TEXTO]; // para testar...
-	//unsigned int nivel;
-	//BOLA bolas[NUM_BOLAS];
-	//BARREIRA barreiras[NUM_BARREIRAS];
-	//TIJOLO tijolos[NUM_TIJOLOS];
-	//JOGADOR jogadores[NUM_MAX_JOGADORES];
 	BOLA bola;
 	JOGADOR jogador;
 	int termina;

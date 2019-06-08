@@ -24,13 +24,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 	mostraConfig(jogo);
 
 	initWaitableTimer(sincControl, jogo);
-	//if (initWaitableTimer(sincControl)) // WaitableTimer
-	//	return -1;
-
 
 	leRegisto(topten);
-
-
 
 	if (!AcessoMensagensServidor(sincControl))
 		return -1;

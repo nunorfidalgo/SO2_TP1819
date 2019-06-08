@@ -2,7 +2,7 @@
 
 extern "C" {
 
-	void enviaJogo(SincControl &sincControl, BOLA &bola) {
+	void enviaJogo(SincControl& sincControl, BOLA& bola) {
 		int j = 1;
 		while (!sincControl.jogo->termina) {
 
@@ -14,15 +14,12 @@ extern "C" {
 			sincControl.jogo->bola.coord.x = bola.coord.x;
 			sincControl.jogo->bola.coord.y = bola.coord.y;
 
-			//_tprintf(TEXT("[Thread: %d] Envio Jogo [%d] Jogador: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), GetCurrentThreadId(), j, sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
-			//j++;
-
 			ReleaseMutex(sincControl.hMutexJogo);
 			ResetEvent(sincControl.hEventoJogo);
 		}
 	}
 
-	void recebeJogo(SincControl &sincControl, BOLA &bola) {
+	void recebeJogo(SincControl& sincControl, BOLA& bola) {
 
 		WaitForSingleObject(sincControl.hEventoJogo, INFINITE);
 		WaitForSingleObject(sincControl.hMutexJogo, INFINITE);

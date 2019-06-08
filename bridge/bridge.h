@@ -39,9 +39,8 @@
 
 //----------------------------------------------------------------PIPES
 
-
-
 #define PIPE_NAME TEXT("\\\\.\\pipe\\tp_so2_1819")
+
 //----------------------------------------------------------------
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)

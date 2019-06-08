@@ -8,8 +8,6 @@ DWORD WINAPI threadBola(LPVOID param);
 
 void MovimentoBola();
 
-//int escreveRegisto();
-//int leRegisto();
 int escreveRegisto(TOPTEN& topten);
 int leRegisto(TOPTEN& topten);
 
