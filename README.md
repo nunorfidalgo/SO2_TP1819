@@ -1,8 +1,8 @@
 # Trabalho Prático de Sistema Operativos 2 2018 / 2019 - ISEC
 
 ## Nome do trabalho: Clone Arknoid/Breakout
-* Desenvolvido em Visual Studio 2017 / 2019 Community Edition;
-* Comentários e código em PT-PT (o mais poível);
+* Desenvolvido em Visual Studio Community Edition 2017 / 2019 ;
+* Comentários e código em PT-PT (o mais possível);
 
 ## Alunos
 * Nuno Fidalgo [21140369]
@@ -13,7 +13,7 @@
 - Jogo divido por servidor e cliente com uma DLL(bridge) que implementa as comunições entre o servidor e cliente;
 - No servidor vamos ter toda a mecânica de jogo;
 - Cliente tem apenas a configuração de teclas, envio de nome do jogador e tem de detetar se está em modo local(memoria partilhada) 
-ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/IP ou UDP).
+ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/IP ou UDP).
 
 ## Tecnologias
 * Win32 API
@@ -69,7 +69,7 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 - [x] Diagramas de arquitectura;
 - [x] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiros, solução...
 - [x] Entrega meta1 em modo release x86 e x64 com código retirado do github (fazer release no github com os binários);
-- [x] O README.md foi apenas actualizado/organizador depois da entrega desta meta;
+- [x] O README.md foi apenas actualizado/organizado depois da entrega desta meta;
 
 # NOTAS da Meta 1
 * fazer com que varios cientes não acedam ao servidor...
@@ -94,7 +94,8 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] EnviaMensagem (SendMessage);
 	- [x] RecebeMensagem (ReceiveMessage);
 - [ ] Correções das notas da meta 1 (em progresso);
-- [ ] Usar a função de segurança para escrever no registo e nos namedpipes;
+- [x] Usar a função de segurança para escrever no registo;
+- [ ] Usar a função de segurança para escrever nos namedpipes;
 
 ## Modulo "Servidor"
 - [x] Suporte a threads;
@@ -103,24 +104,25 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [x] Movimento da bola;
 	- [ ] Gerir o movimento dos brindes;
 	- [x] Gerir o movimento ds(s) bola(s);
-	- [ ] Pelo uma para gerir os jogadores;
+	- [ ] Pelo menos uma para gerir os jogadores;
 - [x] Guardar/Ler pontuações no Registo do Windows;
-- [ ] Correções das notas da meta 1 (em progresso);
-	- [x] fazer com que varios cientes não acedam ao servidor...
+- [x] Correções das notas da meta 1 (em progresso);
+	- [x] fazer com que varios cientes não acedam ao servidor localmente...
 	- [x] mudar as funções de comunicação para a DLL...
-	- [ ] não esquecer de ver o waitable...
-- [ ] Ler ficheiro de configuração;
+	- [x] não esquecer de ver o waitable...
+- [x] Ler ficheiro de configuração;
 - [ ] Adicionar brindes;
-- [ ] Usar a função de segurança para escrever no registo;
+- [x] Usar a função de segurança para escrever no registo;
+- [ ] Usar a função de segurança para escrever nos named pipes;
 
 ## Modulo "Cliente"
 - [x] Novo projecto feito para o cliente em WDA;
 - [x] Colocar as opções Debug / Release, x86 / x64 a funcionar;
 - [x] Interligação DLL implícita;
-- [ ] Correções das notas da meta 1 (em progresso);
-	- [x] fazer com que varios cientes não acedam ao servidor...
+- [x] Correções das notas da meta 1 (em progresso);
+	- [x] fazer com que varios cientes não acedam ao servidor localmente...
 	- [x] mudar as funções de comunicação para a DLL...
-	- [ ] não esquecer de ver o waitable...
+	- [X] não esquecer de ver o waitable...
 - [x] Suporte a memoria partilhada;
 - [x] Suporte a threads;
 	- [x] Envio mensagens;
@@ -138,16 +140,16 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 	- [ ] Dialog Sobre;
 		- [ ] Apenas falta abrir o link do github com o Syslink Control;
 	- [x] Double Buffering implementado;
-	- [ ] Bitmap da bola e da barreira a funcionar;
+	- [x] Bitmap da bola e da barreira a funcionar;
 	- [x] Colocar focus no nome nos DialogBox onde pede o nome do jogador; 
 	- [x] Barreira do jogador a funcionar com rato e teclas;
-	- [ ] Colocar a bola a funcionar;
-		- [ ] Bug quando se coloca a bola a mexer;
-		- [ ] Corrigir as margens da bola;
-		- [ ] Detetar a bola na barreira e então fim do jogo;
+	- [x] Colocar a bola a funcionar;
+		- [x] Bug quando se coloca a bola a mexer;
+		- [x] Corrigir as margens da bola;
+		- [x] Detetar a bola na barreira e então fim do jogo;
 - [ ] Suporte a named pipes;
 - [ ] Usar função de segurança para os named pipes (Colocar na DLL);
-- [ ] Icons WDA;
+- [x] Icons WDA;
 
 ## Modulos:
 
@@ -175,15 +177,15 @@ ou em modo remoto(named pipes) (um belo extra seria colcoar a comunicar por TCP/
 ## Entrega: Meta 2 (Final)
 
 - [x] Colocar as opções Debug / Release, x86 / x64 a funcionar;
-- [ ] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiros, solução...
-- [ ] Melhorar os diagramas;
-- [ ] A resolução para o problema do encoding dos ficheiros;
+- [x] Problema do unicode resolvido, aparentemente quando se coloca no GitHub muda a codificação dos ficheiros, solução, salvar com encoding.
+- [x] Melhorar os diagramas;
+- [x] A resolução para o problema do encoding dos ficheiros;
 - [ ] Entrega final em modo release x86 e x64 com código retirado do github(fazer release no github com os binários);
 
 # Outros
 - [x] Suporte x86 / x64;
 - [x] Modo debug em ambas as arquiteturas;
-- [ ] Mudar ficheiros para .c; -> não é possivel de momento devido ao uso da DLL ter funções com elementos de cpp;
+- [-] Mudar ficheiros para .c; -> não é possivel de momento devido ao uso da DLL ter funções com elementos de cpp;
 
 ## Extras
 - [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Aceleradores); 
