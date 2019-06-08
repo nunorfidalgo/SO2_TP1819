@@ -190,7 +190,7 @@ ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/
 ## Extras
 - [x] No cliente foram usado no menu os atalhos do teclado (com o uso de Aceleradores); 
 - [ ] Adicionar comunicação por TCP/IP ou UDP
-- [ ] Efeitos sonoros/musicais (sem se limitar a meros “beeps”) – 5%
+- [x] Efeitos sonoros/musicais (sem se limitar a meros “beeps”) – 5%
 - [ ] Animações gráficas (por exemplo, explosões dos tijolos) – 10%
 - [ ] Tijolos com movimento – 10 %
 - [ ] Implementação do servidor como Serviço NT – 5 %
