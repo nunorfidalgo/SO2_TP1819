@@ -86,6 +86,8 @@ int _tmain(int argc, LPTSTR argv[]) {
 	CloseHandle(hTBola);
 	CloseHandle(hServidor);
 	apagaServico();
+	apagaRegisto();
+	_tprintf(TEXT("%s: Servidor terminado ordeiramente...\n"), SERVIDOR);
 	return 0;
 }
 

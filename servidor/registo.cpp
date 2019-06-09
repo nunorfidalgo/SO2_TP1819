@@ -1,6 +1,8 @@
 #include "servidor.h"
+#include <strsafe.h>
 
 #define CHAVE_REG  TEXT("Software\\TP_SO2_2018_2019")
+#define APAGA_REG TEXT("HKEY_CURRENT_USER\\Software\\TP_SO2_2018_2019")
 
 extern SECURITY_ATTRIBUTES sa;
 
@@ -114,37 +116,104 @@ int leRegisto(TOPTEN& topten) {
 	return 0;
 }
 
-//
-//TCHAR seps[] = TEXT("=\n");
-//TCHAR teste[] = TEXT("Nuno=1000\nClaudio=20\nNuno2=10002\nClaudio2=202\n");
-//TCHAR *token1 = NULL;
-//TCHAR *next_token1 = NULL;
-//
-//token1 = _tcstok_s(teste, seps, &next_token1);
-//int i = 0, num = 0;
-//while (token1 != NULL || i < TOP_TEN)
-//{
-//	if (token1 != NULL)
-//	{
-//		//_tprintf(TEXT("[%d] token1: %s\n"), i, token1);
-//		if (num % 2 == 0) {
-//			/*_tprintf(TEXT("[%d] par\n"), i);*/
-//			_tcscpy_s(topten.pontuacoes[i].nome, token1);
-//			_tprintf(TEXT("[%d] par: %s\n"), i, topten.pontuacoes[i].nome);
-//		}
-//		else {
-//			//_tprintf(TEXT("[%d] impar\n"), i);
-//			topten.pontuacoes[i].pontos = _tstoi(token1);
-//			_tprintf(TEXT("[%d] impar: %d\n"), i, topten.pontuacoes[i].pontos);
-//			i++;
-//		}
-//		token1 = _tcstok_s(NULL, seps, &next_token1);
-//		//_tprintf(TEXT("[%d] next_token1: %s\n"), i, next_token1);
-//		num++;
-//	}
-//	else {
-//		_tcscpy_s(topten.pontuacoes[i].nome, TEXT(""));
-//		topten.pontuacoes[i].pontos = 0;
-//		i++;
-//	}
-//}
+BOOL RegDelnodeRecurse(HKEY hKeyRoot, LPTSTR lpSubKey) {
+	LPTSTR lpEnd;
+	LONG lResult;
+	DWORD dwSize;
+	TCHAR szName[MAX_PATH];
+	HKEY hKey;
+	FILETIME ftWrite;
+
+	// First, see if we can delete the key without having
+	// to recurse.
+
+	lResult = RegDeleteKey(hKeyRoot, lpSubKey);
+
+	if (lResult == ERROR_SUCCESS)
+		return TRUE;
+
+	lResult = RegOpenKeyEx(hKeyRoot, lpSubKey, 0, KEY_READ, &hKey);
+
+	if (lResult != ERROR_SUCCESS) {
+		if (lResult == ERROR_FILE_NOT_FOUND) {
+			printf("Key not found.\n");
+			return TRUE;
+		}
+		else {
+			printf("Error opening key.\n");
+			return FALSE;
+		}
+	}
+
+	// Check for an ending slash and add one if it is missing.
+
+	lpEnd = lpSubKey + lstrlen(lpSubKey);
+
+	if (*(lpEnd - 1) != TEXT('\\')) {
+		*lpEnd = TEXT('\\');
+		lpEnd++;
+		*lpEnd = TEXT('\0');
+	}
+
+	// Enumerate the keys
+
+	dwSize = MAX_PATH;
+	lResult = RegEnumKeyEx(hKey, 0, szName, &dwSize, NULL,
+		NULL, NULL, &ftWrite);
+
+	if (lResult == ERROR_SUCCESS) {
+		do {
+
+			*lpEnd = TEXT('\0');
+			StringCchCat(lpSubKey, MAX_PATH * 2, szName);
+
+			if (!RegDelnodeRecurse(hKeyRoot, lpSubKey)) {
+				break;
+			}
+
+			dwSize = MAX_PATH;
+
+			lResult = RegEnumKeyEx(hKey, 0, szName, &dwSize, NULL,
+				NULL, NULL, &ftWrite);
+
+		} while (lResult == ERROR_SUCCESS);
+	}
+
+	lpEnd--;
+	*lpEnd = TEXT('\0');
+
+	RegCloseKey(hKey);
+
+	// Try again to delete the key.
+
+	lResult = RegDeleteKey(hKeyRoot, lpSubKey);
+
+	if (lResult == ERROR_SUCCESS)
+		return TRUE;
+
+	return FALSE;
+}
+
+BOOL apagaChaveRegisto(HKEY hKeyRoot, LPCTSTR lpSubKey) {
+	TCHAR szDelKey[MAX_PATH * 2];
+
+	StringCchCopy(szDelKey, MAX_PATH * 2, lpSubKey);
+	return RegDelnodeRecurse(hKeyRoot, szDelKey);
+
+}
+
+int apagaRegisto() {
+	BOOL bSuccess;
+	//HKEY chave;
+
+	//RegOpenKey(HKEY_CURRENT_USER, CHAVE_REG, &chave);
+	bSuccess = apagaChaveRegisto(HKEY_CURRENT_USER, CHAVE_REG);
+
+	//	bSuccess = RegDeleteKeyW(chave, CHAVE_REG);
+
+	if (bSuccess)
+		_tprintf(TEXT("Chave eliminada do registo...\n"));
+	else _tprintf(TEXT("Não consegui eliminar chave do registo...\n"));
+
+	return 0;
+}

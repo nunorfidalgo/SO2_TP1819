@@ -10,13 +10,14 @@ void MovimentoBola();
 
 int escreveRegisto(TOPTEN& topten);
 int leRegisto(TOPTEN& topten);
+int apagaRegisto();
 
 int leConfig(int argc, LPTSTR argv[]);
 void mostraConfig(JOGO& jogo);
 
 VOID instalaServico(void);
-
 VOID __stdcall apagaServico();
+
 
 //	_In_ SC_HANDLE schService
 //);
