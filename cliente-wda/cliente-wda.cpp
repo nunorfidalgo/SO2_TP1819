@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "cliente-wda.h"
 
+#include <mmsystem.h>
+
 #define MAX_LOADSTRING 100
 
 /* Global Variables */
@@ -671,9 +673,11 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		switch (wParam) {
 		case VK_LEFT:
 			jogador.barreira.coord.x = jogador.barreira.coord.x > 0 ? jogador.barreira.coord.x - 20 : 0;
+			PlaySoundW(TEXT("movs.wav"), NULL, SND_ASYNC);
 			break;
 		case VK_RIGHT:
 			jogador.barreira.coord.x = jogador.barreira.coord.x < (unsigned int)(rect.right - bmpBarreira.bmWidth) ? jogador.barreira.coord.x + 20 : (unsigned int)(rect.right - bmpBarreira.bmWidth);
+			PlaySoundW(TEXT("movs.wav"), NULL, SND_ASYNC);
 			break;
 		}
 		enviaMensagem(sincControl, jogador);
