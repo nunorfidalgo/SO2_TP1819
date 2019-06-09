@@ -68,11 +68,53 @@ VOID instalaServico() {
 		NULL);                     // no password 
 
 	if (schService == NULL) {
-		_tprintf(TEXT("Falha ao instalar serviço (%d)\n"), GetLastError());
+		_tprintf(TEXT("Falha ao instalar serviço (%d)...\n"), GetLastError());
 		CloseServiceHandle(schSCManager);
 		return;
 	}
-	else _tprintf(TEXT("Serviço instalado com sucesso\n"));
+	else _tprintf(TEXT("Serviço instalado com sucesso...\n"));
+
+	CloseServiceHandle(schService);
+	CloseServiceHandle(schSCManager);
+}
+
+VOID __stdcall apagaServico() {
+	SC_HANDLE schSCManager;
+	SC_HANDLE schService;
+	//SERVICE_STATUS ssStatus;
+
+	// Get a handle to the SCM database. 
+
+	schSCManager = OpenSCManager(
+		NULL,                    // local computer
+		NULL,                    // ServicesActive database 
+		SC_MANAGER_ALL_ACCESS);  // full access rights 
+
+	if (NULL == schSCManager) {
+		_tprintf(TEXT("Sem permissões para aceder ao gestor de serviços... (%d)\n"), GetLastError());
+		return;
+	}
+
+	// Get a handle to the service.
+
+	schService = OpenService(
+		schSCManager,       // SCM database 
+		TEXT("SO2Servidor"),      // name of service 
+		DELETE);            // need delete access 
+
+	if (schService == NULL) {
+		_tprintf(TEXT("Serviço não existe...(%d)\n"), GetLastError());
+		CloseServiceHandle(schSCManager);
+		return;
+	}
+
+	// Delete the service.
+
+	if (!DeleteService(schService)) {
+		_tprintf(TEXT("Falha ao apagar serviço... (%d)\n"), GetLastError());
+	}
+	else
+		_tprintf(TEXT("Serviço apagado...\n"));
 
 	CloseServiceHandle(schService);
 	CloseServiceHandle(schSCManager);

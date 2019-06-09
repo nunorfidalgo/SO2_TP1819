@@ -85,6 +85,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	CloseHandle(hTJogo);
 	CloseHandle(hTBola);
 	CloseHandle(hServidor);
+	apagaServico();
 	return 0;
 }
 
