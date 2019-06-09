@@ -1,4 +1,4 @@
-# Trabalho Prático de Sistema Operativos 2 2018 / 2019 - ISEC
+# Trabalho Prático de Sistema Operativos 2 - 2018 / 2019 - ISEC
 
 ## Nome do trabalho: Clone Arkanoid/Breakout
 * Desenvolvido em Visual Studio Community Edition 2017 / 2019 ;
