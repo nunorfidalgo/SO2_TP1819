@@ -4,7 +4,8 @@
 JOGO jogo;
 BOLA bola; // isto desaparece e temos que usar o jogo!!
 SincControl sincControl;
-SincPipes sincPipes;
+SincPipes sincPipesMensagens;
+SincPipes sincPipesJogo;
 MENSAGEM mensagem;
 
 HANDLE hServidor, hLogin;

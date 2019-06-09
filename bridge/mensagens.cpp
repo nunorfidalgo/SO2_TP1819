@@ -33,9 +33,12 @@ extern "C" {
 
 	}
 
-	void enviaMensagemPipe(HANDLE hPipe, MENSAGEM *mensagem) {
+	bool enviaMensagemPipe(HANDLE hPipe, MENSAGEM *mensagem) {
 		DWORD nBytesEnviados;
-		WriteFile(hPipe, mensagem, sizeof(MENSAGEM), &nBytesEnviados, NULL);
+		if (!WriteFile(hPipe, mensagem, sizeof(MENSAGEM), &nBytesEnviados, NULL))
+			return false;
+		else
+			return true;
 	}
 
 	void escutaMensagensPipes(SincPipes &sincPipes) {
@@ -73,18 +76,32 @@ extern "C" {
 
 	void recebeMensagensPipes(SincPipes &sincPipes, MENSAGEM *mensagem) {
 		int i;
-		BOOL recebido;
+		//BOOL recebido;
 		do {
 
 			WaitForSingleObject(sincPipes.hMutex, INFINITE);
 
 			for (i = 0; i < N_PIPES; i++) {
+
 				if (sincPipes.hPipes[i].activo) {
-					recebido = ReadFile(&sincPipes.hPipes[i], mensagem, sizeof(MENSAGEM), &sincPipes.nBytesRecebidos, NULL);
-					if (!recebido || !sincPipes.nBytesRecebidos) {
-						_tprintf(TEXT("%s: Jogador: '%s' %d... (ReadFile)\n"), SERVIDOR, mensagem->jogador.nome, sincPipes.nBytesRecebidos);
-						break;
+
+					if (!ReadFile(&sincPipes.hPipes[i], mensagem, sizeof(MENSAGEM), &sincPipes.nBytesRecebidos, NULL)) {
+						_tprintf(TEXT("%s: ERROR [%d] (ReadFile) ao ler do pipe!\n"), SERVIDOR, GetLastError());
+						exit(-1);
 					}
+
+					//recebido = ReadFile(&sincPipes.hPipes[i], mensagem, sizeof(MENSAGEM), &sincPipes.nBytesRecebidos, NULL);
+					//if (!recebido || !sincPipes.nBytesRecebidos) {
+					//	/*	if (recebido == 0) {
+					//			_tprintf(TEXT("%s: ERROR [%d] (ReadFile)\n"), SERVIDOR, GetLastError());
+					//			exit(-1);
+					//		}
+					//		else {*/
+					//	_tprintf(TEXT("%s: Jogador: '%s' %d... (ReadFile)\n"), SERVIDOR, mensagem->jogador.nome, sincPipes.nBytesRecebidos);
+					//	Sleep(4000);
+					//	break;
+					//}
+
 				}
 			}
 
@@ -92,7 +109,7 @@ extern "C" {
 
 		} while (!sincPipes.termina);
 
-		/*sincPipes.termina = 1;*/
+		sincPipes.termina = 1;
 
 		for (i = 0; i < N_PIPES; i++)
 			SetEvent(sincPipes.hEvent[i]);

@@ -33,13 +33,32 @@ extern "C" {
 		ReleaseMutex(sincControl.hMutexJogo);
 	}
 
-	//void enviaJogoPipe(SincPipes &sincPipes, BOLA &bola) {
+	void enviaJogoPipe(SincPipes &sincPipes, BOLA *bola) { // servidor envia para cliente, em vez de bola devia ser JOGO!!
 
-	//}
+		while (1) {
+			int i;
+			WaitForSingleObject(sincPipes.hMutex, INFINITE);
 
-	//void recebeJogoPipe(SincPipes &sincPipes, BOLA &bola) {
+			for (i = 0; i < N_PIPES; i++) {
+				if (sincPipes.hPipes[i].activo) {
+					if (!WriteFile(sincPipes.hPipes[i].hInstance, bola, sizeof(BOLA), &sincPipes.nBytesEnviados, NULL)) {
+						_tprintf(TEXT("[ERRO] Escrever no pipe! (WriteFile)\n"));
+						exit(-1);
+					}
+				}
+			}
 
-	//}
+			ReleaseMutex(sincPipes.hMutex);
+		}
+	}
+
+	void recebeJogoPipe(HANDLE hPipe, BOLA *bola) { // Cliente
+		while (1) {
+			if (!ReadFile(hPipe, bola, sizeof(BOLA), NULL, NULL))
+				break;
+		}
+
+	}
 
 
 }

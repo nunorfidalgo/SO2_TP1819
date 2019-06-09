@@ -37,8 +37,10 @@
 #define LOGIN TEXT("Login")
 
 #define JOGO_TIMER TEXT("WAITABLE_TIMER_SERVIDOR")
-#define MUTEX_PIPES TEXT("PIPES_SERVIDOR")
-#define PIPE_NAME TEXT("\\\\.\\pipe\\jogo")
+#define MUTEX_PIPES_MENSAGENS TEXT("Mutex_PIPES_MENSAGENS")
+#define MUTEX_PIPES_JOGO TEXT("Mutex_PIPES_JOGO")
+#define PIPE_MENSAGENS TEXT("\\\\.\\pipe\\mensagens")
+#define PIPE_JOGO TEXT("\\\\.\\pipe\\jogo")
 
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)
@@ -58,13 +60,13 @@ extern "C" {
 	// jogo.cpp
 	BRIDGE_API void enviaJogoMemPart(SincControl &sincControl, BOLA &bola);
 	BRIDGE_API void recebeJogoMemPart(SincControl &sincControl, BOLA &bola);
-	//BRIDGE_API void enviaJogoPipes(SincPipes &sincPipes, BOLA &bola);
-	//BRIDGE_API void recebeJogoPipe(SincPipes &sincPipes, BOLA &bola);
+	BRIDGE_API void enviaJogoPipe(SincPipes &sincPipes, BOLA *bola);
+	BRIDGE_API void recebeJogoPipe(HANDLE hPipe, BOLA *bola);
 
 	// mensagens.cpp
 	BRIDGE_API void enviaMensagemMemPart(SincControl &sincControl, JOGADOR &jogador);
 	BRIDGE_API void recebeMensagensMemPart(SincControl &sincControl);
-	BRIDGE_API void enviaMensagemPipe(HANDLE hPipe, MENSAGEM *mensagem);
+	BRIDGE_API bool enviaMensagemPipe(HANDLE hPipe, MENSAGEM *mensagem);
 	BRIDGE_API void escutaMensagensPipes(SincPipes &sincPipes);
 	BRIDGE_API void recebeMensagensPipes(SincPipes &sincPipes, MENSAGEM *mensagem);
 
@@ -77,7 +79,11 @@ extern "C" {
 	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES *sa);
 
 	// pipes.cpp
-	BRIDGE_API bool AccessoPipesMensagensServidor(SincPipes &sincPipes);
-	BRIDGE_API void closePipes(SincPipes &sincPipes);
+	BRIDGE_API bool AcessoPipesMensagensServidor(SincPipes &sincPipes);
 	BRIDGE_API bool AcessoPipeMensagensCliente(HANDLE &hPipe);
+	BRIDGE_API bool AcessoPipesJogoServidor(SincPipes &sincPipes);
+	BRIDGE_API bool AcessoPipesJogoCliente(HANDLE hPipe);
+
+	BRIDGE_API void closePipes(SincPipes &sincPipes);
+
 }
