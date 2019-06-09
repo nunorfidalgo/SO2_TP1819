@@ -5,7 +5,7 @@ bool verificaInstancia();
 DWORD WINAPI threadRecebeMensagens(LPVOID param);
 DWORD WINAPI threadEnviaJogo(LPVOID param);
 DWORD WINAPI threadBola(LPVOID param);
-DWORD WINAPI threadEscutaMensagens(LPVOID param);
+DWORD WINAPI threadEscutaPipes(LPVOID param);
 
 void MovimentoBola();
 

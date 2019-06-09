@@ -2,6 +2,42 @@
 
 extern "C" {
 
+	void escutaPipes(SincPipes &sincPipes) {
+		int i;
+
+		while (!sincPipes.termina && sincPipes.numClientes < N_PIPES) {
+
+			_tprintf(TEXT("%s: Esperar ligação de um jogador...\n"), SERVIDOR);
+
+			_tprintf(TEXT("%s: 2, lasterror=%d !!!!\n"), SERVIDOR, GetLastError());
+
+			sincPipes.pipeNumber = WaitForMultipleObjects(N_PIPES, sincPipes.hEvent, FALSE, INFINITE);
+			i = sincPipes.pipeNumber - WAIT_OBJECT_0;
+
+			_tprintf(TEXT("%s: 3  !!!!\n"), SERVIDOR);
+
+			_tprintf(TEXT("%s: Jogador ligado no pipe: %d\n"), SERVIDOR, i);
+
+			if (i >= 0 && i < N_PIPES)
+			{
+				if (!GetOverlappedResult(sincPipes.hPipes[i].hInstance, &sincPipes.hPipes[i].overlap, &sincPipes.nBytesRecebidos, FALSE)) {
+					_tprintf(TEXT("%s: [ERRO] obter resultados do pipe: %d \n"), SERVIDOR, i);
+					continue;
+				}
+
+				ResetEvent(sincPipes.hEvent[i]);
+				WaitForSingleObject(sincPipes.hMutex, INFINITE);
+
+				sincPipes.hPipes[i].activo = TRUE;
+
+				ReleaseMutex(sincPipes.hMutex);
+				sincPipes.numClientes++;
+			}
+			_tprintf(TEXT("%s: 4  !!!!\n"), SERVIDOR);
+		}
+		_tprintf(TEXT("%s: 5 fim  !!!!\n"), SERVIDOR);
+	}
+
 	// Mensagens
 	bool AcessoPipesMensagensServidor(SincPipes &sincPipes) {
 		int i;
@@ -58,9 +94,7 @@ extern "C" {
 	}
 
 	// Jogo
-
 	bool AcessoPipesJogoServidor(SincPipes &sincPipes) {
-
 		int i;
 		sincPipes.hMutex = CreateMutex(
 			NULL,          // default security attributes
@@ -98,7 +132,6 @@ extern "C" {
 
 		}
 		return true;
-
 	}
 
 	bool AcessoPipesJogoCliente(HANDLE hPipe) {

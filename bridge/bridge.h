@@ -37,9 +37,12 @@
 #define LOGIN TEXT("Login")
 
 #define JOGO_TIMER TEXT("WAITABLE_TIMER_SERVIDOR")
-#define MUTEX_PIPES_MENSAGENS TEXT("Mutex_PIPES_MENSAGENS")
-#define MUTEX_PIPES_JOGO TEXT("Mutex_PIPES_JOGO")
+
+
+#define MUTEX_PIPES_MENSAGENS TEXT("MutexPipesMensagens")
 #define PIPE_MENSAGENS TEXT("\\\\.\\pipe\\mensagens")
+
+#define MUTEX_PIPES_JOGO TEXT("MutexPipeJogo")
 #define PIPE_JOGO TEXT("\\\\.\\pipe\\jogo")
 
 #ifdef BRIDGE_EXPORTS
@@ -53,6 +56,7 @@ extern "C" {
 	// Mensagens
 	BRIDGE_API bool AcessoMensagensMemPartServidor(SincControl &sincControl);
 	BRIDGE_API bool AcessoMensagensMemPartCliente(SincControl &sincControl);
+
 	// Jogo
 	BRIDGE_API bool AcessoJogoMemPartServidor(SincControl &sincControl);
 	BRIDGE_API bool AcessoJogoMemPartCliente(SincControl &sincControl);
@@ -61,14 +65,14 @@ extern "C" {
 	BRIDGE_API void enviaJogoMemPart(SincControl &sincControl, BOLA &bola);
 	BRIDGE_API void recebeJogoMemPart(SincControl &sincControl, BOLA &bola);
 	BRIDGE_API void enviaJogoPipe(SincPipes &sincPipes, BOLA *bola);
-	BRIDGE_API void recebeJogoPipe(HANDLE hPipe, BOLA *bola);
+	BRIDGE_API bool recebeJogoPipe(HANDLE hPipe, BOLA *bola);
 
 	// mensagens.cpp
 	BRIDGE_API void enviaMensagemMemPart(SincControl &sincControl, JOGADOR &jogador);
 	BRIDGE_API void recebeMensagensMemPart(SincControl &sincControl);
+
 	BRIDGE_API bool enviaMensagemPipe(HANDLE hPipe, MENSAGEM *mensagem);
-	BRIDGE_API void escutaMensagensPipes(SincPipes &sincPipes);
-	BRIDGE_API void recebeMensagensPipes(SincPipes &sincPipes, MENSAGEM *mensagem);
+	BRIDGE_API bool recebeMensagensPipes(SincPipes &sincPipes, MENSAGEM *mensagem);
 
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
@@ -79,11 +83,11 @@ extern "C" {
 	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES *sa);
 
 	// pipes.cpp
+	BRIDGE_API void escutaPipes(SincPipes &sincPipes);
 	BRIDGE_API bool AcessoPipesMensagensServidor(SincPipes &sincPipes);
 	BRIDGE_API bool AcessoPipeMensagensCliente(HANDLE &hPipe);
 	BRIDGE_API bool AcessoPipesJogoServidor(SincPipes &sincPipes);
 	BRIDGE_API bool AcessoPipesJogoCliente(HANDLE hPipe);
-
 	BRIDGE_API void closePipes(SincPipes &sincPipes);
 
 }

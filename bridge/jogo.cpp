@@ -34,30 +34,27 @@ extern "C" {
 	}
 
 	void enviaJogoPipe(SincPipes &sincPipes, BOLA *bola) { // servidor envia para cliente, em vez de bola devia ser JOGO!!
+		_tprintf(TEXT("%s: Bola: (%d, %d), direção: (%d, %d)\n"), SERVIDOR, bola->coord.x, bola->coord.y, bola->direcao.x, bola->direcao.y);
+		int i;
+		WaitForSingleObject(sincPipes.hMutex, INFINITE);
 
-		while (1) {
-			int i;
-			WaitForSingleObject(sincPipes.hMutex, INFINITE);
-
-			for (i = 0; i < N_PIPES; i++) {
-				if (sincPipes.hPipes[i].activo) {
-					if (!WriteFile(sincPipes.hPipes[i].hInstance, bola, sizeof(BOLA), &sincPipes.nBytesEnviados, NULL)) {
-						_tprintf(TEXT("[ERRO] Escrever no pipe! (WriteFile)\n"));
-						exit(-1);
-					}
+		for (i = 0; i < N_PIPES; i++) {
+			if (sincPipes.hPipes[i].activo) {
+				if (!WriteFile(sincPipes.hPipes[i].hInstance, bola, sizeof(BOLA), &sincPipes.nBytesEnviados, NULL)) {
+					_tprintf(TEXT("[ERRO] Escrever no pipe! (WriteFile)\n"));
+					//exit(-1);
 				}
 			}
-
-			ReleaseMutex(sincPipes.hMutex);
 		}
+
+		ReleaseMutex(sincPipes.hMutex);
+
 	}
 
-	void recebeJogoPipe(HANDLE hPipe, BOLA *bola) { // Cliente
-		while (1) {
-			if (!ReadFile(hPipe, bola, sizeof(BOLA), NULL, NULL))
-				break;
-		}
-
+	bool recebeJogoPipe(HANDLE hPipe, BOLA *bola) { // Cliente
+		if (!ReadFile(hPipe, bola, sizeof(BOLA), NULL, NULL))
+			return false;
+		return true;
 	}
 
 

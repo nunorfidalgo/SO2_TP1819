@@ -32,7 +32,7 @@ HANDLE hPipe;
 
 bool local;
 
-//MENSAGEM mensagem;
+MENSAGEM mensagem;
 
 /* Funções */
 bool verificaInstancia();
@@ -75,8 +75,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//mensagem.jogador.pontos = 32131;
 	//_tcscpy_s(mensagem.jogador.nome, TEXT("Nuno"));
 
-	/*memcpy(&mensagem.jogador, &jogador, sizeof JOGADOR);
-	mensagem.termina = 199;*/
+	memcpy(&mensagem.jogador, &jogador, sizeof JOGADOR);
+	mensagem.termina = 0;
 
 	//_stprintf_s(erros, MAX_LOADSTRING, TEXT("Jogador: %s (%d, %d), cor=%d, pontos=%d, termina=%d\n"), mensagem.jogador.nome, mensagem.jogador.barreira.coord.x, mensagem.jogador.barreira.coord.y, mensagem.jogador.cor, mensagem.jogador.pontos, mensagem.termina);
 	//MessageBox(NULL, erros, TEXT("Mensagem"), MB_ICONEXCLAMATION | MB_OK);
@@ -86,6 +86,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return -1;
 	}
 
+
+	/*
+	*
+	* detecção automática de entrar por memoria partilhada ou por named pipe
+	*
+	*/
 	//if (AcessoMensagensMemPartCliente(sincControl) /*&& AcessoJogoMemPartCliente(sincControl)*/) {
 	//	hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
 	//	if (hLogin == NULL) {
@@ -117,18 +123,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//	//if (enviaMensagemPipe(hPipe, &mensagem))
 	//	//	return -1;
 	//}
-
-	if (AcessoPipesJogoCliente(hPipe))
-		return -1;
-	local = false;
-
-
-	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
-	if (hTJogo == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
-		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
-		return -1;
-	}
+	//if (AcessoPipesJogoCliente(hPipe))
+	//	return -1;
+	//local = false;
 
 	// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -219,8 +216,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
 
-	//while (!sincControl.mensagem->termina || !mensagem.termina) {
-	while (1) {
+	while (!sincControl.mensagem->termina/* || !mensagem.termina*/) {
+		//while (1) {
 
 		if (local == true)
 			recebeJogoMemPart(sincControl, bola);
@@ -492,4 +489,12 @@ bool verificaInstancia() {
 		return true;
 	}
 	return false;
+}
+
+void iniciaJogo() {
+	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
+	if (hTJogo == NULL) {
+		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
+		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
+	}
 }

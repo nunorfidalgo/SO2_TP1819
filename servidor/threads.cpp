@@ -3,22 +3,22 @@
 
 extern BOLA bola;
 extern SincControl sincControl;
-extern SincPipes sincPipesMensagens;
-extern SincPipes sincPipesJogo;
+extern SincPipes sincPipes;
 extern MENSAGEM mensagem;
 
 DWORD WINAPI threadRecebeMensagens(LPVOID param) {
-	//recebeMensagensMemPart(sincControl);
-
-	/*mensagem.termina = 0;*/
-	//recebeMensagensPipes(sincPipesMensagens, &mensagem);
-
+	while (!sincControl.mensagem->termina || !sincPipes.termina) {
+		recebeMensagensMemPart(sincControl);
+		recebeMensagensPipes(sincPipes, &mensagem);
+	}
 	return 0;
 }
 
 DWORD WINAPI threadEnviaJogo(LPVOID param) {
-	//enviaJogoMemPart(sincControl, bola);
-	enviaJogoPipe(sincPipesJogo, &bola);
+	while (!sincControl.jogo->termina || !sincPipes.termina) {
+		enviaJogoMemPart(sincControl, bola);
+		enviaJogoPipe(sincPipes, &bola);
+	}
 	return 0;
 }
 
@@ -33,8 +33,7 @@ DWORD WINAPI threadBola(LPVOID param) {
 	return 0;
 }
 
-DWORD WINAPI threadEscutaMensagens(LPVOID param) {
-	//escutaMensagensPipes(sincPipesMensagens);
-	escutaMensagensPipes(sincPipesJogo);
+DWORD WINAPI threadEscutaPipes(LPVOID param) {
+	escutaPipes(sincPipes);
 	return 0;
 }
