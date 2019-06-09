@@ -5,6 +5,7 @@ bool verificaInstancia();
 DWORD WINAPI threadRecebeMensagens(LPVOID param);
 DWORD WINAPI threadEnviaJogo(LPVOID param);
 DWORD WINAPI threadBola(LPVOID param);
+DWORD WINAPI threadEscutaPipes(LPVOID param);
 
 void MovimentoBola();
 
@@ -18,14 +19,5 @@ void mostraConfig(JOGO& jogo);
 VOID instalaServico(void);
 VOID __stdcall apagaServico();
 
-
-//	_In_ SC_HANDLE schService
-//);
-//VOID WINAPI SvcCtrlHandler(DWORD);
-//VOID WINAPI SvcMain(DWORD, LPTSTR*);
-//
-//VOID ReportSvcStatus(DWORD, DWORD, DWORD);
-//VOID SvcInit(DWORD, LPTSTR*);
-//VOID SvcReportEvent(LPTSTR);
 
 #endif

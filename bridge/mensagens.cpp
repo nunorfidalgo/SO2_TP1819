@@ -31,4 +31,42 @@ extern "C" {
 
 	}
 
+	bool enviaMensagemPipe(HANDLE hPipe, MENSAGEM* mensagem) {
+		DWORD nBytesEnviados;
+		if (!WriteFile(hPipe, mensagem, sizeof(MENSAGEM), &nBytesEnviados, NULL))
+			return false;
+		else
+			return true;
+	}
+
+	bool recebeMensagensPipes(SincPipes& sincPipes, MENSAGEM* mensagem) {
+		int i;
+		do {
+
+			WaitForSingleObject(sincPipes.hMutex, INFINITE);
+
+			for (i = 0; i < N_PIPES; i++) {
+
+				if (sincPipes.hPipes[i].activo) {
+
+					if (!ReadFile(&sincPipes.hPipes[i], mensagem, sizeof(MENSAGEM), &sincPipes.nBytesRecebidos, NULL)) {
+						_tprintf(TEXT("%s: ERROR [%d] (ReadFile) ao ler do pipe!\n"), SERVIDOR, GetLastError());
+						break;
+						return false;
+					}
+
+				}
+			}
+
+			ReleaseMutex(sincPipes.hMutex);
+
+		} while (1); /* (!sincPipes.termina);*/
+
+		sincPipes.termina = 1;
+
+		for (i = 0; i < N_PIPES; i++)
+			SetEvent(sincPipes.hEvent[i]);
+
+		return true;
+	}
 }

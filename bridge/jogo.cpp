@@ -31,4 +31,31 @@ extern "C" {
 	}
 
 
+	void enviaJogoPipe(SincPipes& sincPipes, BOLA* bola) { // servidor envia para cliente, em vez de bola devia ser JOGO!!
+		//_tprintf(TEXT("%s: Bola: (%d, %d), direção: (%d, %d)\n"), SERVIDOR, bola->coord.x, bola->coord.y, bola->direcao.x, bola->direcao.y);
+		int i;
+		WaitForSingleObject(sincPipes.hMutex, INFINITE);
+
+		for (i = 0; i < N_PIPES; i++) {
+			if (sincPipes.hPipes[i].activo) {
+				if (!WriteFile(sincPipes.hPipes[i].hInstance, bola, sizeof(BOLA), &sincPipes.nBytesEnviados, NULL)) {
+					_tprintf(TEXT("%s: ERROR [%d] (WriteFile) Escrever no pipe!\n"), SERVIDOR, GetLastError());
+					/*exit(-1);*/
+					break;
+				}
+			}
+		}
+
+		ReleaseMutex(sincPipes.hMutex);
+
+	}
+
+	bool recebeJogoPipe(HANDLE hPipe, BOLA* bola) { // Cliente
+		if (!ReadFile(hPipe, bola, sizeof(BOLA), NULL, NULL))
+			return false;
+		return true;
+	}
+
+
+
 }

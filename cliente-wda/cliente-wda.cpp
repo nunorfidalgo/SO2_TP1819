@@ -1,4 +1,4 @@
-#include "stdafx.h"
+Ôªø#include "stdafx.h"
 #include "cliente-wda.h"
 
 #include <mmsystem.h>
@@ -33,8 +33,12 @@ BITMAP bmpBola, bmpBarreira, bmpTijolo1, bmpTijolo2, bmpTijolo3, bmpTijolo4, bmp
 RECT rect;
 HWND global_hWnd = NULL;
 
+HANDLE hPipe;
 
-/* FunÁıes */
+bool local;
+MENSAGEM mensagem;
+
+/* Fun√ß√µes */
 bool verificaInstancia();
 LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -61,12 +65,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	jogador.barreira.coord.x = 180;
-
+	/*
+	*
+	* detecÔøΩÔøΩo autom√°tica de entrar por memoria partilhada ou por named pipe
+	*
+	*/
 	if (AcessoMensagensCliente(sincControl) && AcessoJogoCliente(sincControl)) {
 
 		hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
 		if (hLogin == NULL) {
-			_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [ERRO] CriaÁ„o evento do login (%d)\n"), CLIENTE, GetLastError());
+			_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [ERRO] Cria√ß√£o evento do login (%d)\n"), CLIENTE, GetLastError());
 			MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
 			return -1;
 		}
@@ -75,21 +83,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		SetEvent(hLogin);
 		ResetEvent(hLogin);
 		CloseHandle(hLogin);
+		local = true;
+		enviaMensagem(sincControl, jogador);
 	}
 	else {
-		//MessageBox(NULL, TEXT("Local"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
-		DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);
-		// name pipes...
+		// named pipes
+		MessageBox(NULL, TEXT("pipe"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
+
+		///*DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);*/
+		////_tcscpy_s(jogador.nome, TEXT("dasdasdasd"));
+		////_tcscpy_s(mensagem.jogador.nome, jogador.nome);
+		//local = false;
+		//if (enviaMensagemPipe(hPipe, &mensagem))
+		//	return -1;
+		//if (!AcessoPipeMensagensCliente(hPipe)) {
+		//	_stprintf_s(erros, MAX_LOADSTRING, TEXT("[ERRO] Ligar ao pipe '%s'! (CreateFile)\n"), PIPE_MENSAGENS);
+		//	MessageBox(NULL, erros, TEXT("Pipe"), MB_ICONEXCLAMATION | MB_OK);
+		//	return -1;
+		//}
+		/*if (AcessoPipesJogoCliente(hPipe))
+			return -1;*/
+		local = false;
 	}
-
-	//enviaMensagem(sincControl, jogador);
-
-	/*hTMensagens = CreateThread(NULL, 0, threadEnvioMensagem, NULL, 0, &hTMensagensId);
-	if (hTMensagens == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] das mensagens...\n"), CLIENTE, GetLastError(), hTMensagensId);
-		MessageBox(NULL, erros, TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
-		return -1;
-	}*/
 
 	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
 	if (hTJogo == NULL) {
@@ -192,9 +207,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
 	while (!sincControl.mensagem->termina) {
 
+		//recebeJogo(sincControl, bola);
 
-
-		recebeJogo(sincControl, bola);
+		if (local == true)
+			recebeJogo(sincControl, bola);
+		else
+			recebeJogoPipe(hPipe, &bola);
 
 		tempDC = CreateCompatibleDC(memDC);
 		PatBlt(memDC, 0, 0, maxX, maxY, PATCOPY);
@@ -384,7 +402,11 @@ INT_PTR CALLBACK NovoJogoLocal(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			GetDlgItemText(hDlg, IDC_EDIT_NOME, jogador.nome, TEXTO);
 			//_stprintf_s(erros, MAX_LOADSTRING, TEXT("nome jogador: %s"), sincControl.mensagem->jogador.nome);
 			//MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
-			enviaMensagem(sincControl, jogador);
+			//enviaMensagem(sincControl, jogador);
+			if (local == true)
+				recebeJogo(sincControl, bola);
+			else
+				recebeJogoPipe(hPipe, &bola);
 			EndDialog(hDlg, LOWORD(wParam));
 			break;
 		case IDCANCEL:
@@ -662,19 +684,23 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 	case WM_MOUSEMOVE:
 	{
-		GetClientRect(hWnd, &rect); // dimens„o da janela...
+		GetClientRect(hWnd, &rect); // dimens√£o da janela...
 		jogador.barreira.coord.x = GET_X_LPARAM(lParam);
 		if (jogador.barreira.coord.x < 0)
 			jogador.barreira.coord.x = 0;
 		if (jogador.barreira.coord.x > (unsigned int)(rect.right - bmpBarreira.bmWidth))
 			jogador.barreira.coord.x = rect.right - bmpBarreira.bmWidth;
-		enviaMensagem(sincControl, jogador);
+		//enviaMensagem(sincControl, jogador);
+		if (local == true)
+			recebeJogo(sincControl, bola);
+		else
+			recebeJogoPipe(hPipe, &bola);
 	}
 	break;
 
 	case WM_KEYDOWN:
 	{
-		GetClientRect(hWnd, &rect); // dimens„o da janela...
+		GetClientRect(hWnd, &rect); // dimens√£o da janela...
 		switch (wParam) {
 		case VK_LEFT:
 			jogador.barreira.coord.x = jogador.barreira.coord.x > 0 ? jogador.barreira.coord.x - 20 : 0;
@@ -685,7 +711,11 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			PlaySoundW(TEXT("movs.wav"), NULL, SND_ASYNC);
 			break;
 		}
-		enviaMensagem(sincControl, jogador);
+		//enviaMensagem(sincControl, jogador);
+		if (local == true)
+			recebeJogo(sincControl, bola);
+		else
+			recebeJogoPipe(hPipe, &bola);
 	}
 	break;
 
@@ -709,7 +739,11 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		DeleteObject(hBitMap);
 		DeleteDC(memDC);
 
-		enviaMensagem(sincControl, jogador);
+		//enviaMensagem(sincControl, jogador);
+		if (local == true)
+			recebeJogo(sincControl, bola);
+		else
+			recebeJogoPipe(hPipe, &bola);
 
 		DestroyWindow(hWnd);
 		PostQuitMessage(0);
@@ -727,7 +761,7 @@ bool verificaInstancia() {
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		CloseHandle(hCliente);
 		hCliente = NULL;
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] J· exite uma inst‚ncia do cliente a correr...\n"), CLIENTE, GetLastError());
+		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] J√° exite uma inst√¢ncia do cliente a correr...\n"), CLIENTE, GetLastError());
 		MessageBox(NULL, erros, CLIENTE, MB_ICONERROR | MB_OK);
 		return true;
 	}

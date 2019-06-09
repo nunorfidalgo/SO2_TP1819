@@ -1,16 +1,27 @@
 #include "servidor.h"
 #include "funcs.h"
 
+
 extern BOLA bola;
 extern SincControl sincControl;
+extern SincPipes sincPipes;
+extern MENSAGEM mensagem;
 
 DWORD WINAPI threadRecebeMensagens(LPVOID param) {
 	recebeMensagens(sincControl);
+
+	//while (1) {
+	//	recebeMensagensPipes(sincPipes, &mensagem);
+	//}
 	return 0;
 }
 
 DWORD WINAPI threadEnviaJogo(LPVOID param) {
 	enviaJogo(sincControl, bola);
+
+	//while (1) {
+	//	enviaJogoPipe(sincPipes, &bola);
+	//}
 	return 0;
 }
 
@@ -26,4 +37,12 @@ DWORD WINAPI threadBola(LPVOID param) {
 	MovimentoBola();
 
 	return 0;
+
+
+}
+
+DWORD WINAPI threadEscutaPipes(LPVOID param) {
+	escutaPipes(sincPipes);
+	return 0;
+
 }

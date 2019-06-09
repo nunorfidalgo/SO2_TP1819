@@ -39,8 +39,11 @@
 
 //----------------------------------------------------------------PIPES
 
-#define PIPE_NAME TEXT("\\\\.\\pipe\\tp_so2_1819")
-
+#define N_PIPES 4
+#define MUTEX_PIPES_MENSAGENS TEXT("MutexPipesMensagens")
+#define PIPE_MENSAGENS TEXT("\\\\.\\pipe\\mensagens")
+#define MUTEX_PIPES_JOGO TEXT("MutexPipeJogo")
+#define PIPE_JOGO TEXT("\\\\.\\pipe\\jogo")
 //----------------------------------------------------------------
 #ifdef BRIDGE_EXPORTS
 #define BRIDGE_API __declspec(dllexport)
@@ -53,6 +56,7 @@ extern "C" {
 	// Mensagens
 	BRIDGE_API bool AcessoMensagensServidor(SincControl& sincControl);
 	BRIDGE_API bool AcessoMensagensCliente(SincControl& sincControl);
+
 	// Jogo
 	BRIDGE_API bool AcessoJogoServidor(SincControl& sincControl);
 	BRIDGE_API bool AcessoJogoCliente(SincControl& sincControl);
@@ -61,9 +65,15 @@ extern "C" {
 	BRIDGE_API void enviaJogo(SincControl& sincControl, BOLA& bola);
 	BRIDGE_API void recebeJogo(SincControl& sincControl, BOLA& bola);
 
+	BRIDGE_API void enviaJogoPipe(SincPipes& sincPipes, BOLA* bola);
+	BRIDGE_API bool recebeJogoPipe(HANDLE hPipe, BOLA* bola);
+
 	// mensagens.cpp
 	BRIDGE_API void enviaMensagem(SincControl& sincControl, JOGADOR& jogador);
 	BRIDGE_API void recebeMensagens(SincControl& sincControl);
+
+	BRIDGE_API bool enviaMensagemPipe(HANDLE hPipe, MENSAGEM* mensagem);
+	BRIDGE_API bool recebeMensagensPipes(SincPipes& sincPipes, MENSAGEM* mensagem);
 
 	// utils.cpp
 	BRIDGE_API void gotoxy(int x, int y);
@@ -72,4 +82,12 @@ extern "C" {
 
 	BRIDGE_API void Cleanup(PSID pEveryoneSID, PSID pAdminSID, PACL pACL, PSECURITY_DESCRIPTOR pSD);
 	BRIDGE_API void Seguranca(SECURITY_ATTRIBUTES* sa);
+
+	// pipes.cpp
+	BRIDGE_API void escutaPipes(SincPipes& sincPipes);
+	BRIDGE_API bool AcessoPipesMensagensServidor(SincPipes& sincPipes);
+	BRIDGE_API bool AcessoPipeMensagensCliente(HANDLE& hPipe);
+	BRIDGE_API bool AcessoPipesJogoServidor(SincPipes& sincPipes);
+	BRIDGE_API bool AcessoPipesJogoCliente(HANDLE hPipe);
+	BRIDGE_API void closePipes(SincPipes& sincPipes);
 }

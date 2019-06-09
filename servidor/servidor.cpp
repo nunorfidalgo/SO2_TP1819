@@ -5,6 +5,9 @@
 TOPTEN topten;
 SECURITY_ATTRIBUTES sa;
 
+extern HANDLE hTMensagens, hTJogo, hTBola, hTEscutaPipes;
+extern DWORD hTMensagensId, hTJogoId, hTBolaId, hTEscutaPipesId;
+
 int _tmain(int argc, LPTSTR argv[]) {
 
 #ifdef UNICODE
@@ -46,6 +49,20 @@ int _tmain(int argc, LPTSTR argv[]) {
 	_tprintf(TEXT("%s: O jogo começou...\n"), SERVIDOR);
 	CloseHandle(hLogin);
 
+	/*
+	* Pipes
+	*/
+	if (!AcessoPipesMensagensServidor(sincPipes))
+		return -1;
+	if (!AcessoPipesJogoServidor(sincPipes))
+		return -1;
+	//sincPipes.termina = 0;
+	//hTEscutaPipes = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadEscutaPipes, NULL, 0, &hTEscutaPipesId);
+	//if (hTEscutaPipes == NULL) {
+	//	_tprintf(TEXT("%s: [Erro: %d] Ao criar a thread[%d] de escutar pipes...\n"), SERVIDOR, GetLastError(), hTEscutaPipesId);
+	//	return -1;
+	//}
+
 	hTMensagens = CreateThread(NULL, 0, threadRecebeMensagens, NULL, 0, &hTMensagensId);
 	if (hTMensagens == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] Ao criar a thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
@@ -64,6 +81,10 @@ int _tmain(int argc, LPTSTR argv[]) {
 		return -1;
 	}
 
+	if ((WaitForSingleObject(hTEscutaPipes, INFINITE)) == NULL) {
+		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] de escutar pipes...\n"), SERVIDOR, GetLastError(), hTEscutaPipesId);
+	}
+
 	if (WaitForSingleObject(hTMensagens, INFINITE) == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] WaitForSingleObject da thread[%d] das mensagens...\n"), SERVIDOR, GetLastError(), hTMensagensId);
 	}
@@ -80,6 +101,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 
 	_tprintf(TEXT("%s: [LastError %d] terminou...\n"), SERVIDOR, GetLastError());
 
+	closePipes(sincPipes);
 	closeSincControl(sincControl);
 	CloseHandle(hTMensagens);
 	CloseHandle(hTJogo);
