@@ -14,4 +14,12 @@ int leRegisto(TOPTEN& topten);
 int leConfig(int argc, LPTSTR argv[]);
 void mostraConfig(JOGO& jogo);
 
+VOID instalaServico(void);
+//VOID WINAPI SvcCtrlHandler(DWORD);
+//VOID WINAPI SvcMain(DWORD, LPTSTR*);
+//
+//VOID ReportSvcStatus(DWORD, DWORD, DWORD);
+//VOID SvcInit(DWORD, LPTSTR*);
+//VOID SvcReportEvent(LPTSTR);
+
 #endif

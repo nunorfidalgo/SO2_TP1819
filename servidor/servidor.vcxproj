@@ -126,6 +126,7 @@
     <ClCompile Include="bola.cpp" />
     <ClCompile Include="configs.cpp" />
     <ClCompile Include="registo.cpp" />
+    <ClCompile Include="service.cpp" />
     <ClCompile Include="servidor.cpp" />
     <ClCompile Include="threads.cpp" />
     <ClCompile Include="tijolo.cpp" />

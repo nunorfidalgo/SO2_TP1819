@@ -6,7 +6,7 @@ extern SincControl sincControl;
 extern JOGO jogo;
 
 #define CONFIG_LINE_BUFFER_SIZE 100
-#define FICH_CONFIG TEXT("config2.ini")
+#define FICH_CONFIG TEXT("config.ini")
 // C program for reading 
 // struct from a file 
 #include <stdio.h> 
@@ -59,7 +59,7 @@ int leConfig(int argc, LPTSTR argv[]) {
 
 void mostraConfig(JOGO& jogo) {
 
-	_tprintf(TEXT("Configuração carregada com sucesso\n"));
+	_tprintf(TEXT("Configuração carregada com sucesso...\n"));
 	//_tprintf(TEXT("NUM_ITENS=%d\n"), &num);
 	_tprintf(TEXT("NUM_MAX_JOGADORES=%d\n"), jogo.maxJogador);
 	_tprintf(TEXT("NUM_NIVEIS=%d\n"), jogo.numNiveis);

@@ -9,10 +9,10 @@
 * Cláudio Melo [21170023]
 
 ## Breve descrição:
-- Implementação de um jogo estilo Arknoid / Breakout
+- Implementação de um jogo estilo Arkanoid / Breakout
 - Jogo divido por servidor e cliente com uma DLL(bridge) que implementa as comunições entre o servidor e cliente;
 - No servidor vamos ter toda a mecânica de jogo;
-- Cliente tem apenas a configuração de teclas, envio de nome do jogador e tem de detetar se está em modo local(memoria partilhada) 
+- Cliente tem apenas a configuração de teclas, envio de nome do jogador e tem de detetar se está em modo local(memória partilhada) 
 ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/IP ou UDP).
 
 ## Tecnologias
@@ -81,7 +81,7 @@ ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/
 ## NOTAS da Meta 1:
 - [x] fazer com que varios cientes não acedam ao servidor...
 - [x] mudar as funções de comunicação para a DLL...
-- [ ] não esquecer de ver o waitable...
+- [x] não esquecer de ver o waitable...
 
 ## Modulo (DDL) "Bridge" 
 - [x] Estrutura de dados; (Em progresso!!);
@@ -95,7 +95,7 @@ ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/
 	- [x] RecebeMensagem (ReceiveMessage);
 - [ ] Correções das notas da meta 1 (em progresso);
 - [x] Usar a função de segurança para escrever no registo;
-- [ ] Usar a função de segurança para escrever nos namedpipes;
+- [ ] Usar a função de segurança para escrever nos named pipes;
 
 ## Modulo "Servidor"
 - [x] Suporte a threads;
@@ -104,10 +104,10 @@ ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/
 	- [x] Movimento da bola;
 	- [ ] Gerir o movimento dos brindes;
 	- [x] Gerir o movimento ds(s) bola(s);
-	- [ ] Pelo menos uma para gerir os jogadores;
+	- [ ] Pelo menos uma thread para gerir os jogadores;
 - [x] Guardar/Ler pontuações no Registo do Windows;
 - [x] Correções das notas da meta 1 (em progresso);
-	- [x] fazer com que varios cientes não acedam ao servidor localmente...
+	- [x] fazer com que vários cientes não acedam ao servidor localmente...
 	- [x] mudar as funções de comunicação para a DLL...
 	- [x] não esquecer de ver o waitable...
 - [x] Ler ficheiro de configuração;
@@ -123,7 +123,7 @@ ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/
 	- [x] fazer com que varios cientes não acedam ao servidor localmente...
 	- [x] mudar as funções de comunicação para a DLL...
 	- [X] não esquecer de ver o waitable...
-- [x] Suporte a memoria partilhada;
+- [x] Suporte a memória partilhada;
 - [x] Suporte a threads;
 	- [x] Envio mensagens;
 	- [x] Recebe jogo;
@@ -193,4 +193,4 @@ ou em modo remoto(named pipes) (um belo extra seria colocar a comunicar por TCP/
 - [x] Efeitos sonoros/musicais (sem se limitar a meros “beeps”) – 5%
 - [ ] Animações gráficas (por exemplo, explosões dos tijolos) – 10%
 - [ ] Tijolos com movimento – 10 %
-- [ ] Implementação do servidor como Serviço NT – 5 %
+- [x] Implementação do servidor como Serviço NT – 5 %

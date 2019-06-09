@@ -17,7 +17,7 @@ typedef struct {
 	HANDLE hTimer;
 
 	/* memoria partilhada*/
-	MENSAGEM *mensagem;
-	JOGO *jogo;
+	MENSAGEM* mensagem;
+	JOGO* jogo;
 
 } SincControl;

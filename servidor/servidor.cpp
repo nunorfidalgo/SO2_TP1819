@@ -20,6 +20,7 @@ int _tmain(int argc, LPTSTR argv[]) {
 	if (verificaInstancia())
 		return -1;
 
+	instalaServico();
 	leConfig(argc, argv);
 	mostraConfig(jogo);
 

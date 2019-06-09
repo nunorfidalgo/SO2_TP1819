@@ -79,7 +79,8 @@ extern "C" {
 			Cleanup(pEveryoneSID, pAdminSID, NULL, pSD);
 		}
 		else
-			_tprintf(TEXT("AllocateAndInitializeSid() for the Everyone group is OK\n"));
+			//_tprintf(TEXT("AllocateAndInitializeSid() for the Everyone group is OK\n"));
+			_tprintf(TEXT("Opções de segurança configuradas...\n"));
 
 		ZeroMemory(&ea, sizeof(EXPLICIT_ACCESS));
 

@@ -26,7 +26,7 @@ DWORD hTMensagensId, hTJogoId, htDoubleBuffId;
 
 HDC hDC = NULL, memDC = NULL, tempDC = NULL;
 PAINTSTRUCT ps;
-int sair = 0, maxX = 0, maxY = 0;
+int sair = 0, maxX = 0, maxY = 0, nivel;
 HBITMAP hBitMap = NULL, hBitWallpaper = NULL, hBitBola = NULL, hBitBarreira = NULL, hBitTijolo1 = NULL, hBitTijolo2 = NULL, hBitTijolo3 = NULL, hBitTijolo4 = NULL, hBitTijolo5 = NULL;
 BITMAP bmpBola, bmpBarreira, bmpTijolo1, bmpTijolo2, bmpTijolo3, bmpTijolo4, bmpTijolo5;
 
@@ -167,7 +167,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance) {
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 	hInst = hInstance; // Store instance handle in our global variable
 
-	global_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+	global_hWnd = CreateWindowW(szWindowClass, szTitle, WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,//WS_OVERLAPPEDWINDOW,
 		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CXSCREEN) - _WINDOW_WIDTH) / 2,
 		/*CW_USEDEFAULT*/(GetSystemMetrics(SM_CYSCREEN) - _WINDOW_HEIGHT) / 2,
 		_WINDOW_WIDTH,
@@ -585,6 +585,11 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			break;
 
 		case IDM_JOGO_NOVO:
+			nivel = MessageBox(hWnd, TEXT("Nivel 2"), TEXT("Confirme:"), MB_YESNO);
+			if (nivel == IDYES) {
+				MessageBox(hWnd, TEXT("Nivel 2"), TEXT("Carregado!!!"), MB_OK);
+				//DestroyWindow(hWnd);
+			}
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), hWnd, NovoJogo);
 			break;
 
