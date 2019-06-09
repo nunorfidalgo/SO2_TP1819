@@ -2,22 +2,26 @@
 #include "funcs.h"
 
 extern BOLA bola;
+//extern JOGO jogo;
 extern SincControl sincControl;
 extern SincPipes sincPipes;
 extern MENSAGEM mensagem;
+extern WAIT_TIMER waitTimer;
 
 DWORD WINAPI threadRecebeMensagens(LPVOID param) {
-	while (!sincControl.mensagem->termina || !sincPipes.termina) {
+	//while (!sincControl.mensagem->termina || !sincPipes.termina) {
+	while (1) {
 		recebeMensagensMemPart(sincControl);
-		recebeMensagensPipes(sincPipes, &mensagem);
+		//recebeMensagensPipes(sincPipes, &mensagem);
 	}
 	return 0;
 }
 
 DWORD WINAPI threadEnviaJogo(LPVOID param) {
-	while (!sincControl.jogo->termina || !sincPipes.termina) {
-		enviaJogoMemPart(sincControl, bola);
-		enviaJogoPipe(sincPipes, &bola);
+	//while (!sincControl.jogo->termina || !sincPipes.termina) {
+	while (1) {
+		enviaJogoMemPart(sincControl, waitTimer, bola);
+		//enviaJogoPipe(sincPipes, &bola);
 	}
 	return 0;
 }

@@ -26,17 +26,17 @@ extern "C" {
 		CloseHandle(sincControl.hMemJogo);
 	}
 
-	bool initWaitableTimer(SincControl &sincControl, JOGO &jogo) {
+	bool initWaitableTimer(WAIT_TIMER &waitTimer, JOGO &jogo) {
 		/* WaitableTimer*/
-		ZeroMemory(&sincControl.time, sizeof(SYSTEMTIME));
-		GetSystemTime(&sincControl.time);
-		sincControl.hTimer = CreateWaitableTimer(NULL, FALSE, JOGO_TIMER);
-		if (sincControl.hTimer == NULL) {
+		ZeroMemory(&waitTimer.time, sizeof(SYSTEMTIME));
+		GetSystemTime(&waitTimer.time);
+		waitTimer.hTimer = CreateWaitableTimer(NULL, FALSE, JOGO_TIMER);
+		if (waitTimer.hTimer == NULL) {
 			_tprintf(TEXT("%s: [Erro: %d] Ao criar WaitableTimer do jogo...\n"), SERVIDOR, GetLastError());
 			return false;
 		}
-		SystemTimeToFileTime(&sincControl.time, &sincControl.ftime);
-		SetWaitableTimer(sincControl.hTimer, reinterpret_cast<LARGE_INTEGER*>(&sincControl.ftime), jogo.velocidade, NULL, NULL, 0);
+		SystemTimeToFileTime(&waitTimer.time, &waitTimer.ftime);
+		SetWaitableTimer(waitTimer.hTimer, reinterpret_cast<LARGE_INTEGER*>(&waitTimer.ftime), jogo.velocidade, NULL, NULL, 0);
 		return true;
 	}
 

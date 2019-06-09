@@ -10,6 +10,7 @@ extern SincPipes sincPipes;
 extern HANDLE hServidor, hLogin;
 extern HANDLE hTMensagens, hTJogo, hTBola, hTEscutaPipes;
 extern DWORD hTMensagensId, hTJogoId, hTBolaId, hTEscutaPipesId;
+extern WAIT_TIMER waitTimer;
 
 int _tmain(int argc, LPTSTR argv[])
 {
@@ -26,41 +27,44 @@ int _tmain(int argc, LPTSTR argv[])
 	if (verificaInstancia())
 		return -1;
 
-	initWaitableTimer(sincControl, jogo);
+	initWaitableTimer(waitTimer, jogo);
 
 	leRegisto(topten);
 
-	/* Memoria partilhada */
+	/*
+	* Memoria partilhada
+	*/
 	if (!AcessoMensagensMemPartServidor(sincControl))
 		return -1;
 	if (!AcessoJogoMemPartServidor(sincControl))
 		return -1;
-	///* Login por memoria partilhada */
-	//_tprintf(TEXT("%s: Espera nome jogador...\n"), SERVIDOR);
-	//hLogin = CreateEvent(NULL, TRUE, FALSE, LOGIN);
-	//if (hLogin == NULL) {
-	//	_tprintf(TEXT("%s: [ERRO] Criação evento do login (%d)\n"), SERVIDOR, GetLastError());
+	/* Login por memoria partilhada */
+	_tprintf(TEXT("%s: Espera nome jogador...\n"), SERVIDOR);
+	hLogin = CreateEvent(NULL, TRUE, FALSE, LOGIN);
+	if (hLogin == NULL) {
+		_tprintf(TEXT("%s: [ERRO] Criação evento do login (%d)\n"), SERVIDOR, GetLastError());
+		return -1;
+	}
+	WaitForSingleObject(hLogin, INFINITE);
+	_tprintf(TEXT("[Thread: %d] Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
+	_tprintf(TEXT("%s: O jogo começou...\n"), SERVIDOR);
+	CloseHandle(hLogin);
+
+
+	/*
+	* Pipes
+	*/
+	//if (!AcessoPipesMensagensServidor(sincPipes))
 	//	return -1;
-	//}
-	//WaitForSingleObject(hLogin, INFINITE);
-	//_tprintf(TEXT("[Thread: %d] Jogador: '%s'=(%d,%d) | termina: %d\n"), GetCurrentThreadId(), sincControl.mensagem->jogador.nome, sincControl.mensagem->jogador.barreira.coord.x, sincControl.mensagem->jogador.barreira.coord.y, sincControl.mensagem->termina);
-	//_tprintf(TEXT("%s: O jogo começou...\n"), SERVIDOR);
-	//CloseHandle(hLogin);
+	//if (!AcessoPipesJogoServidor(sincPipes))
+	//	return -1;
+	//sincPipes.termina = 0;
 
-
-	/* Pipes */
-	if (!AcessoPipesMensagensServidor(sincPipes))
-		return -1;
-	if (!AcessoPipesJogoServidor(sincPipes))
-		return -1;
-
-	sincPipes.termina = 0;
-
-	hTEscutaPipes = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadEscutaPipes, NULL, 0, &hTEscutaPipesId);
+	/*hTEscutaPipes = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadEscutaPipes, NULL, 0, &hTEscutaPipesId);
 	if (hTEscutaPipes == NULL) {
 		_tprintf(TEXT("%s: [Erro: %d] Ao criar a thread[%d] de escutar pipes...\n"), SERVIDOR, GetLastError(), hTEscutaPipesId);
 		return -1;
-	}
+	}*/
 
 	hTMensagens = CreateThread(NULL, 0, threadRecebeMensagens, NULL, 0, &hTMensagensId);
 	if (hTMensagens == NULL) {

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "pipes.h"
+
 #define TEXTO 120
 #define TOP_TEN 10
 
@@ -46,7 +48,7 @@ typedef struct {
 	//TIJOLO tijolos[NUM_TIJOLOS];
 	//JOGADOR jogadores[NUM_MAX_JOGADORES];
 	BOLA bola;
-	JOGADOR jogador;
+	JOGADOR jogadores[N_PIPES];
 	int termina;
 	int maxJogador;//MAX_JOGADORES = 20
 	int numNiveis;//NUM_NIVEIS = 3

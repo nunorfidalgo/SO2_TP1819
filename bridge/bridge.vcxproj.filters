@@ -50,5 +50,8 @@
     <ClInclude Include="mensagem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pipes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

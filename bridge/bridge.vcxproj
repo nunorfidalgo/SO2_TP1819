@@ -132,6 +132,7 @@
     <ClInclude Include="bridge.h" />
     <ClInclude Include="mensagem.h" />
     <ClInclude Include="jogo.h" />
+    <ClInclude Include="pipes.h" />
     <ClInclude Include="sinc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

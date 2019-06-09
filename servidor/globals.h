@@ -11,4 +11,6 @@ HANDLE hServidor, hLogin;
 HANDLE hTMensagens, hTJogo, hTBola, hTEscutaPipes;
 DWORD hTMensagensId, hTJogoId, hTBolaId, hTEscutaPipesId;
 
+WAIT_TIMER waitTimer;
+
 #endif

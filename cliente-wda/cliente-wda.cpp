@@ -56,14 +56,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// TODO: Place code here.
 
+	if (verificaInstancia()) {
+		PostQuitMessage(-1);
+		return -1;
+	}
+
 	bola.coord.x = 200;
 	bola.coord.y = 200;
 
 	jogador.barreira.coord.x = 180; // posição inicial
-	jogador.barreira.coord.y = 10;
-	jogador.cor = 20;
-	jogador.pontos = 1123;
-	_tcscpy_s(jogador.nome, TEXT("Nuno"));
+	jogador.barreira.coord.y = 0;
+	jogador.cor = 11;
+	jogador.pontos = 0;
+	/*_tcscpy_s(jogador.nome, TEXT("Nuno"));*/
 
 	//_stprintf_s(erros, MAX_LOADSTRING, TEXT("Jogador: %s (%d, %d), cor=%d, pontos=%d\n"), jogador.nome, jogador.barreira.coord.x, jogador.barreira.coord.y, jogador.cor, jogador.pontos);
 	//MessageBox(NULL, erros, TEXT("Jogador"), MB_ICONEXCLAMATION | MB_OK);
@@ -81,10 +86,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//_stprintf_s(erros, MAX_LOADSTRING, TEXT("Jogador: %s (%d, %d), cor=%d, pontos=%d, termina=%d\n"), mensagem.jogador.nome, mensagem.jogador.barreira.coord.x, mensagem.jogador.barreira.coord.y, mensagem.jogador.cor, mensagem.jogador.pontos, mensagem.termina);
 	//MessageBox(NULL, erros, TEXT("Mensagem"), MB_ICONEXCLAMATION | MB_OK);
 
-	if (verificaInstancia()) {
-		PostQuitMessage(-1);
-		return -1;
-	}
+
+
+
 
 
 	/*
@@ -92,40 +96,46 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	* detecção automática de entrar por memoria partilhada ou por named pipe
 	*
 	*/
-	//if (AcessoMensagensMemPartCliente(sincControl) /*&& AcessoJogoMemPartCliente(sincControl)*/) {
-	//	hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
-	//	if (hLogin == NULL) {
-	//		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [ERRO] Criação evento do login (%d)\n"), CLIENTE, GetLastError());
-	//		MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
-	//		return -1;
-	//	}
-	//	//MessageBox(NULL, TEXT("Local"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
-	//	DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO_LOCAL), NULL, NovoJogoLocal);
-	//	SetEvent(hLogin);
-	//	ResetEvent(hLogin);
-	//	CloseHandle(hLogin);
-	//	local = false;  // devia ser true
-	//	enviaMensagemMemPart(sincControl, jogador);
-	//}
-	//else {
-	//	MessageBox(NULL, TEXT("pipe"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
+	if (AcessoMensagensMemPartCliente(sincControl) && AcessoJogoMemPartCliente(sincControl)) {
+		hLogin = OpenEvent(FILE_MAP_WRITE, FALSE, LOGIN);
+		if (hLogin == NULL) {
+			_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [ERRO] Criação evento do login (%d)\n"), CLIENTE, GetLastError());
+			MessageBox(NULL, erros, TEXT("Login"), MB_ICONEXCLAMATION | MB_OK);
+			return -1;
+		}
+		//MessageBox(NULL, TEXT("Local"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
+		DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO_LOCAL), NULL, NovoJogoLocal);
+		SetEvent(hLogin);
+		ResetEvent(hLogin);
+		CloseHandle(hLogin);
+		local = true;
+		enviaMensagemMemPart(sincControl, jogador);
+	}
+	else {
+		// named pipes
+		MessageBox(NULL, TEXT("pipe"), TEXT("Thread Mensagens"), MB_ICONEXCLAMATION | MB_OK);
 
-	//	// named pipes
-	//	//if (!AcessoPipeMensagensCliente(hPipe)) {
-	//	//	_stprintf_s(erros, MAX_LOADSTRING, TEXT("[ERRO] Ligar ao pipe '%s'! (CreateFile)\n"), PIPE_MENSAGENS);
-	//	//	MessageBox(NULL, erros, TEXT("Pipe"), MB_ICONEXCLAMATION | MB_OK);
-	//	//	return -1;
-	//	//}
-	//	///*DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);*/
-	//	////_tcscpy_s(jogador.nome, TEXT("dasdasdasd"));
-	//	////_tcscpy_s(mensagem.jogador.nome, jogador.nome);
-	//	//local = false;
-	//	//if (enviaMensagemPipe(hPipe, &mensagem))
-	//	//	return -1;
-	//}
-	//if (AcessoPipesJogoCliente(hPipe))
-	//	return -1;
-	//local = false;
+		///*DialogBox(hInst, MAKEINTRESOURCE(IDD_JOGO_NOVO), NULL, NovoJogo);*/
+		////_tcscpy_s(jogador.nome, TEXT("dasdasdasd"));
+		////_tcscpy_s(mensagem.jogador.nome, jogador.nome);
+		//local = false;
+		//if (enviaMensagemPipe(hPipe, &mensagem))
+		//	return -1;
+		//if (!AcessoPipeMensagensCliente(hPipe)) {
+		//	_stprintf_s(erros, MAX_LOADSTRING, TEXT("[ERRO] Ligar ao pipe '%s'! (CreateFile)\n"), PIPE_MENSAGENS);
+		//	MessageBox(NULL, erros, TEXT("Pipe"), MB_ICONEXCLAMATION | MB_OK);
+		//	return -1;
+		//}
+		/*if (AcessoPipesJogoCliente(hPipe))
+			return -1;*/
+		local = false;
+	}
+
+	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
+	if (hTJogo == NULL) {
+		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
+		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
+	}
 
 	// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -216,8 +226,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 DWORD WINAPI threadRecebeJogo(LPVOID param) {
 
-	while (!sincControl.mensagem->termina/* || !mensagem.termina*/) {
-		//while (1) {
+	//while (!sincControl.mensagem->termina/* || !mensagem.termina*/) {
+	while (1) {
 
 		if (local == true)
 			recebeJogoMemPart(sincControl, bola);
@@ -414,10 +424,14 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			jogador.barreira.coord.x = 0;
 		if (jogador.barreira.coord.x > (unsigned int)(rect.right - bmpBarreira.bmWidth))
 			jogador.barreira.coord.x = rect.right - bmpBarreira.bmWidth;
-		/*if (local == true)
-			enviaMensagemMemPart(sincControl, jogador);
-		else
-			enviaMensagemPipe(hPipe, &mensagem);*/
+
+		enviaMensagemMemPart(sincControl, jogador);
+
+		//if (local == true)
+		//	enviaMensagemMemPart(sincControl, jogador);
+		//else
+		//	enviaMensagemPipe(hPipe, &mensagem);
+
 	}
 	break;
 
@@ -432,10 +446,13 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			jogador.barreira.coord.x = jogador.barreira.coord.x < (unsigned int)(rect.right - bmpBarreira.bmWidth) ? jogador.barreira.coord.x + 20 : (unsigned int)(rect.right - bmpBarreira.bmWidth);
 			break;
 		}
-		/*if (local == true)
-			enviaMensagemMemPart(sincControl, jogador);
-		else
-			enviaMensagemPipe(hPipe, &mensagem);*/
+		enviaMensagemMemPart(sincControl, jogador);
+
+		//if (local == true)
+		//	enviaMensagemMemPart(sincControl, jogador);
+		//else
+		//	enviaMensagemPipe(hPipe, &mensagem);
+
 	}
 	break;
 
@@ -451,12 +468,14 @@ LRESULT CALLBACK trataEventos(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	case WM_DESTROY:
 	{
 		sincControl.mensagem->termina = 1;
+		enviaMensagemMemPart(sincControl, jogador);
+
 		//mensagem.termina = 1;
-		/*if (local == true)
-			enviaMensagemMemPart(sincControl, jogador);
-		else {
-			enviaMensagemPipe(hPipe, &mensagem);
-		}*/
+		//if (local == true)
+		//	enviaMensagemMemPart(sincControl, jogador);
+		//else {
+		//	enviaMensagemPipe(hPipe, &mensagem);
+		//}
 
 		DeleteObject(hBitBola);
 		DeleteObject(hBitBarreira);
@@ -489,12 +508,4 @@ bool verificaInstancia() {
 		return true;
 	}
 	return false;
-}
-
-void iniciaJogo() {
-	hTJogo = CreateThread(NULL, 0, threadRecebeJogo, NULL, 0, &hTJogoId);
-	if (hTJogo == NULL) {
-		_stprintf_s(erros, MAX_LOADSTRING, TEXT("%s: [Erro: %d] Ao  criar a thread[%d] do jogo...\n"), CLIENTE, GetLastError(), hTJogoId);
-		MessageBox(NULL, erros, TEXT("Thread Jogo"), MB_ICONEXCLAMATION | MB_OK);
-	}
 }

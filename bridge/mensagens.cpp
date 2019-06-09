@@ -20,9 +20,9 @@ extern "C" {
 		WaitForSingleObject(sincControl.hEventoMensagem, INFINITE);
 		WaitForSingleObject(sincControl.hMutexMensagem, INFINITE);
 
-		_tcscpy_s(sincControl.jogo->jogador.nome, sincControl.mensagem->jogador.nome);
-		sincControl.jogo->jogador.barreira.coord.x = sincControl.mensagem->jogador.barreira.coord.x;
-		sincControl.jogo->jogador.barreira.coord.y = sincControl.mensagem->jogador.barreira.coord.y;
+		_tcscpy_s(sincControl.jogo->jogadores[0].nome, sincControl.mensagem->jogador.nome);
+		sincControl.jogo->jogadores[0].barreira.coord.x = sincControl.mensagem->jogador.barreira.coord.x;
+		sincControl.jogo->jogadores[0].barreira.coord.y = sincControl.mensagem->jogador.barreira.coord.y;
 		sincControl.jogo->termina = sincControl.mensagem->termina;
 		//_tprintf(TEXT("%s: [Thread: %d] Mensagem recebida: Jogador: '%s' (x,y)=(%d, %d) | Bola (x,y)=(%d, %d) | termina: %d\n"), SERVIDOR, GetCurrentThreadId(), sincControl.jogo->jogador.nome, sincControl.jogo->jogador.barreira.coord.x, sincControl.jogo->jogador.barreira.coord.y, sincControl.jogo->bola.coord.x, sincControl.jogo->bola.coord.y, sincControl.jogo->termina);
 
@@ -49,6 +49,7 @@ extern "C" {
 
 					if (!ReadFile(&sincPipes.hPipes[i], mensagem, sizeof(MENSAGEM), &sincPipes.nBytesRecebidos, NULL)) {
 						_tprintf(TEXT("%s: ERROR [%d] (ReadFile) ao ler do pipe!\n"), SERVIDOR, GetLastError());
+						break;
 						return false;
 					}
 
@@ -57,7 +58,7 @@ extern "C" {
 
 			ReleaseMutex(sincPipes.hMutex);
 
-		} while (!sincPipes.termina);
+		} while (1); /* (!sincPipes.termina);*/
 
 		sincPipes.termina = 1;
 

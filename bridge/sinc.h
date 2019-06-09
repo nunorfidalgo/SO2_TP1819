@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "pipes.h"
+
 // Sincronização e memoria partilha
 typedef struct {
 
@@ -11,25 +13,20 @@ typedef struct {
 	HANDLE hMutexJogo;
 	HANDLE hEventoJogo;
 
-	/* waitableTimer */
-	SYSTEMTIME time;
-	FILETIME ftime;
-	HANDLE hTimer;
-
 	/* memoria partilhada*/
 	MENSAGEM *mensagem;
 	JOGO *jogo;
 
 } SincControl;
 
-
-
-
-
+/* waitableTimer */
+typedef struct {
+	SYSTEMTIME time;
+	FILETIME ftime;
+	HANDLE hTimer;
+} WAIT_TIMER;
 
 /* named pipes */
-#define N_PIPES 4
-
 typedef struct {
 	HANDLE hInstance;
 	OVERLAPPED overlap;
